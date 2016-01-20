@@ -46,7 +46,7 @@ class CabinetBlocksController extends CabinetsAppController {
 		'Blocks.BlockTabs' => array(
 			'mainTabs' => array(
 				'block_index' => array('url' => array('controller' => 'cabinet_blocks')),
-				'frame_settings' => array('url' => array('controller' => 'cabinet_frame_settings')),
+				//'frame_settings' => array('url' => array('controller' => 'cabinet_frame_settings')),
 			),
 			'blockTabs' => array(
 				'block_settings' => array('url' => array('controller' => 'cabinet_blocks')),

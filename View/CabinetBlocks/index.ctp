@@ -31,9 +31,9 @@
 				<th>
 					<?php echo $this->Paginator->sort('Cabinet.name', __d('cabinets', 'Cabinet name')); ?>
 				</th>
-				<!--<th class="text-right">-->
-				<!--	--><?php //echo $this->Paginator->sort('Cabinet.cabinet_article_count', __d('cabinets', 'Article count')); ?>
-				<!--</th>-->
+				<th class="text-right">
+					<?php echo $this->Paginator->sort('Cabinet.size', __d('cabinets', 'Size')); ?>
+				</th>
 				<th>
 					<?php echo $this->Paginator->sort('Block.modified', __d('net_commons', 'Updated date')); ?>
 				</th>
@@ -48,9 +48,9 @@
 					<td>
 						<?php echo $this->NetCommonsHtml->editLink($cabinet['Cabinet']['name'], array('block_id' => $cabinet['Block']['id'])); ?>
 					</td>
-					<!--<td class="text-right">-->
-					<!--	--><?php //echo h($cabinet['Cabinet']['cabinet_article_count']); ?>
-					<!--</td>-->
+					<td class="text-right">
+						<?php echo h($cabinet['Cabinet']['size']); ?>
+					</td>
 					<td>
 						<?php echo $this->Date->dateFormat($cabinet['Block']['modified']); ?>
 					</td>

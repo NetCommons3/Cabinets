@@ -26,28 +26,3 @@
 	)); ?>
 
 <?php echo $this->element('Blocks.public_type'); ?>
-
-<?php echo $this->NetCommonsForm->inlineCheckbox('CabinetSetting.use_comment', array(
-			'label' => __d('cabinets', 'Use comment')
-	)); ?>
-
-<?php echo $this->Like->setting('CabinetSetting.use_like', 'CabinetSetting.use_unlike');?>
-
-<!-- TODO もっと整理できる？-->
-<div class="row form-group">
-	<div class="col-xs-12">
-		<?php echo $this->Form->checkbox('CabinetSetting.use_sns', array(
-				'div' => false,
-				//'hiddenField' => false,
-				'checked' => isset($cabinetSetting['use_sns']) ? (int)$cabinetSetting['use_sns'] : null
-			)
-		); ?>
-		<?php echo $this->Form->label('CabinetSetting.use_sns', __d('cabinets', 'Use sns')); ?>
-	</div>
-</div>
-
-
-<?php
-echo $this->element('Categories.edit_form', array(
-	'categories' => isset($categories) ? $categories : null
-));

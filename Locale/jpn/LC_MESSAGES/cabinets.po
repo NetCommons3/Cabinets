@@ -84,3 +84,13 @@ msgstr "コメントを付けられる"
 
 msgid "Use sns"
 msgstr "SNSボタンを使う"
+
+# Cabinets
+msgid "Size"
+msgstr "ファイル容量"
+
+msgid "Cabinet"
+msgstr "キャビネット"
+
+msgid "File creatable roles"
+msgstr "ファイルを投稿できる権限"
