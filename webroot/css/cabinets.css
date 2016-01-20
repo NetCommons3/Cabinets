@@ -1,0 +1,45 @@
+.cabinets_cabinetTitle {
+    margin-top: 0px;
+    margin-bottom: 20px;
+}
+
+.cabinets_navigation_header {
+    font-size: small;
+    margin-bottom: 10px;
+}
+
+.cabinets_file {
+    border-bottom: 1px solid #ccc;
+    margin-bottom: 40px;
+}
+
+.cabinets_file_title {
+    margin-top: 0px;
+    margin-bottom: 20px;
+
+}
+
+.cabinets_file_meta {
+    font-size: small;
+    color: #999;
+    margin-bottom: 20px;
+}
+
+.cabinets_file_status {
+    text-align: right;
+    float:right;
+}
+
+.cabinets_file_body1 {
+    margin-bottom: 20px;
+}
+
+.cabinets_file_reaction {
+    margin-top: 20px;
+    font-size: small;
+    margin-bottom: 20px;
+}
+
+.cabinets_file_reaction div.pull-left{
+    margin-right: 10px;
+}

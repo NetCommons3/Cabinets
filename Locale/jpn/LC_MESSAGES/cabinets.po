@@ -1,0 +1,86 @@
+msgid "Add file"
+msgstr "ファイルを追加する"
+
+msgid "All status"
+msgstr "全てのステータス"
+
+msgid "All categories"
+msgstr "全てのカテゴリ"
+
+msgid "%d-%d (%s)"
+msgstr "%d年%d月 (%s)"
+
+msgid "posted : %s"
+msgstr "投稿日時 : %s"
+
+msgid "Move list"
+msgstr "一覧へ"
+
+msgid "tag"
+msgstr "タグ"
+
+msgid "Write body2"
+msgstr "続きを書く"
+
+msgid "Add tag"
+msgstr "タグ追加"
+
+msgid "require title"
+msgstr "タイトルを入力してください"
+
+msgid "Title"
+msgstr "タイトル"
+
+msgid "Category"
+msgstr "カテゴリ"
+
+msgid "CabinetFile"
+msgstr "ファイル"
+
+msgid "Cabinet name"
+msgstr "キャビネット名"
+
+msgid "%d-%d Cabinet File List"
+msgstr "%d年%d月のファイル一覧"
+
+msgid "Archive"
+msgstr "アーカイブ"
+
+msgid "All Files"
+msgstr "全てのファイル"
+
+msgid "%d-%d"
+msgstr "%d年%d月"
+
+msgid "Read more"
+msgstr "続きを読む"
+
+msgid "Close"
+msgstr "閉じる"
+
+msgid "Title"
+msgstr "タイトル"
+
+msgid "Body1"
+msgstr "本文"
+
+msgid "Body2"
+msgstr "続き"
+
+msgid "Published datetime"
+msgstr "公開日時"
+
+msgid "Show articles per page"
+msgstr "１ページに表示するファイル数"
+
+msgid "%s articles"
+msgstr "%s 件"
+
+msgid "%s article"
+msgstr "%s 件"
+
+msgid "Use comment"
+msgstr "コメントを付けられる"
+
+msgid "Use sns"
+msgstr "SNSボタンを使う"
