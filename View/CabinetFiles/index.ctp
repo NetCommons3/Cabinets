@@ -1,4 +1,3 @@
-<?php echo $this->element('shared_header'); ?>
 <?php
 echo $this->Html->css(
 	'/cabinets/css/cabinets.css',
@@ -46,150 +45,245 @@ echo $this->Html->script(
 );
 
 ?>
-
-<div class="cabinetFiles index nc-content-list" ng-controller="Cabinets.Files" ng-init="init(<?php echo Current::read('Frame.id') ?>)">
-	<h1 class="cabinets_cabinetTitle"><?php echo $listTitle ?></h1>
-
-	<div class="clearfix cabinets_navigation_header">
-		<div class="pull-left">
-			<div class="dropdown">
-				<button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-expanded="true">
-					<?php echo $filterDropDownLabel ?>
-					<span class="caret"></span>
-				</button>
-				<ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
-					<li role="presentation"><a role="menuitem" tabindex="-1" href="<?php echo $this->NetCommonsHtml->url(
-							array(
-								'action' => 'index',
-								'frame_id' => Current::read('Frame.id'),
-							)
-						);?>"><?php echo __d('cabinets', 'All Files') ?></a></li>
-					<li role="presentation" class="dropdown-header"><?php echo __d('cabinets', 'Category') ?></li>
-
-					<?php echo $this->Category->dropDownToggle(array(
-						'empty' => false,
-						'displayMenu' => false,
-						$this->NetCommonsHtml->url(array('action' => 'index')),
-					)); ?>
-
-					<li role="presentation" class="divider"></li>
-
-					<li role="presentation" class="dropdown-header"><?php echo __d('cabinets', 'Archive')?></li>
-					<?php foreach($yearMonthOptions as $yearMonth => $label): ?>
-
-						<li role="presentation"><a role="menuitem" tabindex="-1" href="<?php echo $this->NetCommonsHtml->url(
-								array(
-									'action' => 'year_month',
-									'frame_id' => Current::read('Frame.id'),
-									'year_month' => $yearMonth,
-								)
-							);?>"><?php echo $label ?></a></li>
-					<?php endforeach ?>
-				</ul>
-			</div>
-		</div>
-
+<h1 class="cabinets_cabinetTitle"><?php echo $listTitle ?></h1>
+<div class="clearfix">
+	<div class="pull-left">
+		キャビネット＞フォルダ2
+	</div>
+	<div class="pull-right">
 		<?php if (Current::permission('content_creatable')) : ?>
-		<div class="pull-right">
-			<?php
-			$addUrl = $this->NetCommonsHtml->url(array(
-				'controller' => 'cabinet_files_edit',
-				'action' => 'add',
-				'frame_id' => Current::read('Frame.id')
-			));
-			echo $this->Button->addLink('',
-				$addUrl,
-			array('tooltip' => __d('cabinets', 'Add file')));
-			?>
-		</div>
-		<?php endif ?>
-
-	</div>
-
-	<div>
-		<!--ファイル一覧-->
-		<?php foreach ($cabinetFiles as $cabinetFile): ?>
-
-			<div class="cabinets_file" ng-controller="Cabinets.Files.File">
-
-
-				<div class="cabinets_file_status">
-					<?php echo $this->Workflow->label($cabinetFile['CabinetFile']['status']); ?>
-				</div>
-
-				<article>
-					<h2 class="cabinets_file_title">
-						<?php echo $this->Html->link(
-							$cabinetFile['CabinetFile']['title'],
-							$this->NetCommonsHtml->url(
-								array(
-									'controller' => 'cabinet_files',
-									'action' => 'view',
-									//'frame_id' => Current::read('Frame.id'),
-									'key' => $cabinetFile['CabinetFile']['key'],
-										'photo'
-								)
-							)
-						);
-						?>
-					</h2>
-					<?php echo $this->element('file_meta_info', array('cabinetFile' => $cabinetFile)); ?>
-
-					<!-- Files -->
-					<div>
-						Image :
-						<?php echo $this->Html->image(
-								$this->NetCommonsHtml->url(
-										[
-												'action' => 'download',
-												'key' => $cabinetFile['CabinetFile']['key'],
-												'photo',
-											'thumb',
-										]
-								)
-						); ?>
-					</div>
-					<?php if (Hash::get($cabinetFile, 'UploadFile.pdf')) :?>
-					<div>
-						PDF :
-						<?php echo $this->Html->link('PDF',
-								'#',
-							['authorization-keys-popup-link',
-								'url' => $this->NetCommonsHtml->url(
-									[
-										'action' => 'download_pdf',
-										'key' => $cabinetFile['CabinetFile']['key'],
-										'pdf',
-									]
-								),
-								'frame-id' => Current::read('Frame.id')
-							]
-						); ?>
-					</div>
-					<?php endif ?>
-
-					<div class="cabinets_file_body1">
-						<?php echo $cabinetFile['CabinetFile']['body1']; ?>
-					</div>
-					<?php if ($cabinetFile['CabinetFile']['body2']) : ?>
-						<div ng-hide="isShowBody2">
-							<a ng-click="showBody2()"><?php echo __d('cabinets', 'Read more'); ?></a>
-						</div>
-						<div ng-show="isShowBody2">
-							<?php echo $cabinetFile['CabinetFile']['body2'] ?>
-						</div>
-						<div ng-show="isShowBody2">
-							<a ng-click="hideBody2()"><?php echo __d('cabinets', 'Close'); ?></a>
-						</div>
-					<?php endif ?>
-					<?php echo $this->element('file_footer', array('cabinetFile' => $cabinetFile, 'index' => true)); ?>
-				</article>
-
+			<div class="pull-right" style="margin-left: 10px;">
+				<?php
+				$addUrl = $this->NetCommonsHtml->url(array(
+					'controller' => 'cabinet_files_edit',
+					'action' => 'add',
+					'frame_id' => Current::read('Frame.id')
+				));
+				echo $this->Button->addLink('<span class="glyphicon glyphicon-folder-close" aria-hidden="true"></span>フォルダ',
+					$addUrl,
+					array('tooltip' => __d('cabinets', 'Add folder'), 'escapeTitle' => false));
+				?>
 			</div>
-
-
-		<?php endforeach; ?>
+		<?php endif ?>
+		<?php if (Current::permission('content_creatable')) : ?>
+			<div class="pull-right">
+				<?php
+				$addUrl = $this->NetCommonsHtml->url(array(
+					'controller' => 'cabinet_files_edit',
+					'action' => 'add',
+					'frame_id' => Current::read('Frame.id')
+				));
+				echo $this->Button->addLink('<span class="glyphicon glyphicon-file" aria-hidden="true"></span>ファイル',
+					$addUrl,
+					array('tooltip' => __d('cabinets', 'Add file')));
+				?>
+			</div>
+		<?php endif ?>
 	</div>
-
-	<?php echo $this->element('NetCommons.paginator') ?>
 </div>
+
+<?php
+
+$folders = [
+	[
+		'CabinetFile' => [
+			'id' => 1,
+			'filename' => 'フォルダ1'
+		],
+		'children' => [
+			[
+				'CabinetFile' => [
+					'id' => 2,
+					'filename' => 'フォルダ1-1'
+				],
+				'children' => [
+					[
+						'CabinetFile' => [
+							'id' => 3,
+							'filename' => 'フォルダ1-1-1'
+						],
+						'children' => [
+
+						]
+					],
+					[
+						'CabinetFile' => [
+							'id' => 4,
+							'filename' => 'フォルダ1-1-1'
+						],
+					],
+
+				]
+			],
+			[
+				'CabinetFile' => [
+					'id' => 5,
+					'filename' => 'フォルダ1-2'
+				],
+				'children' => [
+					[
+						'CabinetFile' => [
+							'id' => 6,
+							'filename' => 'フォルダ1-2-1'
+						],
+					],
+
+				]
+			],
+		]
+
+	],
+	[
+		'CabinetFile' => [
+			'id' => 7,
+			'filename' => 'フォルダ2'
+		],
+	],
+
+	[
+		'CabinetFile' => [
+			'id' => 8,
+			'filename' => 'ミナミノシマコウテイペンギン写真集'
+		],
+	]
+];
+
+$currentFolderId = 5;
+// ルートからカレントフォルダまで
+$currentFolderTree = [
+	1,5
+];
+// カレントフォルダのファイル&フォルダ
+$cabinetFiles = [
+	0 => [
+		'CabinetFile' => [
+			'filename' => '拡張モジュール',
+			'size' => '15000',
+			'download_count' => 0,
+			'modified' => '2016-01-01 12:33:00',
+			'is_file' => false,
+		],
+		'TrackableUpdater' => [
+			'username' => '龍司'
+		]
+	],
+
+	1 => [
+		'CabinetFile' => [
+			'filename' => 'NetCommons3.0.0_Beta1.zip',
+			'size' => '1500000',
+			'download_count' => 10,
+			'modified' => '2016-01-01 12:45:00',
+			'is_file' => true,
+		],
+		'TrackableUpdater' => [
+			'username' => '龍司'
+		]
+	],
+
+];
+
+// トップ階層
+
+// TODO フォルダはJSで開ける
+?>
+<style>
+	.cabinets__folder-tree__folder{
+		overflow: hidden;
+		white-space: nowrap;
+		text-overflow: ellipsis;
+	}
+	/*.cabinets__folder-tree__folder:hover{*/
+		/*background: #ccc;*/
+	/*}*/
+	.cabinets__folder-tree-toggle{
+		cursor: pointer;
+	}
+	span.cabinets-nest{
+		margin-left: 15px;
+	}
+</style>
+<div class="row">
+	<div class="col-md-3 hidden-sm hidden-xs cabinets-folder-tree inline" ng-controller="Cabinets.FolderTree" ng-init="init(<?php echo json_encode($currentFolderTree)?>)">
+		<ul class="list-group">
+			<a href="#" class="list-group-item ">
+				<span class="glyphicon glyphicon-hdd" aria-hidden="true"></span>キャビネット
+			</a>
+			<?php
+
+
+			$this->CabinetsFolderTree->render($folders, $currentFolderId ,$currentFolderTree);
+
+			// TODO フォルダのオープンクローズアイコン追加
+			// TODO フォルダの開閉JS
+			//foreach ($folderTree as $folderId => $tree) {
+			//	$nest = substr_count($tree, ' ');
+			//	$tree = '';
+			//	for($nestIndex = 0; $nestIndex < $nest; $nestIndex++){
+			//		 $tree .= $this->Html->tag('span', '', ['class' => 'cabinets-nest']);
+			//	}
+			//
+			//
+			//
+			//}
+			?>
+		</ul>
+
+
+
+	</div>
+	<div class="col-md-9 inline">
+		<table class="table">
+			<thead>
+			<tr>
+				<th>名前</th>
+				<th class="hidden-sm hidden-xs">サイズ</th>
+				<th>最終更新</th>
+				<th class="hidden-md hidden-sm hidden-xs">ダウンロード回数</th>
+				<th></th>
+
+			</tr>
+			</thead>
+			<tbody>
+			<tr>
+				<td>
+					<a href="">
+						<span class="glyphicon glyphicon-circle-arrow-up" aria-hidden="true"></span>一つ上へ
+					</a>
+				</td>
+				<td class="hidden-sm hidden-xs"></td>
+				<td></td>
+				<td class="hidden-md hidden-sm hidden-xs"></td>
+				<td></td>
+			</tr>
+			<?php foreach ($cabinetFiles as $cabinetFile): ?>
+				<tr>
+					<td>
+						<a href="#">
+							<?php if ($cabinetFile['CabinetFile']['is_file']) :?>
+								<span class="glyphicon glyphicon-file" aria-hidden="true"></span>
+
+							<?php else: ?>
+								<span class="glyphicon glyphicon-folder-close" aria-hidden="true"></span>
+
+							<?php endif ?>
+							<?php echo h($cabinetFile['CabinetFile']['filename']) ?>
+						</a>
+					</td>
+					<td class="hidden-sm hidden-xs"><?php echo $this->Number->toReadableSize($cabinetFile['CabinetFile']['size']) ?></td>
+					<td><?php echo $this->Date->dateFormat($cabinetFile['CabinetFile']['modified']) ?> <?php echo $cabinetFile['TrackableUpdater']['username'] ?></td>
+					<td class="hidden-md hidden-sm hidden-xs"><?php echo $cabinetFile['CabinetFile']['download_count'] ?></td>
+					<td>
+						<button class="btn btn-default">
+							<span class="glyphicon glyphicon-info-sign aria-hidden="true"></span>
+						</button>
+					</td>
+				</tr>
+			<?php endforeach ?>
+
+			</tbody>
+		</table>
+
+	</div>
+</div>
+
