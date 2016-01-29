@@ -31,11 +31,11 @@ class CabinetFile extends CabinetsAppModel {
  */
 	public $actsAs = array(
 		'NetCommons.Trackable',
-		'Tags.Tag',
+		//'Tags.Tag',
 		'NetCommons.OriginalKey',
 		//'NetCommons.Publishable',
 		'Workflow.Workflow',
-		'Likes.Like',
+		//'Likes.Like',
 		'Workflow.WorkflowComment',
 		//'Categories.Category',
 		'Files.Attachment' => [
@@ -53,6 +53,7 @@ class CabinetFile extends CabinetsAppModel {
 			'pdf',
 		],
 			'AuthorizationKeys.AuthorizationKey',
+		'Tree'
 		);
 
 /**
@@ -61,18 +62,14 @@ class CabinetFile extends CabinetsAppModel {
  * @var array
  */
 	public $belongsTo = array(
-		'Category' => array(
-			'className' => 'Categories.Category',
-			'foreignKey' => 'category_id',
-			'conditions' => '',
+		'CabinetFileTree' => array(
+			'type' => 'INNER',
+			'className' => 'Cabinets.CabinetFileTree',
+			'foreignKey' => false,
+			'conditions' => 'CabinetFileTree.cabinet_file_key=CabinetFile.key',
 			'fields' => '',
 			'order' => ''
 		),
-		//'PhotoFile' => array( // コンテンツを更新してもファイル差し替えないこともあるのでコンテンツn:ファイル1の関係
-		//	'className' => 'Files.Attachment',
-		//	'foreignKey' => 'photo_file_id',
-		//	'conditions' => '',
-		//),// 関連づけておいて、afterSaveで関連モデルのsaveする？
 	);
 
 /**

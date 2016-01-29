@@ -15,27 +15,27 @@ class CabinetsFolderTreeHelper extends AppHelper {
 /**
  * @var array helpers
  */
-	public $helpers = array('NetCommons.Date', 'Html');
+	public $helpers = array('NetCommons.Date', 'Html', 'NetCommonsHtml');
 
 	protected $_currentFolderTree = array();
-	protected $_currentFolderId = 0;
+	protected $_currentTreeId = 0;
 
-	public function render($folders, $currentFolderId, $currentFolderTree){
+	public function render($folders, $currentTreeId, $currentFolderTree){
 		//$this->_currentFolderTree = $currentFolderTree;
-		$this->_currentFolderId = $currentFolderId;
+		$this->_currentTreeId = $currentTreeId;
 		$this->_render($folders);
 	}
 
 	public function _render($folders, $nest = 0, $parentFolderId = 0){
 		foreach($folders as $folder){
-			$folderId = $folder['CabinetFile']['id'];
-			$isActiveFolder = ($folderId == $this->_currentFolderId);
+			$treeId = $folder['CabinetFile']['id'];
+			$isActiveFolder = ($treeId == $this->_currentTreeId);
 			$tree = '';
 			for($i = 0; $i < $nest; $i++){
 				$tree .= $this->Html->tag('span', '', ['class' => 'cabinets-nest']);;
 			}
 			// currentフォルダか
-			if ($folder['CabinetFile']['id'] == $this->_currentFolderId) {
+			if ($folder['CabinetFile']['id'] == $this->_currentTreeId) {
 				$active = 'active';
 			}else {
 				$active = '';
@@ -48,7 +48,7 @@ class CabinetsFolderTreeHelper extends AppHelper {
 			//}else{
 				// 下位のフォルダがなければアローアイコン不要
 				if(Hash::get($folder, 'children', false)) {
-					$arrowIcon = '<span class="glyphicon cabinets__folder-tree-toggle" aria-hidden="true"  style="width: 15px" ng-class="{\'glyphicon-chevron-down\': folder['.$folderId.'], \'glyphicon-chevron-right\': ! folder['.$folderId.']}" ng-click="toggle('.$folderId.')"></span> ';
+					$arrowIcon = '<span class="glyphicon cabinets__folder-tree-toggle" aria-hidden="true"  style="width: 15px" ng-class="{\'glyphicon-chevron-down\': folder['.$treeId.'], \'glyphicon-chevron-right\': ! folder['.$treeId.']}" ng-click="toggle('.$treeId.')"></span> ';
 					//$arrowIcon = $this->Html->link(
 					//	$arrowIcon,
 					//	'#cabinets-folder-tree-children-' . $folderId,
@@ -65,7 +65,7 @@ class CabinetsFolderTreeHelper extends AppHelper {
 				}
 
 				//$arrowIcon = '   <a data-toggle="collapse" aria-controls="cabinets-folder-tree-children-'.$folderId.'" href="#cabinets-folder-tree-children-'.$folderId.'" aria-expanded="false">===</a>';
-				$folderIcon = '<span class="glyphicon " aria-hidden="true" ng-class="{\'glyphicon-folder-open\': folder['.$folderId.'], \'glyphicon-folder-close\': ! folder['.$folderId.']}"></span>';
+				$folderIcon = '<span class="glyphicon " aria-hidden="true" ng-class="{\'glyphicon-folder-open\': folder['.$treeId.'], \'glyphicon-folder-close\': ! folder['.$treeId.']}"></span>';
 			//}
 			//echo $this->Html->link($tree . $arrowIcon . $folderIcon . $folder['CabinetFile']['filename'],
 			//	'',
@@ -80,22 +80,27 @@ class CabinetsFolderTreeHelper extends AppHelper {
 			}
 
 
-			// TODO actveだったらリンクしない
+			//  actveだったらリンクしない
 			if($isActiveFolder){
 				echo $this->Html->tag('li',
 					$tree . $arrowIcon . $folderIcon . $folder['CabinetFile']['filename'],
 					$options
 				);
 			}else{
+				$url = NetCommonsUrl::actionUrl([
+					'action' => 'index',
+					'key' => $folder['CabinetFile']['key']
+				]);
+				$link = $this->NetCommonsHtml->link($folder['CabinetFile']['filename'], ['key' => $folder['CabinetFile']['key']]);
 				echo $this->Html->tag('li',
-					$tree . $arrowIcon . $folderIcon . '<a href="">'.$folder['CabinetFile']['filename'].'</a>',
+					$tree . $arrowIcon . $folderIcon . $link,
 					$options
 				);
 			}
 
 			if(Hash::get($folder, 'children', false)){
 				//echo '<div id="cabinets-folder-tree-children-'.$folderId.'" class="" __ng-show="folder['.$folderId.']">';
-				$this->_render($folder['children'], $nest+1, $folderId);
+				$this->_render($folder['children'], $nest+1, $treeId);
 				//echo '</div>';
 			}
 

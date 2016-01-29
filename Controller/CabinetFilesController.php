@@ -25,6 +25,7 @@ class CabinetFilesController extends CabinetsAppController {
  */
 	public $uses = array(
 		'Cabinets.CabinetFile',
+		'Cabinets.CabinetFileTree',
 		'Workflow.WorkflowComment',
 		'Categories.Category',
 		'ContentComments.ContentComment',	// コンテンツコメント
@@ -85,6 +86,8 @@ class CabinetFilesController extends CabinetsAppController {
 		'yearMonth' => 0,
 	);
 
+	protected $_cabinet;
+
 /**
  * beforeFilter
  *
@@ -97,6 +100,9 @@ class CabinetFilesController extends CabinetsAppController {
 		//$this->AuthorizationKey->contentId =23; // TODO hardcord
 		//$this->AuthorizationKey->model ='CabinetFile'; // TODO hardcord
 		parent::beforeFilter();
+		$blockId = Current::read('Block.id');
+		$this->_cabinet = $this->Cabinet->findByBlockId($blockId);
+		$this->set('cabinet', $this->_cabinet);
 	}
 
 /**
@@ -110,8 +116,67 @@ class CabinetFilesController extends CabinetsAppController {
 			return;
 		}
 
-		$this->_prepare();
+
+		$this->CabinetFileTree->recover('parent');
+
+		// 全フォルダツリーを得る
+		$conditions = [
+			'is_folder' => 1,
+		];
+		$folders = $this->CabinetFileTree->find('threaded', ['conditions' => $conditions, 'recursive' => 0]);
+		$this->set('folders', $folders);
+
+
+
+		// カレントフォルダのファイル・フォルダリストを得る。
+		$folderKey = isset($this->request->params['pass'][1]) ? $this->request->params['pass'][1] : null;
+		if (is_null($folderKey)){
+			$currentTreeId = null;
+		}else{
+			$currentFolder = $this->CabinetFileTree->find('first', ['conditions' => ['cabinet_file_key' => $folderKey]]);
+			$currentTreeId = $currentFolder['CabinetFileTree']['id'];
+		}
+
+		$this->set('currentTreeId', $currentTreeId);
+		$conditions = [
+			'parent_id' => $currentTreeId
+		];
+		// TODO workflowコンディションを混ぜ込む
+		$files = $this->CabinetFile->find('all', ['conditions' => $conditions]);
+		$this->set('cabinetFiles', $files);
+
+		// カレントフォルダのツリーパスを得る
+		if($currentTreeId > 0){
+			$folderPath = $this->CabinetFileTree->getPath($currentTreeId, null, 0);
+			$this->set('folderPath', $folderPath);
+			$nestCount = count($folderPath);
+			if($nestCount > 1){
+				// 親フォルダあり
+				$url = NetCommonsUrl::actionUrl(
+					[
+						'key' => $folderPath[$nestCount - 2]['CabinetFile']['key'],
+						'block_id' => Current::read('Block.id'),
+						'frame_id' => Current::read('Frame.id'),
+					]
+				);
+
+			}else{
+				// 親はキャビネット
+				$url = NetCommonsUrl::backToIndexUrl();
+			}
+			$this->set('parentUrl', $url);
+		}else{
+			// ルート
+			$this->set('folderPath', array());
+			$this->set('parentUrl', false);
+		}
+
 		$this->set('listTitle', $this->_cabinetTitle);
+
+		return;
+
+
+		$this->_prepare();
 		$this->set('filterDropDownLabel', __d('cabinets', 'All Files'));
 
 		$conditions = array();
@@ -201,7 +266,7 @@ class CabinetFilesController extends CabinetsAppController {
 
 		$this->set('currentYearMonth', $this->_filter['yearMonth']);
 
-		$this->_setYearMonthOptions();
+		//$this->_setYearMonthOptions();
 
 		$permission = $this->_getPermission();
 
@@ -219,14 +284,11 @@ class CabinetFilesController extends CabinetsAppController {
 			array(
 				'conditions' => $conditions,
 				'limit' => $this->_frameSetting['CabinetFrameSetting']['articles_per_page'],
-				'order' => 'publish_start DESC',
-				'fields' => '*, ContentCommentCnt.cnt',
+				'order' => 'filename ASC',
 			)
 		);
 		$this->CabinetFile->recursive = 0;
-		$this->CabinetFile->Behaviors->load('ContentComments.ContentComment');
 		$this->set('cabinetFiles', $this->Paginator->paginate());
-		$this->CabinetFile->Behaviors->unload('ContentComments.ContentComment');
 
 		$this->render('index');
 	}

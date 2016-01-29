@@ -1,118 +1,8 @@
 <?php
 
-$folders = [
-	[
-		'CabinetFile' => [
-			'id' => 1,
-			'filename' => 'フォルダ1'
-		],
-		'children' => [
-			[
-				'CabinetFile' => [
-					'id' => 2,
-					'filename' => 'フォルダ1-1'
-				],
-				'children' => [
-					[
-						'CabinetFile' => [
-							'id' => 3,
-							'filename' => 'フォルダ1-1-1'
-						],
-						'children' => [
+$currentFolderTree = Hash::extract($folderPath, '{n}.CabinetFileTree.id');
+$currentFolderTree = array_map('intval', $currentFolderTree);
 
-						]
-					],
-					[
-						'CabinetFile' => [
-							'id' => 4,
-							'filename' => 'フォルダ1-1-1'
-						],
-					],
-
-				]
-			],
-			[
-				'CabinetFile' => [
-					'id' => 5,
-					'filename' => 'フォルダ1-2'
-				],
-				'children' => [
-					[
-						'CabinetFile' => [
-							'id' => 6,
-							'filename' => 'フォルダ1-2-1'
-						],
-					],
-
-				]
-			],
-		]
-
-	],
-	[
-		'CabinetFile' => [
-			'id' => 7,
-			'filename' => 'フォルダ2'
-		],
-	],
-
-	[
-		'CabinetFile' => [
-			'id' => 8,
-			'filename' => 'ミナミノシマコウテイペンギン写真集'
-		],
-	]
-];
-
-$folderPath = [
-	0 => [
-		'CabinetFile' => [
-			'id' => 1,
-			'filename' => 'フォルダ1'
-		]
-	],
-	1 => [
-		'CabinetFile' => [
-			'id' => 5,
-			'filename' => 'フォルダ1-2'
-		]
-	],
-];
-
-$currentFolderId = 5;
-// ルートからカレントフォルダまで
-$currentFolderTree = [
-	1,5
-];
-// カレントフォルダのファイル&フォルダ
-$cabinetFiles = [
-	0 => [
-		'CabinetFile' => [
-			'filename' => '拡張モジュール',
-			'size' => '15000',
-			'download_count' => 0,
-			'modified' => '2016-01-01 12:33:00',
-			'is_file' => false,
-		],
-		'TrackableUpdater' => [
-			'username' => '龍司'
-		]
-	],
-
-	1 => [
-		'CabinetFile' => [
-			'filename' => 'NetCommons3.0.0_Beta1.zip',
-			'size' => '1500000',
-			'download_count' => 10,
-			'modified' => '2016-01-01 12:45:00',
-			'is_file' => true,
-		],
-		'TrackableUpdater' => [
-			'username' => '龍司'
-		]
-	],
-
-];
 ?>
 
 <?php
@@ -162,13 +52,26 @@ echo $this->Html->script(
 );
 
 ?>
-<h1 class="cabinets_cabinetTitle"><?php echo $listTitle ?></h1>
+<h1 class="cabinets_cabinetTitle"><?php echo h($cabinet['Cabinet']['name']) ?></h1>
 <div class="clearfix">
 	<div class="pull-left">
-		キャビネット
-		<?php foreach($folderPath as $folder){
+		<?php
+		// パンクズ
+		if($folderPath){
+			echo $this->NetCommonsHtml->link($cabinet['Cabinet']['name'], NetCommonsUrl::backToIndexUrl());
+		}else{
+			echo h($cabinet['Cabinet']['name']);
+		}
+		?>
+		<?php foreach($folderPath as $index => $folder){
 			echo '＞';
-			echo $this->Html->link($folder['CabinetFile']['filename'], '');
+			if($index == count($folderPath) -1){
+				// カレント位置はリンクなし
+				echo h($folder['CabinetFile']['filename']);
+			}else{
+				echo $this->NetCommonsHtml->link($folder['CabinetFile']['filename'], ['key' => $folder['CabinetFile']['key']]);
+
+			}
 
 		}
 		?>
@@ -212,6 +115,11 @@ echo $this->Html->script(
 		white-space: nowrap;
 		text-overflow: ellipsis;
 	}
+	.cabinets-folder-tree li.list-group-item{
+		overflow: hidden;
+		white-space: nowrap;
+		text-overflow: ellipsis;
+	}
 	/*.cabinets__folder-tree__folder:hover{*/
 		/*background: #ccc;*/
 	/*}*/
@@ -225,13 +133,15 @@ echo $this->Html->script(
 <div class="row">
 	<div class="col-md-3 hidden-sm hidden-xs cabinets-folder-tree inline" ng-controller="Cabinets.FolderTree" ng-init="init(<?php echo json_encode($currentFolderTree)?>)">
 		<ul class="list-group">
-			<a href="#" class="list-group-item ">
-				<span class="glyphicon glyphicon-hdd" aria-hidden="true"></span>キャビネット
-			</a>
+			<li class="list-group-item ">
+				<?php
+				echo $this->NetCommonsHtml->link('<span class="glyphicon glyphicon-hdd" aria-hidden="true"></span>' . h($cabinet['Cabinet']['name']), NetCommonsUrl::backToIndexUrl(), ['escape' => false]);
+				?>
+			</li>
 			<?php
 
 
-			$this->CabinetsFolderTree->render($folders, $currentFolderId ,$currentFolderTree);
+			$this->CabinetsFolderTree->render($folders, $currentTreeId ,$currentFolderTree);
 
 			?>
 		</ul>
@@ -252,30 +162,38 @@ echo $this->Html->script(
 			</tr>
 			</thead>
 			<tbody>
+
+			<?php if ($parentUrl): ?>
 			<tr>
 				<td>
-					<a href="">
-						<span class="glyphicon glyphicon-circle-arrow-up" aria-hidden="true"></span>一つ上へ
-					</a>
+					<?php
+					echo $this->Html->link('<span class="glyphicon glyphicon-circle-arrow-up" aria-hidden="true"></span>一つ上へ', $parentUrl, ['escape' => false]);
+					?>
 				</td>
 				<td class="hidden-sm hidden-xs"></td>
 				<td></td>
 				<td class="hidden-md hidden-sm hidden-xs"></td>
 				<td></td>
 			</tr>
+			<?php endif ?>
+
 			<?php foreach ($cabinetFiles as $cabinetFile): ?>
 				<tr>
 					<td>
-						<a href="#">
-							<?php if ($cabinetFile['CabinetFile']['is_file']) :?>
-								<span class="glyphicon glyphicon-file" aria-hidden="true"></span>
+						<?php if ($cabinetFile['CabinetFile']['is_folder']) :?>
 
-							<?php else: ?>
-								<span class="glyphicon glyphicon-folder-close" aria-hidden="true"></span>
+							<?php
+							$icon = '<span class="glyphicon glyphicon-folder-close" aria-hidden="true"></span>';
+							echo $this->NetCommonsHtml->link($icon . h($cabinetFile['CabinetFile']['filename']), ['key' => $cabinetFile['CabinetFile']['key']], ['escape' => false]);
+							?>
 
-							<?php endif ?>
-							<?php echo h($cabinetFile['CabinetFile']['filename']) ?>
-						</a>
+						<?php else: ?>
+							<?php
+							$icon = '<span class="glyphicon glyphicon-file" aria-hidden="true"></span>';
+							echo $this->NetCommonsHtml->link($icon . h($cabinetFile['CabinetFile']['filename']), ['action' => 'download', 'key' => $cabinetFile['CabinetFile']['key']], ['escape' => false]);
+							?>
+						<?php endif ?>
+
 					</td>
 					<td class="hidden-sm hidden-xs"><?php echo $this->Number->toReadableSize($cabinetFile['CabinetFile']['size']) ?></td>
 					<td><?php echo $this->Date->dateFormat($cabinetFile['CabinetFile']['modified']) ?> <?php echo $cabinetFile['TrackableUpdater']['username'] ?></td>
