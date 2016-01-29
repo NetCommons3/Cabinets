@@ -1,88 +1,4 @@
 <?php
-echo $this->Html->css(
-	'/cabinets/css/cabinets.css',
-	array(
-		'plugin' => false,
-		'once' => true,
-		'inline' => false
-	)
-); ?>
-<?php
-echo $this->Html->script(
-	'/cabinets/js/cabinets.js',
-	array(
-		'plugin' => false,
-		'once' => true,
-		'inline' => false
-	)
-);
-?>
-<?php
-// Like
-echo $this->Html->script(
-	'/likes/js/likes.js',
-	array(
-		'plugin' => false,
-		'once' => true,
-		'inline' => false
-	)
-);
-echo $this->Html->css(
-	'/likes/css/style.css',
-	array(
-		'plugin' => false,
-		'once' => true,
-		'inline' => false
-	)
-);
-echo $this->Html->script(
-	'/AuthorizationKeys/js/authorization_keys.js',
-	array(
-		'plugin' => false,
-		'once' => true,
-		'inline' => false
-	)
-);
-
-?>
-<h1 class="cabinets_cabinetTitle"><?php echo $listTitle ?></h1>
-<div class="clearfix">
-	<div class="pull-left">
-		キャビネット＞フォルダ2
-	</div>
-	<div class="pull-right">
-		<?php if (Current::permission('content_creatable')) : ?>
-			<div class="pull-right" style="margin-left: 10px;">
-				<?php
-				$addUrl = $this->NetCommonsHtml->url(array(
-					'controller' => 'cabinet_files_edit',
-					'action' => 'add',
-					'frame_id' => Current::read('Frame.id')
-				));
-				echo $this->Button->addLink('<span class="glyphicon glyphicon-folder-close" aria-hidden="true"></span>フォルダ',
-					$addUrl,
-					array('tooltip' => __d('cabinets', 'Add folder'), 'escapeTitle' => false));
-				?>
-			</div>
-		<?php endif ?>
-		<?php if (Current::permission('content_creatable')) : ?>
-			<div class="pull-right">
-				<?php
-				$addUrl = $this->NetCommonsHtml->url(array(
-					'controller' => 'cabinet_files_edit',
-					'action' => 'add',
-					'frame_id' => Current::read('Frame.id')
-				));
-				echo $this->Button->addLink('<span class="glyphicon glyphicon-file" aria-hidden="true"></span>ファイル',
-					$addUrl,
-					array('tooltip' => __d('cabinets', 'Add file')));
-				?>
-			</div>
-		<?php endif ?>
-	</div>
-</div>
-
-<?php
 
 $folders = [
 	[
@@ -148,6 +64,21 @@ $folders = [
 	]
 ];
 
+$folderPath = [
+	0 => [
+		'CabinetFile' => [
+			'id' => 1,
+			'filename' => 'フォルダ1'
+		]
+	],
+	1 => [
+		'CabinetFile' => [
+			'id' => 5,
+			'filename' => 'フォルダ1-2'
+		]
+	],
+];
+
 $currentFolderId = 5;
 // ルートからカレントフォルダまで
 $currentFolderTree = [
@@ -182,11 +113,99 @@ $cabinetFiles = [
 	],
 
 ];
-
-// トップ階層
-
-// TODO フォルダはJSで開ける
 ?>
+
+<?php
+echo $this->Html->css(
+	'/cabinets/css/cabinets.css',
+	array(
+		'plugin' => false,
+		'once' => true,
+		'inline' => false
+	)
+); ?>
+<?php
+echo $this->Html->script(
+	'/cabinets/js/cabinets.js',
+	array(
+		'plugin' => false,
+		'once' => true,
+		'inline' => false
+	)
+);
+?>
+<?php
+// Like
+echo $this->Html->script(
+	'/likes/js/likes.js',
+	array(
+		'plugin' => false,
+		'once' => true,
+		'inline' => false
+	)
+);
+echo $this->Html->css(
+	'/likes/css/style.css',
+	array(
+		'plugin' => false,
+		'once' => true,
+		'inline' => false
+	)
+);
+echo $this->Html->script(
+	'/AuthorizationKeys/js/authorization_keys.js',
+	array(
+		'plugin' => false,
+		'once' => true,
+		'inline' => false
+	)
+);
+
+?>
+<h1 class="cabinets_cabinetTitle"><?php echo $listTitle ?></h1>
+<div class="clearfix">
+	<div class="pull-left">
+		キャビネット
+		<?php foreach($folderPath as $folder){
+			echo '＞';
+			echo $this->Html->link($folder['CabinetFile']['filename'], '');
+
+		}
+		?>
+	</div>
+	<div class="pull-right">
+		<?php if (Current::permission('content_creatable')) : ?>
+			<div class="pull-right" style="margin-left: 10px;">
+				<?php
+				$addUrl = $this->NetCommonsHtml->url(array(
+					'controller' => 'cabinet_files_edit',
+					'action' => 'add',
+					'frame_id' => Current::read('Frame.id')
+				));
+				echo $this->Button->addLink('<span class="glyphicon glyphicon-folder-close" aria-hidden="true"></span>フォルダ',
+					$addUrl,
+					array('tooltip' => __d('cabinets', 'Add folder'), 'escapeTitle' => false));
+				?>
+			</div>
+		<?php endif ?>
+		<?php if (Current::permission('content_creatable')) : ?>
+			<div class="pull-right">
+				<?php
+				$addUrl = $this->NetCommonsHtml->url(array(
+					'controller' => 'cabinet_files_edit',
+					'action' => 'add',
+					'frame_id' => Current::read('Frame.id')
+				));
+				echo $this->Button->addLink('<span class="glyphicon glyphicon-file" aria-hidden="true"></span>ファイル',
+					$addUrl,
+					array('tooltip' => __d('cabinets', 'Add file')));
+				?>
+			</div>
+		<?php endif ?>
+	</div>
+</div>
+
+
 <style>
 	.cabinets__folder-tree__folder{
 		overflow: hidden;
@@ -214,18 +233,6 @@ $cabinetFiles = [
 
 			$this->CabinetsFolderTree->render($folders, $currentFolderId ,$currentFolderTree);
 
-			// TODO フォルダのオープンクローズアイコン追加
-			// TODO フォルダの開閉JS
-			//foreach ($folderTree as $folderId => $tree) {
-			//	$nest = substr_count($tree, ' ');
-			//	$tree = '';
-			//	for($nestIndex = 0; $nestIndex < $nest; $nestIndex++){
-			//		 $tree .= $this->Html->tag('span', '', ['class' => 'cabinets-nest']);
-			//	}
-			//
-			//
-			//
-			//}
 			?>
 		</ul>
 
