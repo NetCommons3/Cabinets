@@ -40,6 +40,7 @@ class CabinetFilesController extends CabinetsAppController {
 		'NetCommons.BackTo',
 		'Workflow.Workflow',
 		'Likes.Like',
+		'Users.DisplayUser'
 	);
 
 /**
@@ -191,50 +192,24 @@ class CabinetFilesController extends CabinetsAppController {
 		$this->_list($conditions);
 	}
 
-/**
- * tag別一覧
- *
- * @return void
- */
-	public function tag() {
-		$this->_prepare();
-		// indexとのちがいはtagIdでの絞り込みだけ
-		$tagId = $this->_getNamed('id', 0);
 
-		// カテゴリ名をタイトルに
-		$tag = $this->CabinetFile->getTagByTagId($tagId);
-		$this->set('listTitle', __d('cabinets', 'Tag') . ':' . $tag['Tag']['name']);
-		$this->set('filterDropDownLabel', '----');
+	public function folder_detail() {
+		// TODO folderじゃなかったらエラー
+		$folderKey = isset($this->request->params['pass'][1]) ? $this->request->params['pass'][1] : null;
+		$conditions = [
+			'CabinetFile.key' => $folderKey,
+			'CabinetFile.cabinet_id' => $this->_cabinet['Cabinet']['id']
+		];
+		$conditions = $this->CabinetFile->getWorkflowConditions($conditions);
+		$cabinetFile = $this->CabinetFile->find('first', ['conditions' => $conditions]);
+		$this->set('cabinetFile', $cabinetFile);
 
-		$conditions = array(
-			'Tag.id' => $tagId // これを有効にするにはfile_tag_linkもJOINして検索か。
-		);
+		$treeId = $cabinetFile['CabinetFileTree']['id'];
+		$folderPath = $this->CabinetFileTree->getPath($treeId, null, 0);
+		$this->set('folderPath', $folderPath);
 
-		$this->_list($conditions);
 	}
 
-/**
- * 年月別一覧
- *
- * @return void
- */
-	public function year_month() {
-		$this->_prepare();
-		// indexとの違いはyear_monthでの絞り込み
-		$this->_filter['yearMonth'] = $this->_getNamed('year_month', 0);
-
-		list($year, $month) = explode('-', $this->_filter['yearMonth']);
-		$this->set('listTitle', __d('cabinets', '%d-%d Cabinet File List', $year, $month));
-		$this->set('filterDropDownLabel', __d('cabinets', '%d-%d', $year, $month));
-
-		$first = $this->_filter['yearMonth'] . '-1';
-		$last = date('Y-m-t', strtotime($first));
-
-		$conditions = array(
-			'CabinetFile.publish_start BETWEEN ? AND ?' => array($first, $last)
-		);
-		$this->_list($conditions);
-	}
 
 /**
  * 権限の取得
@@ -416,23 +391,4 @@ class CabinetFilesController extends CabinetsAppController {
 		}
 	}
 
-	/**
- * 年月選択肢をViewへセット
- *
- * @return void
- */
-	protected function _setYearMonthOptions() {
-		// 年月とファイル数
-		$yearMonthCount = $this->CabinetFile->getYearMonthCount(
-			Current::read('Block.id'),
-			$this->Auth->user('id'),
-			$this->_getPermission(),
-			$this->_getCurrentDateTime()
-		);
-		foreach ($yearMonthCount as $yearMonth => $count) {
-			list($year, $month) = explode('-', $yearMonth);
-			$options[$yearMonth] = __d('cabinets', '%d-%d (%s)', $year, $month, $count);
-		}
-		$this->set('yearMonthOptions', $options);
-	}
 }

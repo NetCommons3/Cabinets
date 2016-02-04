@@ -55,26 +55,7 @@ echo $this->Html->script(
 <h1 class="cabinets_cabinetTitle"><?php echo h($cabinet['Cabinet']['name']) ?></h1>
 <div class="clearfix">
 	<div class="pull-left">
-		<?php
-		// パンクズ
-		if($folderPath){
-			echo $this->NetCommonsHtml->link($cabinet['Cabinet']['name'], NetCommonsUrl::backToIndexUrl());
-		}else{
-			echo h($cabinet['Cabinet']['name']);
-		}
-		?>
-		<?php foreach($folderPath as $index => $folder){
-			echo '＞';
-			if($index == count($folderPath) -1){
-				// カレント位置はリンクなし
-				echo h($folder['CabinetFile']['filename']);
-			}else{
-				echo $this->NetCommonsHtml->link($folder['CabinetFile']['filename'], ['key' => $folder['CabinetFile']['key']]);
-
-			}
-
-		}
-		?>
+		<?php echo $this->element('file_path'); ?>
 	</div>
 	<div class="pull-right">
 		<?php if (Current::permission('content_creatable')) : ?>
@@ -85,7 +66,7 @@ echo $this->Html->script(
 					'action' => 'add',
 					'frame_id' => Current::read('Frame.id')
 				));
-				echo $this->Button->addLink('<span class="glyphicon glyphicon-folder-close" aria-hidden="true"></span>フォルダ',
+				echo $this->Button->addLink('<span class="glyphicon glyphicon-folder-close" aria-hidden="true"></span>' . __d('cabinets', 'フォルダ') ,
 					$addUrl,
 					array('tooltip' => __d('cabinets', 'Add folder'), 'escapeTitle' => false));
 				?>
@@ -99,7 +80,7 @@ echo $this->Html->script(
 					'action' => 'add',
 					'frame_id' => Current::read('Frame.id')
 				));
-				echo $this->Button->addLink('<span class="glyphicon glyphicon-file" aria-hidden="true"></span>ファイル',
+				echo $this->Button->addLink('<span class="glyphicon glyphicon-file" aria-hidden="true"></span>' . __d('cabinets', 'ファイル'),
 					$addUrl,
 					array('tooltip' => __d('cabinets', 'Add file')));
 				?>
@@ -154,9 +135,9 @@ echo $this->Html->script(
 			<thead>
 			<tr>
 				<th>名前</th>
-				<th class="hidden-sm hidden-xs">サイズ</th>
+				<th class="hidden-sm hidden-xs"><?php echo __d('cabinets', 'サイズ') ?></th>
 				<th>最終更新</th>
-				<th class="hidden-md hidden-sm hidden-xs">ダウンロード回数</th>
+				<th class="hidden-md hidden-sm hidden-xs"><?php echo __d('cabinets', 'ダウンロード回数'); ?></th>
 				<th></th>
 
 			</tr>
@@ -167,7 +148,10 @@ echo $this->Html->script(
 			<tr>
 				<td>
 					<?php
-					echo $this->Html->link('<span class="glyphicon glyphicon-circle-arrow-up" aria-hidden="true"></span>一つ上へ', $parentUrl, ['escape' => false]);
+					echo $this->Html->link('<span class="glyphicon glyphicon-circle-arrow-up" aria-hidden="true"></span>' . __d(
+							'cabinets',
+							'一つ上へ'
+						), $parentUrl, ['escape' => false]);
 					?>
 				</td>
 				<td class="hidden-sm hidden-xs"></td>
@@ -199,9 +183,21 @@ echo $this->Html->script(
 					<td><?php echo $this->Date->dateFormat($cabinetFile['CabinetFile']['modified']) ?> <?php echo $cabinetFile['TrackableUpdater']['username'] ?></td>
 					<td class="hidden-md hidden-sm hidden-xs"><?php echo $cabinetFile['CabinetFile']['download_count'] ?></td>
 					<td>
-						<button class="btn btn-default">
+						<?php
+						if ($cabinetFile['CabinetFile']['is_folder']) {
+							// link folder_detail
+							$detailUrl = $this->NetCommonsHtml->url(['action' => 'folder_detail', 'key' => $cabinetFile['CabinetFile']['key']]);
+							//$detailUrl = NetCommonsUrl::actionUrl(['action' => 'folder_detail', 'key' => $cabinetFile['CabinetFile']['key']]);
+						}else{
+							// link file_detail
+							$detailUrl = $this->NetCommonsHtml->url(['action' => 'file_detail', 'key' => $cabinetFile['CabinetFile']['key']]);
+						}
+						?>
+
+						<a href="<?php echo $detailUrl ?>" class="btn btn-default">
 							<span class="glyphicon glyphicon-info-sign aria-hidden="true"></span>
-						</button>
+						</a>
+
 					</td>
 				</tr>
 			<?php endforeach ?>
