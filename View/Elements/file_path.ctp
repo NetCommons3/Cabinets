@@ -1,4 +1,11 @@
 <?php
+$_tmpFolderPath = $folderPath;
+$currentFile = array_pop($_tmpFolderPath);
+$encodedFolderPath = json_encode($_tmpFolderPath);
+?>
+<span ng-controller="Cabinets.path" ng-init='init(<?php echo h($encodedFolderPath) ?>)'>
+
+<?php
 // パンクズ
 if($folderPath){
 	echo $this->NetCommonsHtml->link($cabinet['Cabinet']['name'], NetCommonsUrl::backToIndexUrl());
@@ -6,15 +13,15 @@ if($folderPath){
 	echo h($cabinet['Cabinet']['name']);
 }
 ?>
-<?php foreach($folderPath as $index => $folder){
-	echo ' &gt; ';
-	if($index == count($folderPath) -1){
-		// カレント位置はリンクなし
-		echo h($folder['CabinetFile']['filename']);
-	}else{
-		echo $this->NetCommonsHtml->link($folder['CabinetFile']['filename'], ['key' => $folder['CabinetFile']['key']]);
-
-	}
-
-}
-
+<?php
+?>
+<span ng-repeat="cabinetFile in folderPath"> &gt; <a href="{{cabinetFile.url}}">{{cabinetFile.CabinetFile.filename}}</a></span>
+<?php
+//foreach($_tmpFolderPath as $folder){
+//	echo ' &gt; ';
+//	echo $this->NetCommonsHtml->link($folder['CabinetFile']['filename'], ['key' => $folder['CabinetFile']['key']]);
+//}
+echo ' &gt; ';
+echo h($currentFile['CabinetFile']['filename']);
+?>
+</span>

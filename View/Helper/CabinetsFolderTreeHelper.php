@@ -20,8 +20,15 @@ class CabinetsFolderTreeHelper extends AppHelper {
 	protected $_currentFolderTree = array();
 	protected $_currentTreeId = 0;
 
-	public function render($folders, $currentTreeId, $currentFolderTree){
-		//$this->_currentFolderTree = $currentFolderTree;
+	protected $_selectTree = false;
+
+	public function render($folders, $currentTreeId){
+		$this->_currentTreeId = $currentTreeId;
+		$this->_render($folders);
+	}
+
+	public function renderSelectFolderTree($folders, $currentTreeId){
+		$this->_selectTree = true;
 		$this->_currentTreeId = $currentTreeId;
 		$this->_render($folders);
 	}
@@ -87,11 +94,16 @@ class CabinetsFolderTreeHelper extends AppHelper {
 					$options
 				);
 			}else{
-				$url = NetCommonsUrl::actionUrl([
-					'action' => 'index',
-					'key' => $folder['CabinetFile']['key']
-				]);
-				$link = $this->NetCommonsHtml->link($folder['CabinetFile']['filename'], ['key' => $folder['CabinetFile']['key']]);
+				if($this->_selectTree){
+					// フォルダ選択用
+					$url = '#';
+				}else{
+					$url = $this->NetCommonsHtml->url([
+						'action' => 'index',
+						'key' => $folder['CabinetFile']['key']
+					]);
+				}
+				$link = $this->NetCommonsHtml->link($folder['CabinetFile']['filename'], $url, ['ng-click' => 'select()']);
 				echo $this->Html->tag('li',
 					$tree . $arrowIcon . $folderIcon . $link,
 					$options

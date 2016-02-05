@@ -1,6 +1,18 @@
 /**
  * Cabinets Javascript
  */
+NetCommonsApp.controller('Cabinets',
+    ['$scope', function($scope) {
+      $scope.folder = [];
+
+      $scope.init = function(blockId, frameId) {
+        $scope.frameId = frameId;
+        $scope.blockId = blockId;
+      }
+
+    }]
+);
+
 
 NetCommonsApp.controller('Cabinets.FolderTree',
     ['$scope', function($scope) {
@@ -27,6 +39,22 @@ NetCommonsApp.controller('Cabinets.FolderTree',
     }]
 );
 
+NetCommonsApp.controller('Cabinets.path',
+    ['$scope', function($scope) {
+      $scope.folderPath = [];
+
+      $scope.init = function(folderPath){
+        angular.forEach(folderPath, function(value, key){
+          value['url'] = $scope.baseUrl + '/cabinets/cabinet_files/index/' + $scope.blockId + '/'+ value.CabinetFile.key +'?frame_id=' + $scope.frameId
+
+          $scope.folderPath[key] = value;
+        })
+        console.log($scope.folderPath);
+        //$scope.folderPath = folderPath;
+
+      };
+    }]
+);
 
 
 

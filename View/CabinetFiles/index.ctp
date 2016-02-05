@@ -1,4 +1,9 @@
-<?php
+<div ng-controller="Cabinets" ng-init="init(
+	 <?php echo Current::read('Block.id') ?>,
+	 <?php echo Current::read('Frame.id') ?>
+	 )">
+
+	<?php
 
 $currentFolderTree = Hash::extract($folderPath, '{n}.CabinetFileTree.id');
 $currentFolderTree = array_map('intval', $currentFolderTree);
@@ -25,23 +30,6 @@ echo $this->Html->script(
 );
 ?>
 <?php
-// Like
-echo $this->Html->script(
-	'/likes/js/likes.js',
-	array(
-		'plugin' => false,
-		'once' => true,
-		'inline' => false
-	)
-);
-echo $this->Html->css(
-	'/likes/css/style.css',
-	array(
-		'plugin' => false,
-		'once' => true,
-		'inline' => false
-	)
-);
 echo $this->Html->script(
 	'/AuthorizationKeys/js/authorization_keys.js',
 	array(
@@ -131,7 +119,7 @@ echo $this->Html->script(
 			<?php
 
 
-			$this->CabinetsFolderTree->render($folders, $currentTreeId ,$currentFolderTree);
+			$this->CabinetsFolderTree->render($folders, $currentTreeId);
 
 			?>
 		</ul>
@@ -217,3 +205,4 @@ echo $this->Html->script(
 	</div>
 </div>
 
+</div>

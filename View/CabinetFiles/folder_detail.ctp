@@ -1,4 +1,19 @@
-<?php if ($this->Workflow->canEdit('CabinetFile', $cabinetFile)) : ?>
+<?php
+echo $this->Html->script(
+	'/cabinets/js/cabinets.js',
+	array(
+		'plugin' => false,
+		'once' => true,
+		'inline' => false
+	)
+);
+?>
+<div ng-controller="Cabinets" ng-init="init(
+	 <?php echo Current::read('Block.id') ?>,
+	 <?php echo Current::read('Frame.id') ?>
+	 )">
+
+	<?php if ($this->Workflow->canEdit('CabinetFile', $cabinetFile)) : ?>
 <div class="text-right">
 	<?php echo $this->Button->editLink('',
 		array(
@@ -73,3 +88,4 @@
 	)
 	?>
 </div>
+	</div>

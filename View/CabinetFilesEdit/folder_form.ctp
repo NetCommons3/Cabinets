@@ -6,15 +6,25 @@
 		'inline' => false
 	)
 ); ?>
+<?php
+echo $this->Html->script(
+	'/cabinets/js/cabinets.js',
+	array(
+		'plugin' => false,
+		'once' => true,
+		'inline' => false
+	)
+);
+?>
 
 <div class="cabinetFiles form" ng-controller="CabinetFile.edit" ng-init="init(
 	 <?php echo Current::read('Block.id') ?>,
-	 <?php echo Current::read('Frame.id') ?>
+	 <?php echo Current::read('Frame.id') ?>,
+	 <?php echo $this->request->data['CabinetFileTree']['parent_id']; ?>
 	 )"
 	id="cabinetFileForm_<?php echo Current::read('Frame.id')?>"
 >
 	<article>
-		<input name="test" ng-model="parent_id" />
 		<h1>CABINET</h1>
 		<div class="panel panel-default">
 
@@ -52,9 +62,13 @@
 						<?php echo $this->NetCommonsForm->label('parent_id', __d('cabinets', 'パス')); ?>
 						<div>
 							<?php echo $this->element('file_path'); ?>
-							<?php //TODO フォルダ移動画面ポップアップへ ?>
-							<a href="#" ng-click="showFolderTree()">SHOW</a>
-							<?php echo $this->NetCommonsForm->input('CabinetFileTree.parent_id', ['type' => 'hidden']); ?>
+
+							<a href="#" class="btn btn-default" ng-click="showFolderTree()"><span class="glyphicon glyphicon-move" aria-hidden="true"></span><?php echo __d(
+									'cabinets',
+									'移動'
+								); ?></a>
+
+							<?php echo $this->NetCommonsForm->input('CabinetFileTree.parent_id', ['type' => 'hidden', 'ng-model' => 'parent_id']); ?>
 						</div>
 					</div>
 					<?php
