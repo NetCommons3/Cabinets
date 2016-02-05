@@ -53,7 +53,6 @@ class CabinetFile extends CabinetsAppModel {
 			'pdf',
 		],
 			'AuthorizationKeys.AuthorizationKey',
-		'Tree'
 		);
 
 /**
@@ -85,7 +84,7 @@ class CabinetFile extends CabinetsAppModel {
 			],
 
 
-			'title' => array(
+			'filename' => array(
 				'notBlank' => [
 					'rule' => array('notBlank'),
 					'message' => sprintf(__d('net_commons', 'Please input %s.'), __d('cabinets', 'Title')),
@@ -95,46 +94,6 @@ class CabinetFile extends CabinetsAppModel {
 					//'on' => 'create', // Limit validation to 'create' or 'update' operations
 				],
 			),
-			'body1' => array(
-				'notBlank' => [
-					'rule' => array('notBlank'),
-					'message' => sprintf(__d('net_commons', 'Please input %s.'), __d('cabinets', 'Body1')),
-					//'allowEmpty' => false,
-					'required' => true,
-					//'last' => false, // Stop validation after this rule
-					//'on' => 'create', // Limit validation to 'create' or 'update' operations
-				],
-			),
-			'publish_start' => array(
-				'notBlank' => [
-					'rule' => array('notBlank'),
-					'message' => sprintf(__d('net_commons', 'Please input %s.'), __d('cabinets', 'Published datetime')),
-					//'allowEmpty' => false,
-					'required' => true,
-					//'last' => false, // Stop validation after this rule
-					//'on' => 'create', // Limit validation to 'create' or 'update' operations
-				],
-			),
-			'category_id' => array(
-				'numeric' => array(
-					'rule' => array('numeric'),
-					//'message' => 'Your custom message here',
-					'allowEmpty' => true,
-					//'required' => false,
-					//'last' => false, // Stop validation after this rule
-					//'on' => 'create', // Limit validation to 'create' or 'update' operations
-				),
-			),
-			//'key' => array(
-			//	'notBlank' => array(
-			//		'rule' => array('notBlank'),
-			//		//'message' => 'Your custom message here',
-			//		//'allowEmpty' => false,
-			//		//'required' => false,
-			//		//'last' => false, // Stop validation after this rule
-			//		//'on' => 'create', // Limit validation to 'create' or 'update' operations
-			//	),
-			//),
 			'status' => array(
 				'numeric' => array(
 					'rule' => array('numeric'),

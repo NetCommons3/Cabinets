@@ -22,7 +22,7 @@ class CabinetFileTree extends CabinetsAppModel {
 /**
  * @var int recursiveはデフォルトアソシエーションなしに
  */
-	public $recursive = 0;
+	public $recursive = -1;
 
 /**
  * use behaviors
@@ -42,9 +42,33 @@ class CabinetFileTree extends CabinetsAppModel {
 		'CabinetFile' => array(
 			'className' => 'Cabinets.CabinetFile',
 			'foreignKey' => false,
-			'conditions' => 'CabinetFileTree.cabinet_file_key=CabinetFile.key',
+			'conditions' => 'CabinetFileTree.cabinet_file_key=CabinetFile.key  ',
 			'fields' => '',
 			'order' => ''
 		),
 	);
+
+	public function beforeFind($query) {
+		// workflow連動でアソシエーションさせる！
+		$associationConditions = [
+			'CabinetFileTree.cabinet_file_key = CabinetFile.key'
+		];
+		$cabinetFileCondition = $this->CabinetFile->getWorkflowConditions($associationConditions);
+
+		$this->bindModel(
+			[
+				'belongsTo' => [
+					'CabinetFile' => array(
+						'className' => 'Cabinets.CabinetFile',
+						'foreignKey' => false,
+						'conditions' => $cabinetFileCondition,
+						'fields' => '',
+						'order' => ''
+					),
+
+				]
+			]
+		);
+
+	}
 }

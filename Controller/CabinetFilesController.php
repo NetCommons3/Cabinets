@@ -124,7 +124,7 @@ class CabinetFilesController extends CabinetsAppController {
 		$conditions = [
 			'is_folder' => 1,
 		];
-		$folders = $this->CabinetFileTree->find('threaded', ['conditions' => $conditions, 'recursive' => 0]);
+		$folders = $this->CabinetFileTree->find('threaded', ['conditions' => $conditions, 'recursive' => 0, 'order' => 'CabinetFile.filename ASC']);
 		$this->set('folders', $folders);
 
 
@@ -142,8 +142,10 @@ class CabinetFilesController extends CabinetsAppController {
 		$conditions = [
 			'parent_id' => $currentTreeId
 		];
-		// TODO workflowコンディションを混ぜ込む
-		$files = $this->CabinetFile->find('all', ['conditions' => $conditions]);
+		//  workflowコンディションを混ぜ込む
+		$conditions = $this->CabinetFile->getWorkflowConditions($conditions);
+		// TODO ソート順変更
+		$files = $this->CabinetFile->find('all', ['conditions' => $conditions, 'order' => 'filename ASC']);
 		$this->set('cabinetFiles', $files);
 
 		// カレントフォルダのツリーパスを得る
@@ -204,10 +206,13 @@ class CabinetFilesController extends CabinetsAppController {
 		$cabinetFile = $this->CabinetFile->find('first', ['conditions' => $conditions]);
 		$this->set('cabinetFile', $cabinetFile);
 
+		$this->_setFolderPath($cabinetFile);
+	}
+
+	protected function _setFolderPath($cabinetFile) {
 		$treeId = $cabinetFile['CabinetFileTree']['id'];
 		$folderPath = $this->CabinetFileTree->getPath($treeId, null, 0);
 		$this->set('folderPath', $folderPath);
-
 	}
 
 

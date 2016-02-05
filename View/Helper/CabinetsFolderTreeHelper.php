@@ -48,7 +48,7 @@ class CabinetsFolderTreeHelper extends AppHelper {
 			//}else{
 				// 下位のフォルダがなければアローアイコン不要
 				if(Hash::get($folder, 'children', false)) {
-					$arrowIcon = '<span class="glyphicon cabinets__folder-tree-toggle" aria-hidden="true"  style="width: 15px" ng-class="{\'glyphicon-chevron-down\': folder['.$treeId.'], \'glyphicon-chevron-right\': ! folder['.$treeId.']}" ng-click="toggle('.$treeId.')"></span> ';
+					$arrowIcon = '<span class="glyphicon cabinets__folder-tree-toggle" aria-hidden="true"  style="width: 15px" ng-class="{\'glyphicon-menu-down\': folder['.$treeId.'], \'glyphicon-menu-right\': ! folder['.$treeId.']}" ng-click="toggle('.$treeId.')"></span> ';
 					//$arrowIcon = $this->Html->link(
 					//	$arrowIcon,
 					//	'#cabinets-folder-tree-children-' . $folderId,

@@ -24,7 +24,7 @@ class CabinetFilesEditController extends CabinetsAppController {
  */
 	public $uses = array(
 		'Cabinets.CabinetFile',
-		'Categories.Category',
+		'Cabinets.CabinetFileTree',
 		'Workflow.WorkflowComment',
 	);
 
@@ -62,6 +62,18 @@ class CabinetFilesEditController extends CabinetsAppController {
 	);
 
 /**
+ * beforeFilter
+ *
+ * @return void
+ */
+	public function beforeFilter() {
+		parent::beforeFilter();
+		$blockId = Current::read('Block.id');
+		$this->_cabinet = $this->Cabinet->findByBlockId($blockId);
+		$this->set('cabinet', $this->_cabinet);
+	}
+
+/**
  * add method
  *
  * @return void
@@ -80,8 +92,8 @@ class CabinetFilesEditController extends CabinetsAppController {
 			$status = $this->Workflow->parseStatus();
 			$this->request->data['CabinetFile']['status'] = $status;
 
-			// set block_id
-			$this->request->data['CabinetFile']['block_id'] = Current::read('Block.id');
+			// set cabinet_id
+			$this->request->data['CabinetFile']['cabinet_id'] = $this->_cabinet['Cabinet']['id'];
 			// set language_id
 			$this->request->data['CabinetFile']['language_id'] = $this->viewVars['languageId'];
 			if (($result = $this->CabinetFile->saveFile(Current::read('Block.id'), Current::read('Frame.id'), $this->request->data))) {
@@ -134,8 +146,8 @@ class CabinetFilesEditController extends CabinetsAppController {
 			$status = $this->Workflow->parseStatus();
 			$this->request->data['CabinetFile']['status'] = $status;
 
-			// set block_id
-			$this->request->data['CabinetFile']['block_id'] = Current::read('Block.id');
+			// set cabinet_id
+			$this->request->data['CabinetFile']['cabinet_id'] = $this->_cabinet['Cabinet']['id'];
 			// set language_id
 			$this->request->data['CabinetFile']['language_id'] = $this->viewVars['languageId'];
 
@@ -177,7 +189,87 @@ class CabinetFilesEditController extends CabinetsAppController {
 		$this->render('form');
 	}
 
-/**
+	/**
+	 * edit method
+	 *
+	 * @throws NotFoundException
+	 * @throws ForbiddenException
+	 * @return void
+	 */
+	public function edit_folder() {
+		$this->set('isEdit', true);
+		//$key = $this->request->params['named']['key'];
+		$key = $this->params['pass'][1];
+
+		//  keyのis_latstを元に編集を開始
+		$cabinetFile = $this->CabinetFile->findByKeyAndIsLatest($key, 1);
+		if (empty($cabinetFile)) {
+			//  404 NotFound
+			throw new NotFoundException();
+		}
+		 if ($cabinetFile['CabinetFile']['is_folder'] == false) {
+			 throw new InternalErrorException();
+		 }
+
+		$treeId = $cabinetFile['CabinetFileTree']['id'];
+		$folderPath = $this->CabinetFileTree->getPath($treeId, null, 0);
+		$this->set('folderPath', $folderPath);
+
+
+		if ($this->request->is(array('post', 'put'))) {
+
+			$this->CabinetFile->create();
+			//$this->request->data['CabinetFile']['cabinet_key'] = ''; // https://github.com/NetCommons3/NetCommons3/issues/7 対策
+
+			// set status folderは常に公開
+			$status = WorkflowComponent::STATUS_PUBLISHED;
+			$this->request->data['CabinetFile']['status'] = $status;
+
+			// set cabinet_id
+			$this->request->data['CabinetFile']['cabinet_id'] = $this->_cabinet['Cabinet']['id'];
+			// set language_id
+			$this->request->data['CabinetFile']['language_id'] = $this->viewVars['languageId'];
+
+			$data = $this->request->data;
+
+			unset($data['CabinetFile']['id']); // 常に新規保存
+
+			if ($this->CabinetFile->saveFile(Current::read('Block.id'), Current::read('Frame.id'), $data)) {
+				$url = NetCommonsUrl::actionUrl(
+					array(
+						'controller' => 'cabinet_files',
+						'action' => 'folder_detail',
+						'frame_id' => Current::read('Frame.id'),
+						'block_id' => Current::read('Block.id'),
+						'key' => $data['CabinetFile']['key']
+					)
+				);
+
+				return $this->redirect($url);
+			}
+
+			$this->NetCommons->handleValidationError($this->CabinetFile->validationErrors);
+
+		} else {
+
+			$this->request->data = $cabinetFile;
+			if ($this->CabinetFile->canEditWorkflowContent($cabinetFile) === false) {
+				throw new ForbiddenException(__d('net_commons', 'Permission denied'));
+			}
+
+		}
+
+		$this->set('cabinetFile', $cabinetFile);
+		$this->set('isDeletable', $this->CabinetFile->canDeleteWorkflowContent($cabinetFile));
+
+		$comments = $this->CabinetFile->getCommentsByContentKey($cabinetFile['CabinetFile']['key']);
+		$this->set('comments', $comments);
+
+		$this->render('folder_form');
+	}
+
+
+	/**
  * delete method
  *
  * @throws ForbiddenException
