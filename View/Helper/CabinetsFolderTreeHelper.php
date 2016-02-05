@@ -28,14 +28,14 @@ class CabinetsFolderTreeHelper extends AppHelper {
 
 	public function _render($folders, $nest = 0, $parentFolderId = 0){
 		foreach($folders as $folder){
-			$treeId = $folder['CabinetFile']['id'];
+			$treeId = $folder['CabinetFileTree']['id'];
 			$isActiveFolder = ($treeId == $this->_currentTreeId);
 			$tree = '';
 			for($i = 0; $i < $nest; $i++){
 				$tree .= $this->Html->tag('span', '', ['class' => 'cabinets-nest']);;
 			}
 			// currentフォルダか
-			if ($folder['CabinetFile']['id'] == $this->_currentTreeId) {
+			if ($folder['CabinetFileTree']['id'] == $this->_currentTreeId) {
 				$active = 'active';
 			}else {
 				$active = '';

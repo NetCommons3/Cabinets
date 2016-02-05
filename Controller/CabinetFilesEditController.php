@@ -190,6 +190,57 @@ class CabinetFilesEditController extends CabinetsAppController {
 	}
 
 	/**
+	 * add method
+	 *
+	 * @return void
+	 */
+	public function add_folder() {
+		$this->set('isEdit', false);
+
+		$cabinetFile = $this->CabinetFile->getNew();
+		$this->set('cabinetFile', $cabinetFile);
+
+		if ($this->request->is('post')) {
+			$this->CabinetFile->create();
+			$this->request->data['CabinetFile']['cabinet_key'] = ''; // https://github.com/NetCommons3/NetCommons3/issues/7 対策
+
+			// set status folderは常に公開
+			$status = WorkflowComponent::STATUS_PUBLISHED;
+			$this->request->data['CabinetFile']['status'] = $status;
+
+			// set cabinet_id
+			$this->request->data['CabinetFile']['cabinet_id'] = $this->_cabinet['Cabinet']['id'];
+			// set language_id
+			$this->request->data['CabinetFile']['language_id'] = $this->viewVars['languageId'];
+			// is_folderセット
+			$this->request->data['CabinetFile']['is_folder'] = 1;
+			// TODO parent_idのセット
+			//$this->request->data['CabinetFileTree']['parent_id'] = null;
+			$this->request->data['CabinetFileTree']['cabinet_key'] = $this->_cabinet['Cabinet']['key'];
+
+			if (($result = $this->CabinetFile->saveFile(Current::read('Block.id'), Current::read('Frame.id'), $this->request->data))) {
+				$url = NetCommonsUrl::actionUrl(
+					array(
+						'controller' => 'cabinet_files',
+						'action' => 'folder_detail',
+						'block_id' => Current::read('Block.id'),
+						'frame_id' => Current::read('Frame.id'),
+						'key' => $result['CabinetFile']['key'])
+				);
+				return $this->redirect($url);
+			}
+
+			$this->NetCommons->handleValidationError($this->CabinetFile->validationErrors);
+
+		} else {
+			$this->request->data = $cabinetFile;
+			$this->request->data['CabinetFileTree']['parent_id'] = Hash::get($this->request->named, 'parent_id', null);
+		}
+
+		$this->render('folder_form');
+	}
+
+	/**
 	 * edit method
 	 *
 	 * @throws NotFoundException
@@ -262,12 +313,20 @@ class CabinetFilesEditController extends CabinetsAppController {
 		$this->set('cabinetFile', $cabinetFile);
 		$this->set('isDeletable', $this->CabinetFile->canDeleteWorkflowContent($cabinetFile));
 
-		$comments = $this->CabinetFile->getCommentsByContentKey($cabinetFile['CabinetFile']['key']);
-		$this->set('comments', $comments);
-
 		$this->render('folder_form');
 	}
 
+
+	public function select_folder() {
+		$this->viewClass = 'View';
+		$this->layout = 'NetCommons.modal';
+		//レイアウトの設定
+		//if ($this->request->is('ajax')) {
+		//	$this->Components->unload('PageLayout');
+		//	$this->viewClass = 'View';
+		//	$this->layout = 'NetCommons.modal';
+		//}
+	}
 
 	/**
  * delete method

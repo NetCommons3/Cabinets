@@ -269,6 +269,16 @@ class CabinetFile extends CabinetsAppModel {
 				throw new InternalErrorException(__d('net_commons', 'Internal Server Error'));
 			}
 
+			$count = $this->CabinetFileTree->find('count',['conditions' => ['cabinet_file_key' => $data[$this->alias]['key']]]);
+			if($count == 0){
+				// TODO キャビネットIDからキャビネットkeyをえる？ コントローラに渡してもらう？
+				// $data['CabinetFileTree']['parent_id'], $data['CabinetFileTree']['cabinet_key']まではコントローラマターにするか
+				$this->CabinetFileTree->create();
+				$data['CabinetFileTree']['cabinet_file_key'] = $savedData[$this->alias]['key'];
+				// TODO 例外処理
+				$this->CabinetFileTree->save($data);
+			}
+
 			$this->commit();
 			return $savedData;
 

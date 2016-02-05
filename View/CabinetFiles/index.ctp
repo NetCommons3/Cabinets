@@ -57,14 +57,23 @@ echo $this->Html->script(
 	<div class="pull-left">
 		<?php echo $this->element('file_path'); ?>
 	</div>
+
 	<div class="pull-right">
 		<?php if (Current::permission('content_creatable')) : ?>
 			<div class="pull-right" style="margin-left: 10px;">
 				<?php
+				if(count($folderPath) > 0){
+					// フォルダ
+					$parentId = $folderPath[count($folderPath) - 1]['CabinetFileTree']['id'];
+				}else{
+					$parentId = null;
+				}
+
 				$addUrl = $this->NetCommonsHtml->url(array(
 					'controller' => 'cabinet_files_edit',
-					'action' => 'add',
-					'frame_id' => Current::read('Frame.id')
+					'action' => 'add_folder',
+					'frame_id' => Current::read('Frame.id'),
+					'parent_id' => $parentId,
 				));
 				echo $this->Button->addLink('<span class="glyphicon glyphicon-folder-close" aria-hidden="true"></span>' . __d('cabinets', 'フォルダ') ,
 					$addUrl,

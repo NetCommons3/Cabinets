@@ -1,5 +1,20 @@
-<div class="cabinetFiles form">
+<?php echo $this->Html->script(
+	'/cabinets/js/cabinet_file_edit.js',
+	array(
+		'plugin' => false,
+		'once' => true,
+		'inline' => false
+	)
+); ?>
+
+<div class="cabinetFiles form" ng-controller="CabinetFile.edit" ng-init="init(
+	 <?php echo Current::read('Block.id') ?>,
+	 <?php echo Current::read('Frame.id') ?>
+	 )"
+	id="cabinetFileForm_<?php echo Current::read('Frame.id')?>"
+>
 	<article>
+		<input name="test" ng-model="parent_id" />
 		<h1>CABINET</h1>
 		<div class="panel panel-default">
 
@@ -38,6 +53,8 @@
 						<div>
 							<?php echo $this->element('file_path'); ?>
 							<?php //TODO フォルダ移動画面ポップアップへ ?>
+							<a href="#" ng-click="showFolderTree()">SHOW</a>
+							<?php echo $this->NetCommonsForm->input('CabinetFileTree.parent_id', ['type' => 'hidden']); ?>
 						</div>
 					</div>
 					<?php

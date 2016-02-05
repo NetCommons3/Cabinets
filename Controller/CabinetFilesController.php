@@ -178,20 +178,6 @@ class CabinetFilesController extends CabinetsAppController {
 
 		return;
 
-
-		$this->_prepare();
-		$this->set('filterDropDownLabel', __d('cabinets', 'All Files'));
-
-		$conditions = array();
-		$this->_filter['categoryId'] = $this->_getNamed('category_id', 0);
-		if ($this->_filter['categoryId']) {
-			$conditions['CabinetFile.category_id'] = $this->_filter['categoryId'];
-			$category = $this->Category->findById($this->_filter['categoryId']);
-			$this->set('listTitle', __d('cabinets', 'Category') . ':' . $category['Category']['name']);
-			$this->set('filterDropDownLabel', $category['Category']['name']);
-		}
-
-		$this->_list($conditions);
 	}
 
 
@@ -242,9 +228,6 @@ class CabinetFilesController extends CabinetsAppController {
  * @return void
  */
 	protected function _list($extraConditions = array()) {
-		$this->set('currentCategoryId', $this->_filter['categoryId']);
-
-		$this->set('currentYearMonth', $this->_filter['yearMonth']);
 
 		//$this->_setYearMonthOptions();
 
