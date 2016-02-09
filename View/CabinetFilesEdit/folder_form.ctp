@@ -26,7 +26,7 @@ echo $this->Html->script(
 		 id="cabinetFileForm_<?php echo Current::read('Frame.id')?>"
 	>
 		<article>
-			<h1>CABINET</h1>
+			<h1><?php echo $cabinet['Cabinet']['name'] ?></h1>
 			<div class="panel panel-default">
 
 				<?php echo $this->NetCommonsForm->create(
@@ -72,7 +72,6 @@ echo $this->Html->script(
 								<?php
 								$this->NetCommonsForm->unlockField('CabinetFileTree.parent_id');
 								echo $this->NetCommonsForm->input('CabinetFileTree.parent_id', ['type' => 'hidden', 'ng-value' => 'parent_id']); ?>
-								{{parent_id}}
 							</div>
 						</div>
 						<?php
