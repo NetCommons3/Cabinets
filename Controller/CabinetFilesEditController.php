@@ -359,6 +359,16 @@ class CabinetFilesEditController extends CabinetsAppController {
 		}
 	}
 
+	public function get_folder_path() {
+		$treeId = Hash::get($this->request->named, 'tree_id', null);
+		$folderPath = $this->CabinetFileTree->getPath($treeId, null, 0);
+		//foreach($folderPath as &$folder){
+		//	$folder['url'] =
+		//}
+		$this->set('folderPath', $folderPath);
+		$this->set('_serialize', ['folderPath']);
+	}
+
 	/**
  * delete method
  *

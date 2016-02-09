@@ -103,7 +103,7 @@ class CabinetsFolderTreeHelper extends AppHelper {
 						'key' => $folder['CabinetFile']['key']
 					]);
 				}
-				$link = $this->NetCommonsHtml->link($folder['CabinetFile']['filename'], $url, ['ng-click' => 'select()']);
+				$link = $this->NetCommonsHtml->link($folder['CabinetFile']['filename'], $url, ['ng-click' => 'select('.$folder['CabinetFileTree']['id'].')']);
 				echo $this->Html->tag('li',
 					$tree . $arrowIcon . $folderIcon . $link,
 					$options

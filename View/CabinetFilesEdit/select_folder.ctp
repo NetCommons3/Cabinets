@@ -38,5 +38,3 @@ $currentFolderTree = array_map('intval', $currentFolderTree);
 
 	?>
 </ul>
-
-<button ng-click="select(<?php echo Current::read('Frame.id'); ?>)">SELECT</button>
