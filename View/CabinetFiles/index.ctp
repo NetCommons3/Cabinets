@@ -134,7 +134,6 @@ echo $this->Html->script(
 				<th>名前</th>
 				<th class="hidden-sm hidden-xs"><?php echo __d('cabinets', 'サイズ') ?></th>
 				<th>最終更新</th>
-				<th class="hidden-md hidden-sm hidden-xs"><?php echo __d('cabinets', 'ダウンロード回数'); ?></th>
 				<th></th>
 
 			</tr>
@@ -173,12 +172,16 @@ echo $this->Html->script(
 							$icon = '<span class="glyphicon glyphicon-file" aria-hidden="true"></span>';
 							echo $this->NetCommonsHtml->link($icon . h($cabinetFile['CabinetFile']['filename']), ['action' => 'download', 'key' => $cabinetFile['CabinetFile']['key']], ['escape' => false]);
 							?>
+
 						<?php endif ?>
+						<span class="badge">
+						<?php echo $cabinetFile['CabinetFile']['download_count'] ?>
+						</span>
 
 					</td>
 					<td class="hidden-sm hidden-xs"><?php echo $this->Number->toReadableSize($cabinetFile['CabinetFile']['size']) ?></td>
 					<td><?php echo $this->Date->dateFormat($cabinetFile['CabinetFile']['modified']) ?> <?php echo $cabinetFile['TrackableUpdater']['username'] ?></td>
-					<td class="hidden-md hidden-sm hidden-xs"><?php echo $cabinetFile['CabinetFile']['download_count'] ?></td>
+
 					<td>
 						<?php
 						if ($cabinetFile['CabinetFile']['is_folder']) {
