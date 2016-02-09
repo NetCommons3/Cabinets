@@ -79,9 +79,11 @@ NetCommonsApp.controller('CabinetFile.edit',
             $scope.baseUrl + '/cabinets/cabinet_files_edit/select_folder/' + CabinetsShareValue.blockId + '/parent_tree_id:'+CabinetsShareValue.parent_id+'?frame_id=' + CabinetsShareValue.frameId
         );
         modal.result.then(function(parentId){
+          console.log(parentId);
           $scope.parent_id = parentId;
+
           // 親ツリーIDが変更されたので、パス情報を取得しなおす。
-          // TODO Ajax json形式でパス情報を取得する
+          //  Ajax json形式でパス情報を取得する
 
           var url = $scope.baseUrl + '/cabinets/cabinet_files_edit/get_folder_path/' + CabinetsShareValue.blockId + '/tree_id:'+$scope.parent_id+'?frame_id=' + CabinetsShareValue.frameId
 

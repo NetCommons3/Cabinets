@@ -271,10 +271,13 @@ class CabinetFile extends CabinetsAppModel {
 
 			$count = $this->CabinetFileTree->find('count',['conditions' => ['cabinet_file_key' => $data[$this->alias]['key']]]);
 			if($count == 0){
-				// TODO キャビネットIDからキャビネットkeyをえる？ コントローラに渡してもらう？
-				// $data['CabinetFileTree']['parent_id'], $data['CabinetFileTree']['cabinet_key']まではコントローラマターにするか
+				// 新規保存
 				$this->CabinetFileTree->create();
 				$data['CabinetFileTree']['cabinet_file_key'] = $savedData[$this->alias]['key'];
+				// TODO 例外処理
+				$this->CabinetFileTree->save($data);
+			}else{
+				// update
 				// TODO 例外処理
 				$this->CabinetFileTree->save($data);
 			}

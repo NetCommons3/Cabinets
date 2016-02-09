@@ -69,7 +69,10 @@ echo $this->Html->script(
 										'移動'
 									); ?></a>
 
-								<?php echo $this->NetCommonsForm->input('CabinetFileTree.parent_id', ['type' => 'hidden', 'ng-model' => 'parent_id']); ?>
+								<?php
+								$this->NetCommonsForm->unlockField('CabinetFileTree.parent_id');
+								echo $this->NetCommonsForm->input('CabinetFileTree.parent_id', ['type' => 'hidden', 'ng-value' => 'parent_id']); ?>
+								{{parent_id}}
 							</div>
 						</div>
 						<?php

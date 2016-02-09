@@ -214,7 +214,6 @@ class CabinetFilesEditController extends CabinetsAppController {
 			$this->request->data['CabinetFile']['language_id'] = $this->viewVars['languageId'];
 			// is_folderセット
 			$this->request->data['CabinetFile']['is_folder'] = 1;
-			// TODO parent_idのセット
 			//$this->request->data['CabinetFileTree']['parent_id'] = null;
 			$this->request->data['CabinetFileTree']['cabinet_key'] = $this->_cabinet['Cabinet']['key'];
 
@@ -236,6 +235,20 @@ class CabinetFilesEditController extends CabinetsAppController {
 			$this->request->data = $cabinetFile;
 			$this->request->data['CabinetFileTree']['parent_id'] = Hash::get($this->request->named, 'parent_id', null);
 		}
+
+		$parentId = $this->request->data['CabinetFileTree']['parent_id'];
+		if($parentId > 0){
+			$folderPath = $this->CabinetFileTree->getPath($parentId, null, 0);
+		}else{
+			$folderPath = [];
+		}
+
+		$folderPath[] = [
+				'CabinetFile' => [
+					'filename' => __d('cabinets', '新規フォルダ')
+				]
+			];
+		$this->set('folderPath', $folderPath);
 
 		$this->render('folder_form');
 	}
@@ -266,7 +279,7 @@ class CabinetFilesEditController extends CabinetsAppController {
 		$folderPath = $this->CabinetFileTree->getPath($treeId, null, 0);
 		$this->set('folderPath', $folderPath);
 
-
+debug($cabinetFile);
 		if ($this->request->is(array('post', 'put'))) {
 
 			$this->CabinetFile->create();
@@ -281,7 +294,7 @@ class CabinetFilesEditController extends CabinetsAppController {
 			// set language_id
 			$this->request->data['CabinetFile']['language_id'] = $this->viewVars['languageId'];
 
-			$data = $this->request->data;
+			$data = Hash::merge($cabinetFile, $this->request->data);
 
 			unset($data['CabinetFile']['id']); // 常に新規保存
 
