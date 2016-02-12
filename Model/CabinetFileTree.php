@@ -22,7 +22,7 @@ class CabinetFileTree extends CabinetsAppModel {
 /**
  * @var int recursiveはデフォルトアソシエーションなしに
  */
-	public $recursive = -1;
+	public $recursive = 0;
 
 /**
  * use behaviors

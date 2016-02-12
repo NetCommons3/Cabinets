@@ -146,6 +146,9 @@ class CabinetFilesController extends CabinetsAppController {
 		$conditions = $this->CabinetFile->getWorkflowConditions($conditions);
 		// TODO ソート順変更
 		$files = $this->CabinetFile->find('all', ['conditions' => $conditions, 'order' => 'filename ASC']);
+		foreach($files as &$file){
+			$file['CabinetFile']['size'] = $this->CabinetFile->getTotalSizeByFolder($file);
+		}
 		$this->set('cabinetFiles', $files);
 
 		// カレントフォルダのツリーパスを得る
@@ -190,6 +193,10 @@ class CabinetFilesController extends CabinetsAppController {
 		];
 		$conditions = $this->CabinetFile->getWorkflowConditions($conditions);
 		$cabinetFile = $this->CabinetFile->find('first', ['conditions' => $conditions]);
+
+		$cabinetFile['CabinetFile']['size'] = $this->CabinetFile->getTotalSizeByFolder($cabinetFile);
+		//$cabinetFile['CabinetFile']['size'] =
+
 		$this->set('cabinetFile', $cabinetFile);
 
 		$this->_setFolderPath($cabinetFile);

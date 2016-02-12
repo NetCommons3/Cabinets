@@ -69,6 +69,14 @@ class CabinetFile extends CabinetsAppModel {
 			'fields' => '',
 			'order' => ''
 		),
+		'Cabinet' => array(
+			'type' => 'INNER',
+			'className' => 'Cabinets.Cabinet',
+			'foreignKey' => false,
+			'conditions' => 'CabinetFile.cabinet_id=Cabinet.id',
+			'fields' => '',
+			'order' => ''
+		),
 	);
 
 /**
@@ -338,6 +346,35 @@ class CabinetFile extends CabinetsAppModel {
 		);
 		$count = $this->find('count', array('conditions' => $conditions));
 		return ($count == 0);
+	}
+
+
+	public function getTotalSizeByFolder($folder) {
+		// ベタパターン
+		// 配下全てのファイルを取得する
+		//$this->CabinetFileTree->setup(]);
+		$cabinetKey = $folder['Cabinet']['key'];
+		//$this->CabinetFileTree->Behaviors->unload('Tree');
+		//$this->CabinetFileTree->Behaviors->load('Tree', ['scope' => ['CabinetFileTree.cabinet_key' => $cabinetKey]]);
+		//$files = $this->CabinetFileTree->children($folder['CabinetFileTree']['id']);
+		$conditions = [
+			'CabinetFileTree.cabinet_key' => $cabinetKey,
+			'CabinetFileTree.lft >' => $folder['CabinetFileTree']['lft'],
+			'CabinetFileTree.rght <' => $folder['CabinetFileTree']['rght'],
+			'CabinetFile.is_folder' => false,
+		];
+		$files = $this->find('all', ['conditions' => $conditions]);
+		$total = 0;
+		foreach($files as $file){
+
+			$total += Hash::get($file, 'UploadFile.file.size', 0);
+		}
+		return $total;
+		//$list = $this->CabinetFileTree->generateTreeList($conditions, 'cabinet_file_key');
+
+		// 全てのファイルのサイズを集計する。
+
+		// sumパターンはUploadFileの構造をしらないと厳しい… がんばってsumするより合計サイズをキャッシュした方がいいかも
 	}
 
 /**
