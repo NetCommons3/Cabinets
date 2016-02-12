@@ -183,6 +183,7 @@ echo $this->Html->script(
 								echo $icon;
 								echo $this->NetCommonsHtml->link(h($cabinetFile['CabinetFile']['filename']), ['action' => 'download', 'key' => $cabinetFile['CabinetFile']['key']], ['escape' => false]);
 								?>
+							<?php echo $this->Workflow->label($cabinetFile['CabinetFile']['status']); ?>
 						<span class="badge">
 						<?php echo $cabinetFile['UploadFile']['file']['download_count'] ?>
 						</span>

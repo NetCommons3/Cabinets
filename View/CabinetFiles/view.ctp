@@ -30,7 +30,9 @@ echo $this->Html->script(
 <?php endif ?>
 <dl class="dl-horizontal">
 	<dt><?php echo __d('cabinets', 'ファイル名'); ?></dt>
-	<dd><?php echo $cabinetFile['CabinetFile']['filename']; ?></dd>
+	<dd><?php echo $cabinetFile['CabinetFile']['filename']; ?>
+			<?php echo $this->Workflow->label($cabinetFile['CabinetFile']['status']); ?>
+	</dd>
 
 	<dt><?php echo __d('cabinets', 'パス'); ?></dt>
 	<dd><?php echo $this->element('file_path'); ?></dd>
