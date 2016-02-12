@@ -75,7 +75,8 @@ echo $this->Html->script(
 				$addUrl = $this->NetCommonsHtml->url(array(
 					'controller' => 'cabinet_files_edit',
 					'action' => 'add',
-					'frame_id' => Current::read('Frame.id')
+					'frame_id' => Current::read('Frame.id'),
+					'parent_id' => $parentId,
 				));
 				echo $this->Button->addLink('<span class="glyphicon glyphicon-file" aria-hidden="true"></span>' . __d('cabinets', 'ファイル'),
 					$addUrl,
@@ -120,7 +121,7 @@ echo $this->Html->script(
 			<tr>
 				<th>名前</th>
 				<th class="hidden-sm hidden-xs"><?php echo __d('cabinets', 'サイズ') ?></th>
-				<th>最終更新</th>
+				<th><?php echo __d('cabinets', '最終更新'); ?></th>
 				<th></th>
 
 			</tr>
