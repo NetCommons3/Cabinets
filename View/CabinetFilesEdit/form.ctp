@@ -1,147 +1,136 @@
 <?php echo $this->Html->script(
-	'/cabinets/js/cabinets.js',
+	'/cabinets/js/cabinet_file_edit.js',
 	array(
 		'plugin' => false,
 		'once' => true,
 		'inline' => false
 	)
 ); ?>
-<?php echo $this->element('NetCommons.datetimepicker'); ?>
 <?php
-// 編集用
 echo $this->Html->script(
-	array(
-		'/tags/js/tags.js',
-		'/cabinets/js/cabinets_file_edit.js',
-		'/net_commons/js/wysiwyg.js',
-	),
+	'/cabinets/js/cabinets.js',
 	array(
 		'plugin' => false,
 		'once' => true,
 		'inline' => false
 	)
 );
-//$this->request->data['CabinetFile']['flag'] = 0;
 ?>
-<?php
-$dataJson = json_encode(
-	$this->NetCommonsTime->toUserDatetimeArray($this->request->data, array('publish_start'))
-);
-?>
-<div class="cabinetFiles form" ng-controller="Cabinets" ng-init="init(<?php echo h($dataJson) ?>)">
-	<article>
-		<h1>CABINET</h1>
-		<div class="panel panel-default">
+<div ng-controller="Cabinets" ng-init="init(
+	 <?php echo Current::read('Block.id') ?>,
+	 <?php echo Current::read('Frame.id') ?>
+	 )">
+	<div class="cabinetFiles form" ng-controller="CabinetFile.edit" ng-init="init(
+	 <?php echo Hash::get($this->request->data, 'CabinetFileTree.parent_id', 0); ?>
+	 )"
+		 id="cabinetFileForm_<?php echo Current::read('Frame.id')?>"
+	>
+		<article>
+			<h1><?php echo $cabinet['Cabinet']['name'] ?></h1>
+			<div class="panel panel-default">
 
-			<?php echo $this->NetCommonsForm->create(
-				'CabinetFile',
-				array(
-					'inputDefaults' => array(
-						'div' => 'form-group',
-						'class' => 'form-control',
-						'error' => false,
-					),
-					'div' => 'form-control',
-					'novalidate' => true,
-					'type' => 'file',
-				)
-			);
-			echo $this->Form->input('flag', ['type' => 'hidden']);
-			$this->NetCommonsForm->unlockField('Tag');
-			?>
-			<?php echo $this->NetCommonsForm->input('key', array('type' => 'hidden')); ?>
-			<?php echo $this->NetCommonsForm->input('key', array('type' => 'hidden')); ?>
+				<?php echo $this->NetCommonsForm->create(
+					'CabinetFile',
+					array(
+						'inputDefaults' => array(
+							'div' => 'form-group',
+							'class' => 'form-control',
+							'error' => false,
+						),
+						'div' => 'form-control',
+						'novalidate' => true,
+						'type' => 'file',
+					)
+				);
+				?>
+				<?php echo $this->NetCommonsForm->input('key', array('type' => 'hidden')); ?>
+				<?php echo $this->NetCommonsForm->input('is_folder', array('type' => 'hidden')); ?>
 
-			<div class="panel-body">
+				<div class="panel-body">
 
-				<fieldset>
+					<fieldset>
 
-					<?php
-					echo $this->NetCommonsForm->input(
-						'title',
-						array(
-							'label' => __d('cabinets', 'Title'),
-							'required' => 'required',
-						)
-					);
-					?>
-					<?php echo $this->NetCommonsForm->wysiwyg('CabinetFile.body1', array(
-						'label' => __d('cabinets', 'Body1'),
-						'required' => true,
-					));?>
+						<?php
+						echo $this->NetCommonsForm->input(
+							'filename',
+							array(
+								'label' => __d('cabinets', 'ファイル名'),
+								'required' => 'required',
+							)
+						);
+						?>
+						<?php  echo $this->NetCommonsForm->uploadFile('file', ['label' => __d('cabinets', 'ファイル'), 'remove' => false])?>
 
-					<label><input type="checkbox" ng-model="writeBody2"/><?php echo __d('cabinets', 'Write body2') ?>
-					</label>
+						<div class="form-group">
+						<input type="checkbox" ng-model="use_auth_key"/><?php echo __d('cabinets', 'ダウンロードパスワードを設定する');?>
+						<div ng-show="use_auth_key">
+							<?php echo $this->element('AuthorizationKeys.edit_form', ['options' => [
+								'label' => __d('cabinets', 'パスワード')],
+							]) ?>
+						</div>
+						</div>
 
-					<div class="form-group" ng-show="writeBody2">
-					<?php echo $this->NetCommonsForm->wysiwyg('CabinetFile.body2', array(
-						'label' => __d('cabinets', 'Body2'),
-					));?>
-					</div>
+						<div class="form-group">
+							<?php echo $this->NetCommonsForm->label('parent_id', __d('cabinets', 'パス')); ?>
+							<div>
+								<?php echo $this->element('file_path'); ?>
 
-					<?php
-					echo $this->NetCommonsForm->uploadFile('foo_photo');
-					?>
+								<a href="#" class="btn btn-default" ng-click="showFolderTree()"><span class="glyphicon glyphicon-move" aria-hidden="true"></span><?php echo __d(
+										'cabinets',
+										'移動'
+									); ?></a>
 
-					<?php
-					echo $this->NetCommonsForm->uploadFile('CabinetFile.pdf', ['help' => 'PDFを選ぶぺん']);
-					?>
+								<?php
+								$this->NetCommonsForm->unlockField('CabinetFileTree.parent_id');
+								echo $this->NetCommonsForm->input('CabinetFileTree.parent_id', ['type' => 'hidden', 'ng-value' => 'parent_id']); ?>
+							</div>
+						</div>
+						<?php
+						echo $this->NetCommonsForm->input(
+							'description',
+							array(
+								'label' => __d('cabinets', '説明'),
+								'required' => 'required',
+							)
+						);
+						?>
 
-					<?php
-					echo $this->NetCommonsForm->input('publish_start',
-						array(
-							'type' => 'datetime',
-							'required' => 'required',
-							'label' => __d('cabinets', 'Published datetime')));
-					?>
-					<?php echo $this->Category->select('CabinetFile.category_id', array('empty' => true)); ?>
+					</fieldset>
 
-					<?php echo $this->element(
-						'Tags.tag_form',
-						array(
-							'tagData' => isset($this->request->data['Tag']) ? $this->request->data['Tag'] : array(),
-							'modelName' => 'CabinetFile',
-						)
-					); ?>
+					<hr/>
+					<?php echo $this->Workflow->inputComment('CabinetFile.status'); ?>
 
-				</fieldset>
+				</div>
 
-				<hr/>
-				<?php echo $this->Workflow->inputComment('CabinetFile.status'); ?>
 
-			</div>
+					<?php echo $this->Workflow->buttons('CabinetFile.status'); ?>
 
-			<div class="panel-footer" style="text-align: center">
-				<?php echo $this->Workflow->buttons('CabinetFile.status'); ?>
-			</div>
+				<?php echo $this->NetCommonsForm->end() ?>
+				<?php if ($isEdit && $isDeletable) : ?>
+					<div  class="panel-footer" style="text-align: right;">
+						<?php echo $this->NetCommonsForm->create('CabinetFile',
+							array(
+								'type' => 'delete',
+								'url' => $this->NetCommonsHtml->url(
+									array('controller' => 'cabinet_files_edit', 'action' => 'delete', 'frame_id' => Current::read('Frame.id')))
+							)
+						) ?>
+						<?php echo $this->NetCommonsForm->input('key', array('type' => 'hidden')); ?>
 
-			<?php echo $this->NetCommonsForm->end() ?>
-			<?php if ($isEdit && $isDeletable) : ?>
-				<div  class="panel-footer" style="text-align: right;">
-					<?php echo $this->NetCommonsForm->create('CabinetFile',
-						array(
-							'type' => 'delete',
-							'url' => $this->NetCommonsHtml->url(
-								array('controller' => 'cabinet_files_edit', 'action' => 'delete', 'frame_id' => Current::read('Frame.id')))
-						)
-					) ?>
-					<?php echo $this->NetCommonsForm->input('key', array('type' => 'hidden')); ?>
-
-					<span class="nc-tooltip" tooltip="<?php echo __d('net_commons', 'Delete'); ?>">
+						<span class="nc-tooltip" tooltip="<?php echo __d('net_commons', 'Delete'); ?>">
 						<button class="btn btn-danger" onClick="return confirm('<?php echo __d('net_commons', 'Deleting the %s. Are you sure to proceed?', __d('cabinets', 'CabinetFile')) ?>')"><span class="glyphicon glyphicon-trash"> </span></button>
 
 
 					</span>
-					<?php echo $this->NetCommonsForm->end() ?>
-				</div>
-			<?php endif ?>
 
-		</div>
 
-		<?php echo $this->Workflow->comments(); ?>
+						<?php echo $this->NetCommonsForm->end() ?>
+					</div>
+				<?php endif ?>
 
-	</article>
+			</div>
+		</article>
+
+	</div>
 
 </div>
-
-

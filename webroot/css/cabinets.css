@@ -1,3 +1,44 @@
+.cabinets__folder-tree__folder{
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+.cabinets__folder-tree__folder .glyphicon-hdd {
+    margin-right: 0.5em;
+}
+.cabinets__folder-tree__folder .glyphicon-folder-close {
+    margin-right: 0.5em;
+}
+.cabinets__folder-tree__folder .glyphicon-folder-open {
+    margin-right: 0.5em;
+}
+
+.cabinets-folder-tree li.list-group-item{
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+/*.cabinets__folder-tree__folder:hover{*/
+/*background: #ccc;*/
+/*}*/
+.cabinets__folder-tree-toggle{
+    cursor: pointer;
+}
+span.cabinets-nest{
+    margin-left: 15px;
+}
+
+span.cabinets__file-list-icon{
+    margin-right: 1em;
+}
+
+.cabinets__index__file-path{
+    margin-bottom: 15px;
+}
+
+
+/* この下つかってないかも */
+
 .cabinets_cabinetTitle {
     margin-top: 0px;
     margin-bottom: 20px;

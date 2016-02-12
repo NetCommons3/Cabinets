@@ -42,7 +42,7 @@ echo $this->Html->script(
 ?>
 <h1 class="cabinets_cabinetTitle"><?php echo h($cabinet['Cabinet']['name']) ?></h1>
 <div class="clearfix">
-	<div class="pull-left">
+	<div class="pull-left cabinets__index__file-path">
 		<?php echo $this->element('file_path'); ?>
 	</div>
 
@@ -87,37 +87,24 @@ echo $this->Html->script(
 </div>
 
 
-<style>
-	.cabinets__folder-tree__folder{
-		overflow: hidden;
-		white-space: nowrap;
-		text-overflow: ellipsis;
-	}
-	.cabinets-folder-tree li.list-group-item{
-		overflow: hidden;
-		white-space: nowrap;
-		text-overflow: ellipsis;
-	}
-	/*.cabinets__folder-tree__folder:hover{*/
-		/*background: #ccc;*/
-	/*}*/
-	.cabinets__folder-tree-toggle{
-		cursor: pointer;
-	}
-	span.cabinets-nest{
-		margin-left: 15px;
-	}
-</style>
 <div class="row">
-	<div class="col-md-3 hidden-sm hidden-xs cabinets-folder-tree inline" ng-controller="Cabinets.FolderTree" ng-init="init(<?php echo json_encode($currentFolderTree)?>)">
-		<ul class="list-group">
-			<li class="list-group-item ">
+	<div class="col-md-3 hidden-sm hidden-xs cabinets-folder-tree inline" ng-controller="Cabinets.FolderTree" ng-init="init(<?php echo json_encode($currentFolderTree)?>)" >
+		<ul class="list-group" ng-cloak>
+			<?php if ($currentTreeId > 0): ?>
+			<li class="list-group-item cabinets__folder-tree__folder">
 				<?php
-				echo $this->NetCommonsHtml->link('<span class="glyphicon glyphicon-hdd" aria-hidden="true"></span>' . h($cabinet['Cabinet']['name']), NetCommonsUrl::backToIndexUrl(), ['escape' => false]);
+				echo '<span class="glyphicon glyphicon-hdd" aria-hidden="true"></span>';
+				echo $this->NetCommonsHtml->link( h($cabinet['Cabinet']['name']), NetCommonsUrl::backToIndexUrl(), ['escape' => false]);
 				?>
 			</li>
+			<?php else:?>
+			<li class="list-group-item active cabinets__folder-tree__folder">
+				<?php
+				echo '<span class="glyphicon glyphicon-hdd" aria-hidden="true"></span>' . h($cabinet['Cabinet']['name']);
+				?>
+			</li>
+			<?php endif ?>
 			<?php
-
 
 			$this->CabinetsFolderTree->render($folders, $currentTreeId);
 
@@ -158,22 +145,16 @@ echo $this->Html->script(
 			<?php endif ?>
 
 			<?php foreach ($cabinetFiles as $cabinetFile): ?>
+				<?php if ($cabinetFile['CabinetFile']['is_folder']) :?>
 				<tr>
 					<td>
-						<?php if ($cabinetFile['CabinetFile']['is_folder']) :?>
 
 							<?php
-							$icon = '<span class="glyphicon glyphicon-folder-close" aria-hidden="true"></span>';
-							echo $this->NetCommonsHtml->link($icon . h($cabinetFile['CabinetFile']['filename']), ['key' => $cabinetFile['CabinetFile']['key']], ['escape' => false]);
+							$icon = '<span class="glyphicon glyphicon-folder-close cabinets__file-list-icon" aria-hidden="true"></span>';
+							echo $icon;
+							echo $this->NetCommonsHtml->link(h($cabinetFile['CabinetFile']['filename']), ['key' => $cabinetFile['CabinetFile']['key']], ['escape' => false]);
 							?>
 
-						<?php else: ?>
-							<?php
-							$icon = '<span class="glyphicon glyphicon-file" aria-hidden="true"></span>';
-							echo $this->NetCommonsHtml->link($icon . h($cabinetFile['CabinetFile']['filename']), ['action' => 'download', 'key' => $cabinetFile['CabinetFile']['key']], ['escape' => false]);
-							?>
-
-						<?php endif ?>
 						<span class="badge">
 						<?php echo $cabinetFile['CabinetFile']['download_count'] ?>
 						</span>
@@ -184,14 +165,9 @@ echo $this->Html->script(
 
 					<td>
 						<?php
-						if ($cabinetFile['CabinetFile']['is_folder']) {
 							// link folder_detail
 							$detailUrl = $this->NetCommonsHtml->url(['action' => 'folder_detail', 'key' => $cabinetFile['CabinetFile']['key']]);
 							//$detailUrl = NetCommonsUrl::actionUrl(['action' => 'folder_detail', 'key' => $cabinetFile['CabinetFile']['key']]);
-						}else{
-							// link file_detail
-							$detailUrl = $this->NetCommonsHtml->url(['action' => 'file_detail', 'key' => $cabinetFile['CabinetFile']['key']]);
-						}
 						?>
 
 						<a href="<?php echo $detailUrl ?>" class="btn btn-default">
@@ -200,6 +176,36 @@ echo $this->Html->script(
 
 					</td>
 				</tr>
+				<?php else:?>
+					<?php // File ?>
+					<tr>
+						<td>
+								<?php
+								$icon = '<span class="glyphicon glyphicon-file text-primary cabinets__file-list-icon" aria-hidden="true"></span>';
+								echo $icon;
+								echo $this->NetCommonsHtml->link(h($cabinetFile['CabinetFile']['filename']), ['action' => 'download', 'key' => $cabinetFile['CabinetFile']['key']], ['escape' => false]);
+								?>
+							<span class="badge">
+						<?php echo $cabinetFile['UploadFile']['file']['download_count'] ?>
+						</span>
+
+						</td>
+						<td class="hidden-sm hidden-xs"><?php echo $this->Number->toReadableSize($cabinetFile['UploadFile']['file']['size']) ?></td>
+						<td><?php echo $this->Date->dateFormat($cabinetFile['CabinetFile']['modified']) ?> <?php echo $cabinetFile['TrackableUpdater']['username'] ?></td>
+
+						<td>
+							<?php
+								// link file_detail
+								$detailUrl = $this->NetCommonsHtml->url(['action' => 'view', 'key' => $cabinetFile['CabinetFile']['key']]);
+							?>
+
+							<a href="<?php echo $detailUrl ?>" class="btn btn-default">
+								<span class="glyphicon glyphicon-info-sign aria-hidden="true"></span>
+							</a>
+
+						</td>
+					</tr>
+				<?php endif ?>
 			<?php endforeach ?>
 
 			</tbody>

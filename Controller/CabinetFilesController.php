@@ -263,85 +263,34 @@ class CabinetFilesController extends CabinetsAppController {
  * @return void
  */
 	public function view() {
-		$this->_prepare();
+		// TODO ファイルでなければエラー
+		$folderKey = isset($this->request->params['pass'][1]) ? $this->request->params['pass'][1] : null;
+		$conditions = [
+			'CabinetFile.key' => $folderKey,
+			'CabinetFile.cabinet_id' => $this->_cabinet['Cabinet']['id']
+		];
+		$conditions = $this->CabinetFile->getWorkflowConditions($conditions);
+		$cabinetFile = $this->CabinetFile->find('first', ['conditions' => $conditions]);
+		$this->set('cabinetFile', $cabinetFile);
 
-		//$key = $this->request->params['named']['key'];
-		$key = $this->params['pass'][1];
-
-		$conditions = $this->CabinetFile->getConditions(
-			Current::read('Block.id'),
-			$this->Auth->user('id'),
-			$this->_getPermission(),
-			$this->_getCurrentDateTime()
-		);
-
-		$conditions['CabinetFile.key'] = $key;
-
-		$options = array(
-			'conditions' => $conditions,
-			'recursive' => 0,
-			'fields' => array(
-				'*',
-				'ContentCommentCnt.cnt',
-			)
-		);
-		$this->CabinetFile->Behaviors->load('ContentComments.ContentComment');
-		$cabinetFile = $this->CabinetFile->find('first', $options);
-		$this->CabinetFile->Behaviors->unload('ContentComments.ContentComment');
-		if ($cabinetFile) {
-			$this->set('cabinetFile', $cabinetFile);
-			// tag取得
-			//$cabinetTags = $this->CabinetTag->getTagsByFileId($cabinetFile['CabinetFile']['id']);
-			//$this->set('cabinetTags', $cabinetTags);
-
-			// コメントを利用する
-			if ($this->_cabinetSetting['CabinetSetting']['use_comment']) {
-				if ($this->request->isPost()) {
-					// コメントする
-					if (!$this->ContentComments->comment('cabinets', $cabinetFile['CabinetFile']['key'], $this->_cabinetSetting['CabinetSetting']['use_comment_approval'])) {
-						$this->throwBadRequest();
-						return;
-					}
-				}
-
-				// コンテンツコメントの取得
-				$contentComments = $this->ContentComment->getContentComments(array(
-					//'block_key' => $this->viewVars['blockKey'],
-					'block_key' => Current::read('Block.key'),
-					'plugin_key' => 'cabinets',
-					'content_key' => $cabinetFile['CabinetFile']['key'],
-				));
-				$contentComments = $this->camelizeKeyRecursive($contentComments);
-				$this->set('contentComments', $contentComments);
-			}
-
-		} else {
-			// 表示できないファイルへのアクセスなら404
-			throw new NotFoundException(__('Invalid cabinet file'));
-		}
+		$this->_setFolderPath($cabinetFile);
 	}
 
 	public function download() {
 		// ここから元コンテンツを取得する処理
-		$this->_prepare();
-		$key = $this->params['pass'][1];
-		$conditions = $this->CabinetFile->getConditions(
-			Current::read('Block.id'),
-			$this->Auth->user('id'),
-			$this->_getPermission(),
-			$this->_getCurrentDateTime()
-		);
-
-		$conditions['CabinetFile.key'] = $key;
-		$options = array(
-			'conditions' => $conditions,
-		);
-		$cabinetFile = $this->CabinetFile->find('first', $options);
+		$folderKey = isset($this->request->params['pass'][1]) ? $this->request->params['pass'][1] : null;
+		$conditions = [
+			'CabinetFile.key' => $folderKey,
+			'CabinetFile.cabinet_id' => $this->_cabinet['Cabinet']['id']
+		];
+		$conditions = $this->CabinetFile->getWorkflowConditions($conditions);
+		$cabinetFile = $this->CabinetFile->find('first', ['conditions' => $conditions]);
+		//$this->set('cabinetFile', $cabinetFile);
 		// ここまで元コンテンツを取得する処理
 
 		// ダウンロード実行
 		if ($cabinetFile) {
-			return $this->Download->doDownload($cabinetFile['CabinetFile']['id']);
+			return $this->Download->doDownload($cabinetFile['CabinetFile']['id'], ['field' => 'file', 'download' => true]);
 		} else {
 			// 表示できないファイルへのアクセスなら404
 			throw new NotFoundException(__('Invalid cabinet file'));

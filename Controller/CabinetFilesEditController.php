@@ -78,7 +78,7 @@ class CabinetFilesEditController extends CabinetsAppController {
  *
  * @return void
  */
-	public function add() {
+	public function _add() {
 		$this->set('isEdit', false);
 
 		$cabinetFile = $this->CabinetFile->getNew();
@@ -125,7 +125,7 @@ class CabinetFilesEditController extends CabinetsAppController {
  * @throws ForbiddenException
  * @return void
  */
-	public function edit() {
+	public function _edit() {
 		$this->set('isEdit', true);
 		//$key = $this->request->params['named']['key'];
 		$key = $this->params['pass'][1];
@@ -185,6 +185,147 @@ class CabinetFilesEditController extends CabinetsAppController {
 
 		$comments = $this->CabinetFile->getCommentsByContentKey($cabinetFile['CabinetFile']['key']);
 		$this->set('comments', $comments);
+
+		$this->render('form');
+	}
+
+	/**
+	 * add method
+	 *
+	 * @return void
+	 */
+	public function add() {
+		$this->set('isEdit', false);
+
+		$cabinetFile = $this->CabinetFile->getNew();
+		$this->set('cabinetFile', $cabinetFile);
+
+		if ($this->request->is('post')) {
+			$this->CabinetFile->create();
+			$this->request->data['CabinetFile']['cabinet_key'] = ''; // https://github.com/NetCommons3/NetCommons3/issues/7 対策
+
+			// set status folderは常に公開
+			$status = $this->Workflow->parseStatus();
+			$this->request->data['CabinetFile']['status'] = $status;
+
+			// set cabinet_id
+			$this->request->data['CabinetFile']['cabinet_id'] = $this->_cabinet['Cabinet']['id'];
+			// set language_id
+			$this->request->data['CabinetFile']['language_id'] = $this->viewVars['languageId'];
+			// is_folderセット
+			$this->request->data['CabinetFile']['is_folder'] = 0;
+			//$this->request->data['CabinetFileTree']['parent_id'] = null;
+			$this->request->data['CabinetFileTree']['cabinet_key'] = $this->_cabinet['Cabinet']['key'];
+
+			if (($result = $this->CabinetFile->saveFile(Current::read('Block.id'), Current::read('Frame.id'), $this->request->data))) {
+				$url = NetCommonsUrl::actionUrl(
+					array(
+						'controller' => 'cabinet_files',
+						'action' => 'folder_detail',
+						'block_id' => Current::read('Block.id'),
+						'frame_id' => Current::read('Frame.id'),
+						'key' => $result['CabinetFile']['key'])
+				);
+				return $this->redirect($url);
+			}
+
+			$this->NetCommons->handleValidationError($this->CabinetFile->validationErrors);
+
+		} else {
+			$this->request->data = $cabinetFile;
+			$this->request->data['CabinetFileTree']['parent_id'] = Hash::get($this->request->named, 'parent_id', null);
+		}
+
+		$parentId = $this->request->data['CabinetFileTree']['parent_id'];
+		if($parentId > 0){
+			$folderPath = $this->CabinetFileTree->getPath($parentId, null, 0);
+		}else{
+			$folderPath = [];
+		}
+
+		$folderPath[] = [
+			'CabinetFile' => [
+				'filename' => __d('cabinets', '新規フォルダ')
+			]
+		];
+		$this->set('folderPath', $folderPath);
+
+		$this->render('form');
+	}
+
+	/**
+	 * edit method
+	 *
+	 * @throws NotFoundException
+	 * @throws ForbiddenException
+	 * @return void
+	 */
+	public function edit() {
+		$this->set('isEdit', true);
+		//$key = $this->request->params['named']['key'];
+		$key = $this->params['pass'][1];
+
+		//  keyのis_latstを元に編集を開始
+		$cabinetFile = $this->CabinetFile->findByKeyAndIsLatest($key, 1);
+		if (empty($cabinetFile)) {
+			//  404 NotFound
+			throw new NotFoundException();
+		}
+		// フォルダならエラー
+		if ($cabinetFile['CabinetFile']['is_folder'] == true) {
+			throw new InternalErrorException();
+		}
+
+		$treeId = $cabinetFile['CabinetFileTree']['id'];
+		$folderPath = $this->CabinetFileTree->getPath($treeId, null, 0);
+		$this->set('folderPath', $folderPath);
+
+		if ($this->request->is(array('post', 'put'))) {
+
+			$this->CabinetFile->create();
+			//$this->request->data['CabinetFile']['cabinet_key'] = ''; // https://github.com/NetCommons3/NetCommons3/issues/7 対策
+
+			// set status folderは常に公開
+			$status = $this->Workflow->parseStatus();
+
+			$this->request->data['CabinetFile']['status'] = $status;
+
+			// set cabinet_id
+			$this->request->data['CabinetFile']['cabinet_id'] = $this->_cabinet['Cabinet']['id'];
+			// set language_id
+			$this->request->data['CabinetFile']['language_id'] = $this->viewVars['languageId'];
+
+			$data = Hash::merge($cabinetFile, $this->request->data);
+
+			unset($data['CabinetFile']['id']); // 常に新規保存
+
+			if ($this->CabinetFile->saveFile(Current::read('Block.id'), Current::read('Frame.id'), $data)) {
+				$url = NetCommonsUrl::actionUrl(
+					array(
+						'controller' => 'cabinet_files',
+						'action' => 'view',
+						'frame_id' => Current::read('Frame.id'),
+						'block_id' => Current::read('Block.id'),
+						'key' => $data['CabinetFile']['key']
+					)
+				);
+
+				return $this->redirect($url);
+			}
+
+			$this->NetCommons->handleValidationError($this->CabinetFile->validationErrors);
+
+		} else {
+
+			$this->request->data = $cabinetFile;
+			if ($this->CabinetFile->canEditWorkflowContent($cabinetFile) === false) {
+				throw new ForbiddenException(__d('net_commons', 'Permission denied'));
+			}
+
+		}
+
+		$this->set('cabinetFile', $cabinetFile);
+		$this->set('isDeletable', $this->CabinetFile->canDeleteWorkflowContent($cabinetFile));
 
 		$this->render('form');
 	}

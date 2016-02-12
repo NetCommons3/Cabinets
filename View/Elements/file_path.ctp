@@ -3,7 +3,7 @@ $_tmpFolderPath = $folderPath;
 $currentFile = array_pop($_tmpFolderPath);
 $encodedFolderPath = json_encode($_tmpFolderPath);
 ?>
-<span ng-controller="Cabinets.path" ng-init='init(<?php echo h($encodedFolderPath) ?>)'>
+<span ng-controller="Cabinets.path" ng-init='init(<?php echo h($encodedFolderPath) ?>)' ng-cloak>
 
 <?php
 // パンクズ

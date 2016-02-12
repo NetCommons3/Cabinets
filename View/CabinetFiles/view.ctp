@@ -1,26 +1,6 @@
-<?php echo $this->element('shared_header'); ?>
-
 <?php
-echo $this->Html->css(
-	'/cabinets/css/cabinets.css',
-	array(
-		'plugin' => false,
-		'once' => true,
-		'inline' => false
-	)
-); ?>
-<?php
-// Like
 echo $this->Html->script(
-	'/likes/js/likes.js',
-	array(
-		'plugin' => false,
-		'once' => true,
-		'inline' => false
-	)
-);
-echo $this->Html->css(
-	'/likes/css/style.css',
+	'/cabinets/js/cabinets.js',
 	array(
 		'plugin' => false,
 		'once' => true,
@@ -28,86 +8,88 @@ echo $this->Html->css(
 	)
 );
 ?>
-<?php echo $this->BackTo->pageLinkButton(__d('cabinets', 'Move list'), array('icon' => 'list')) ?>
-<div class="cabinets_file_status">
-	<?php echo $this->Workflow->label($cabinetFile['CabinetFile']['status']); ?>
+<div ng-controller="Cabinets" ng-init="init(
+	 <?php echo Current::read('Block.id') ?>,
+	 <?php echo Current::read('Frame.id') ?>
+	 )">
+
+	<?php if ($this->Workflow->canEdit('CabinetFile', $cabinetFile)) : ?>
+<div class="text-right">
+	<?php echo $this->Button->editLink('',
+		array(
+			'controller' => 'cabinet_files_edit',
+			'action' => 'edit',
+			'key' => $cabinetFile['CabinetFile']['key']
+		),
+		array(
+			'tooltip' => true,
+			'iconSize' => 'btn-xs'
+		)
+	); ?>
 </div>
+<?php endif ?>
+<dl class="dl-horizontal">
+	<dt><?php echo __d('cabinets', 'ファイル名'); ?></dt>
+	<dd><?php echo $cabinetFile['CabinetFile']['filename']; ?></dd>
 
-<article>
-	<h1><?php echo h($cabinetFile['CabinetFile']['title']); ?></h1>
+	<dt><?php echo __d('cabinets', 'パス'); ?></dt>
+	<dd><?php echo $this->element('file_path'); ?></dd>
 
-	<?php echo $this->element('file_meta_info'); ?>
+	<dt><?php echo __d('cabinets', 'サイズ'); ?></dt>
+	<dd><?php echo $this->Number->toReadableSize($cabinetFile['UploadFile']['file']['size']); ?></dd>
 
-	<div>
-		<?php echo $this->element('CabinetFiles/edit_link', array('status' => $cabinetFile['CabinetFile']['status'])); ?>
+	<dt><?php echo __d('cabinets', 'ダウンロードファイル名'); ?></dt>
+	<dd><?php echo $cabinetFile['UploadFile']['file']['original_name']; ?></dd>
+
+
+	<dt><?php echo __d('cabinets', 'ダウンロード回数'); ?></dt>
+	<dd><?php echo $cabinetFile['UploadFile']['file']['download_count']; ?></dd>
+
+	<dt><?php echo __d('cabinets', '説明'); ?></dt>
+	<dd><?php echo h($cabinetFile['CabinetFile']['description']); ?></dd>
+
+	<dt><?php echo __d('cabinets', '作成者'); ?></dt>
+	<dd><?php echo $this->DisplayUser->handleLink($cabinetFile, array('avatar' => true)); ?></dd>
+
+	<dt><?php echo __d('cabinets', '作成日時'); ?></dt>
+	<dd><?php echo $this->Date->dateFormat($cabinetFile['CabinetFile']['created']); ?></dd>
+
+	<dt><?php echo __d('cabinets', '更新者'); ?></dt>
+	<dd><?php echo $this->DisplayUser->handleLink($cabinetFile, array('avatar' => true), [], 'TrackableUpdater'); ?></dd>
+
+	<dt><?php echo __d('cabinets', '更新日時'); ?></dt>
+	<dd><?php echo $this->Date->dateFormat($cabinetFile['CabinetFile']['modified']); ?></dd>
+</dl>
+
+<div class="text-center">
+	<?php
+	//  ひとつ上の一覧へ戻す
+	if (count($folderPath) > 1) {
+		// 上の階層はフォルダ
+		$parentFolder = $folderPath[count($folderPath) - 2];
+		$url = [
+			'action' => 'index',
+			'key' => $parentFolder['CabinetFile']['key']
+		];
+
+	}else{
+		// 上の階層はキャビネット
+		$url = [
+			'action' => 'index'
+		];
+	}
+	echo $this->Html->link(
+		__d('cabinets', '一覧へ戻る'),
+		$this->NetCommonsHtml->url($url),
+		['class' => 'btn btn-default']
+	)
+	?>
+	<?php
+	echo $this->Html->link(
+		__d('cabinets', 'ダウンロード'),
+		$this->NetCommonsHtml->url(['action' => 'download', 'key' => $cabinetFile['CabinetFile']['key']]),
+		['class' => 'btn btn-primary']
+	)
+	?>
+</div>
 	</div>
-
-	<!-- Files -->
-	<div>
-		Image :
-		<?php echo $this->Html->image(
-				$this->NetCommonsHtml->url(
-						[
-							'action' => 'download',
-							'key' => $cabinetFile['CabinetFile']['key'],
-							'photo',
-							'big',
-						]
-				)
-		); ?>
-	</div>
-	<div>
-		PDF :
-		<?php echo $this->Html->link('PDF',
-				$this->NetCommonsHtml->url(
-						[
-							'action' => 'download_pdf',
-							'key' => $cabinetFile['CabinetFile']['key'],
-							'pdf',
-						]
-				)
-		); ?>
-	</div>
-
-
-
-	<div>
-		<?php echo $cabinetFile['CabinetFile']['body1']; ?>
-	</div>
-	<div>
-		<?php echo $cabinetFile['CabinetFile']['body2']; ?>
-	</div>
-
-	<?php echo $this->element('file_footer'); ?>
-
-	<!-- Tags -->
-	<?php if (isset($cabinetFile['Tag'])) : ?>
-	<div>
-		<?php echo __d('cabinets', 'tag'); ?>
-		<?php foreach ($cabinetFile['Tag'] as $cabinetTag): ?>
-			<?php echo $this->Html->link(
-				$cabinetTag['name'],
-				$this->NetCommonsHtml->url(array('controller' => 'cabinet_files', 'action' => 'tag', 'frame_id' => Current::read('Frame.id'), 'id' => $cabinetTag['id']))
-			); ?>&nbsp;
-		<?php endforeach; ?>
-	</div>
-	<?php endif ?>
-
-	<div>
-		<?php /* コンテンツコメント */ ?>
-		<div class="row">
-			<div class="col-xs-12">
-				<?php echo $this->element('ContentComments.index', array(
-					'pluginKey' => $this->request->params['plugin'],
-					'contentKey' => $cabinetFile['CabinetFile']['key'],
-					'isCommentApproved' => $cabinetSetting['use_comment_approval'],
-					'useComment' => $cabinetSetting['use_comment'],
-					'contentCommentCnt' => $cabinetFile['ContentCommentCnt']['cnt'],
-					'redirectUrl' => $this->NetCommonsHtml->url(array('plugin' => 'cabinets', 'controller' => 'cabinet_files', 'action' => 'view', 'frame_id' => Current::read('Frame.id'), 'key' => $cabinetFile['CabinetFile']['key'])),
-				)); ?>
-			</div>
-		</div>
-	</div>
-</article>
-
-
