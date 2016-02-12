@@ -35,11 +35,9 @@ echo $this->Html->script(
 	<dt><?php echo __d('cabinets', 'パス'); ?></dt>
 	<dd><?php echo $this->element('file_path'); ?></dd>
 
-	<dt><?php echo __d('cabinets', 'サイズ'); ?></dt>
-	<dd><?php echo $cabinetFile['CabinetFile']['size']; ?></dd>
+	<dt><?php echo __d('cabinets', '合計サイズ'); ?></dt>
+	<dd><?php echo $this->Number->toReadableSize($cabinetFile['CabinetFile']['size']); ?></dd>
 
-	<dt><?php echo __d('cabinets', 'ダウンロード回数'); ?></dt>
-	<dd><?php echo $cabinetFile['CabinetFile']['download_count']; ?></dd>
 
 	<dt><?php echo __d('cabinets', '説明'); ?></dt>
 	<dd><?php echo h($cabinetFile['CabinetFile']['description']); ?></dd>

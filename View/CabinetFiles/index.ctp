@@ -156,9 +156,6 @@ echo $this->Html->script(
 							echo $this->NetCommonsHtml->link(h($cabinetFile['CabinetFile']['filename']), ['key' => $cabinetFile['CabinetFile']['key']], ['escape' => false]);
 							?>
 
-						<span class="badge">
-						<?php echo $cabinetFile['CabinetFile']['download_count'] ?>
-						</span>
 
 					</td>
 					<td class="hidden-sm hidden-xs"><?php echo $this->Number->toReadableSize($cabinetFile['CabinetFile']['size']) ?></td>
@@ -186,7 +183,7 @@ echo $this->Html->script(
 								echo $icon;
 								echo $this->NetCommonsHtml->link(h($cabinetFile['CabinetFile']['filename']), ['action' => 'download', 'key' => $cabinetFile['CabinetFile']['key']], ['escape' => false]);
 								?>
-							<span class="badge">
+						<span class="badge">
 						<?php echo $cabinetFile['UploadFile']['file']['download_count'] ?>
 						</span>
 

@@ -245,7 +245,7 @@ class CabinetFilesEditController extends CabinetsAppController {
 
 		$folderPath[] = [
 			'CabinetFile' => [
-				'filename' => __d('cabinets', '新規フォルダ')
+				'filename' => __d('cabinets', '新規ファイル')
 			]
 		];
 		$this->set('folderPath', $folderPath);
