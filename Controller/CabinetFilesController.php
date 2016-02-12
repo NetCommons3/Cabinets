@@ -28,7 +28,6 @@ class CabinetFilesController extends CabinetsAppController {
 		'Cabinets.CabinetFileTree',
 		'Workflow.WorkflowComment',
 		'Categories.Category',
-		'ContentComments.ContentComment',	// コンテンツコメント
 	);
 
 /**
@@ -39,7 +38,6 @@ class CabinetFilesController extends CabinetsAppController {
 		'NetCommons.Token',
 		'NetCommons.BackTo',
 		'Workflow.Workflow',
-		'Likes.Like',
 		'Users.DisplayUser'
 	);
 
@@ -67,7 +65,6 @@ class CabinetFilesController extends CabinetsAppController {
 			),
 		),
 		'Categories.Categories',
-		'ContentComments.ContentComments',
 		'Files.Download',
 		'AuthorizationKeys.AuthorizationKey' => [
 			//'operationType' => AuthorizationKeyComponent::OPERATION_REDIRECT,
@@ -298,6 +295,28 @@ class CabinetFilesController extends CabinetsAppController {
 		// ダウンロード実行
 		if ($cabinetFile) {
 			return $this->Download->doDownload($cabinetFile['CabinetFile']['id'], ['field' => 'file', 'download' => true]);
+		} else {
+			// 表示できないファイルへのアクセスなら404
+			throw new NotFoundException(__('Invalid cabinet file'));
+		}
+	}
+
+
+	public function thumb() {
+		// ここから元コンテンツを取得する処理
+		$folderKey = isset($this->request->params['pass'][1]) ? $this->request->params['pass'][1] : null;
+		$conditions = [
+			'CabinetFile.key' => $folderKey,
+			'CabinetFile.cabinet_id' => $this->_cabinet['Cabinet']['id']
+		];
+		$conditions = $this->CabinetFile->getWorkflowConditions($conditions);
+		$cabinetFile = $this->CabinetFile->find('first', ['conditions' => $conditions]);
+		//$this->set('cabinetFile', $cabinetFile);
+		// ここまで元コンテンツを取得する処理
+
+		// ダウンロード実行
+		if ($cabinetFile) {
+			return $this->Download->doDownload($cabinetFile['CabinetFile']['id'], ['field' => 'file', 'size' => 'thumb']);
 		} else {
 			// 表示できないファイルへのアクセスなら404
 			throw new NotFoundException(__('Invalid cabinet file'));

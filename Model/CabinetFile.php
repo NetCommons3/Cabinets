@@ -50,7 +50,9 @@ class CabinetFile extends CabinetsAppModel {
 			//		),
 			//	//'contentKeyFieldName' => 'id'
 			//],
-			'file'
+			'file' => [
+				//'thumbnails' => false,
+			]
 		],
 			'AuthorizationKeys.AuthorizationKey',
 		);

@@ -221,7 +221,7 @@ class CabinetFilesEditController extends CabinetsAppController {
 				$url = NetCommonsUrl::actionUrl(
 					array(
 						'controller' => 'cabinet_files',
-						'action' => 'folder_detail',
+						'action' => 'view',
 						'block_id' => Current::read('Block.id'),
 						'frame_id' => Current::read('Frame.id'),
 						'key' => $result['CabinetFile']['key'])

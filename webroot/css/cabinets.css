@@ -30,13 +30,18 @@ span.cabinets-nest{
 
 span.cabinets__file-list-icon{
     margin-right: 1em;
+    font-size:20px;
 }
 
 .cabinets__index__file-path{
     margin-bottom: 15px;
 }
 
-
+.cabinets__thumb{
+    width:20px;
+    margin-right: 1em;
+    /*height: 20px;*/
+}
 /* この下つかってないかも */
 
 .cabinets_cabinetTitle {

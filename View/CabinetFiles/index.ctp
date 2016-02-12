@@ -65,7 +65,7 @@ echo $this->Html->script(
 				));
 				echo $this->Button->addLink('<span class="glyphicon glyphicon-folder-close" aria-hidden="true"></span>' . __d('cabinets', 'フォルダ') ,
 					$addUrl,
-					array('tooltip' => __d('cabinets', 'Add folder'), 'escapeTitle' => false));
+					array('tooltip' => __d('cabinets', 'Add folder'), 'escapeTitle' => false)); // TODO
 				?>
 			</div>
 		<?php endif ?>
@@ -80,7 +80,7 @@ echo $this->Html->script(
 				));
 				echo $this->Button->addLink('<span class="glyphicon glyphicon-file" aria-hidden="true"></span>' . __d('cabinets', 'ファイル'),
 					$addUrl,
-					array('tooltip' => __d('cabinets', 'Add file')));
+					array('tooltip' => __d('cabinets', 'Add file'), 'escapeTitle' => false));
 				?>
 			</div>
 		<?php endif ?>
@@ -179,7 +179,17 @@ echo $this->Html->script(
 					<tr>
 						<td>
 								<?php
-								$icon = '<span class="glyphicon glyphicon-file text-primary cabinets__file-list-icon" aria-hidden="true"></span>';
+								// TODO ビヘイビアに移動？
+								$thumbPath = WWW_ROOT . $cabinetFile['UploadFile']['file']['path'] . $cabinetFile['UploadFile']['file']['id'] . DS . 'thumb_' . $cabinetFile['UploadFile']['file']['real_file_name'];
+								if(file_exists($thumbPath)){
+									$url = $this->NetCommonsHtml->url([
+										'action' => 'thumb',
+										'key' => $cabinetFile['CabinetFile']['key'],
+									]);
+									$icon = $this->Html->image($url, ['class' => 'cabinets__thumb']);
+								}else{
+									$icon = '<span class="glyphicon glyphicon-file text-primary cabinets__file-list-icon" aria-hidden="true"></span>';
+								}
 								echo $icon;
 								echo $this->NetCommonsHtml->link(h($cabinetFile['CabinetFile']['filename']), ['action' => 'download', 'key' => $cabinetFile['CabinetFile']['key']], ['escape' => false]);
 								?>
