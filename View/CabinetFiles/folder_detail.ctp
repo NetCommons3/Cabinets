@@ -1,4 +1,13 @@
 <?php
+echo $this->Html->css(
+	'/cabinets/css/cabinets.css',
+	array(
+		'plugin' => false,
+		'once' => true,
+		'inline' => false
+	)
+); ?>
+<?php
 echo $this->Html->script(
 	'/cabinets/js/cabinets.js',
 	array(
@@ -28,31 +37,45 @@ echo $this->Html->script(
 	); ?>
 </div>
 <?php endif ?>
-<dl class="dl-horizontal">
+<dl>
 	<dt><?php echo __d('cabinets', 'ファイル名'); ?></dt>
-	<dd><?php echo $cabinetFile['CabinetFile']['filename']; ?></dd>
+	<dd class="form-control nc-data-label"><?php echo $cabinetFile['CabinetFile']['filename']; ?></dd>
 
 	<dt><?php echo __d('cabinets', 'パス'); ?></dt>
-	<dd><?php echo $this->element('file_path'); ?></dd>
+	<dd class="form-control nc-data-label"><?php echo $this->element('file_path'); ?></dd>
 
 	<dt><?php echo __d('cabinets', '合計サイズ'); ?></dt>
-	<dd><?php echo $this->Number->toReadableSize($cabinetFile['CabinetFile']['size']); ?></dd>
+	<dd class="form-control nc-data-label"><?php echo $this->Number->toReadableSize(
+			$cabinetFile['CabinetFile']['size']
+		); ?></dd>
 
 
 	<dt><?php echo __d('cabinets', '説明'); ?></dt>
-	<dd><?php echo h($cabinetFile['CabinetFile']['description']); ?></dd>
+	<dd class="form-control nc-data-label"><?php echo h($cabinetFile['CabinetFile']['description']); ?></dd>
 
 	<dt><?php echo __d('cabinets', '作成者'); ?></dt>
-	<dd><?php echo $this->DisplayUser->handleLink($cabinetFile, array('avatar' => true)); ?></dd>
+	<dd class="form-control nc-data-label"><?php echo $this->DisplayUser->handleLink(
+			$cabinetFile,
+			array('avatar' => true)
+		); ?></dd>
 
 	<dt><?php echo __d('cabinets', '作成日時'); ?></dt>
-	<dd><?php echo $this->Date->dateFormat($cabinetFile['CabinetFile']['created']); ?></dd>
+	<dd class="form-control nc-data-label"><?php echo $this->Date->dateFormat(
+			$cabinetFile['CabinetFile']['created']
+		); ?></dd>
 
 	<dt><?php echo __d('cabinets', '更新者'); ?></dt>
-	<dd><?php echo $this->DisplayUser->handleLink($cabinetFile, array('avatar' => true), [], 'TrackableUpdater'); ?></dd>
+	<dd class="form-control nc-data-label"><?php echo $this->DisplayUser->handleLink(
+			$cabinetFile,
+			array('avatar' => true),
+			[],
+			'TrackableUpdater'
+		); ?></dd>
 
 	<dt><?php echo __d('cabinets', '更新日時'); ?></dt>
-	<dd><?php echo $this->Date->dateFormat($cabinetFile['CabinetFile']['modified']); ?></dd>
+	<dd class="form-control nc-data-label"><?php echo $this->Date->dateFormat(
+			$cabinetFile['CabinetFile']['modified']
+		); ?></dd>
 </dl>
 
 <div class="text-center">

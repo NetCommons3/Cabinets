@@ -420,7 +420,6 @@ class CabinetFilesEditController extends CabinetsAppController {
 		$folderPath = $this->CabinetFileTree->getPath($treeId, null, 0);
 		$this->set('folderPath', $folderPath);
 
-debug($cabinetFile);
 		if ($this->request->is(array('post', 'put'))) {
 
 			$this->CabinetFile->create();
@@ -580,7 +579,6 @@ debug($cabinetFile);
 		$this->CabinetFile->attachFile($data, 'pdf', $path2);
 
 		$savedData = $this->CabinetFile->findById($data['CabinetFile']['id']);
-		debug($savedData);
 	}
 
 	public function temporary_download() {

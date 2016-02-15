@@ -30,7 +30,7 @@ span.cabinets-nest{
 
 span.cabinets__file-list-icon{
     margin-right: 1em;
-    font-size:20px;
+    /*font-size:20px;*/
 }
 
 .cabinets__index__file-path{
@@ -41,6 +41,9 @@ span.cabinets__file-list-icon{
     width:20px;
     margin-right: 1em;
     /*height: 20px;*/
+}
+.cabinets__detail-label{
+    font-weight: bold;
 }
 /* この下つかってないかも */
 
