@@ -32,7 +32,7 @@ class CabinetBlocksController extends CabinetsAppController {
  * @var array
  */
 	public $uses = array(
-		'Cabinets.CabinetFrameSetting',
+		//'Cabinets.CabinetFrameSetting',
 		'Blocks.Block',
 	);
 
@@ -129,7 +129,7 @@ class CabinetBlocksController extends CabinetsAppController {
 		} else {
 			//表示処理(初期データセット)
 			$this->request->data = $this->Cabinet->createCabinet();
-			$this->request->data = Hash::merge($this->request->data, $this->CabinetFrameSetting->getCabinetFrameSetting(true));
+			//$this->request->data = Hash::merge($this->request->data, $this->CabinetFrameSetting->getCabinetFrameSetting(true));
 			$this->request->data['Frame'] = Current::read('Frame');
 		}
 	}
@@ -154,7 +154,7 @@ class CabinetBlocksController extends CabinetsAppController {
 				return false;
 			}
 			$this->request->data = Hash::merge($this->request->data, $cabinet);
-			$this->request->data = Hash::merge($this->request->data, $this->CabinetFrameSetting->getCabinetFrameSetting(true));
+			//$this->request->data = Hash::merge($this->request->data, $this->CabinetFrameSetting->getCabinetFrameSetting(true));
 			$this->request->data['Frame'] = Current::read('Frame');
 		}
 	}

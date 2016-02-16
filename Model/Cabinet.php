@@ -134,13 +134,13 @@ class Cabinet extends CabinetsAppModel {
 			}
 		}
 
-		if (isset($this->data['CabinetFrameSetting']) && ! $this->data['CabinetFrameSetting']['id']) {
-			$this->CabinetFrameSetting->set($this->data['CabinetFrameSetting']);
-			if (! $this->CabinetFrameSetting->validates()) {
-				$this->validationErrors = Hash::merge($this->validationErrors, $this->CabinetFrameSetting->validationErrors);
-				return false;
-			}
-		}
+		//if (isset($this->data['CabinetFrameSetting']) && ! $this->data['CabinetFrameSetting']['id']) {
+		//	$this->CabinetFrameSetting->set($this->data['CabinetFrameSetting']);
+		//	if (! $this->CabinetFrameSetting->validates()) {
+		//		$this->validationErrors = Hash::merge($this->validationErrors, $this->CabinetFrameSetting->validationErrors);
+		//		return false;
+		//	}
+		//}
 	}
 
 /**
@@ -165,11 +165,11 @@ class Cabinet extends CabinetsAppModel {
 		}
 
 		//CabinetFrameSetting登録
-		if (isset($this->CabinetFrameSetting->data['CabinetFrameSetting']) && ! $this->CabinetFrameSetting->data['CabinetFrameSetting']['id']) {
-			if (! $this->CabinetFrameSetting->save(null, false)) {
-				throw new InternalErrorException(__d('net_commons', 'Internal Server Error'));
-			}
-		}
+		//if (isset($this->CabinetFrameSetting->data['CabinetFrameSetting']) && ! $this->CabinetFrameSetting->data['CabinetFrameSetting']['id']) {
+		//	if (! $this->CabinetFrameSetting->save(null, false)) {
+		//		throw new InternalErrorException(__d('net_commons', 'Internal Server Error'));
+		//	}
+		//}
 
 		parent::afterSave($created, $options);
 	}
@@ -246,7 +246,7 @@ class Cabinet extends CabinetsAppModel {
 		$this->loadModels([
 			'Cabinet' => 'Cabinets.Cabinet',
 			'CabinetSetting' => 'Cabinets.CabinetSetting',
-			'CabinetFrameSetting' => 'Cabinets.CabinetFrameSetting',
+			//'CabinetFrameSetting' => 'Cabinets.CabinetFrameSetting',
 		]);
 
 		//トランザクションBegin

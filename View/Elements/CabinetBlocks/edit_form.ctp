@@ -15,9 +15,9 @@
 <?php echo $this->Form->hidden('Cabinet.id'); ?>
 <?php echo $this->Form->hidden('Cabinet.key'); ?>
 <?php echo $this->Form->hidden('CabinetSetting.id'); ?>
-<?php echo $this->Form->hidden('CabinetFrameSetting.id'); ?>
-<?php echo $this->Form->hidden('CabinetFrameSetting.frame_key'); ?>
-<?php echo $this->Form->hidden('CabinetFrameSetting.articles_per_page'); ?>
+<?php //echo $this->Form->hidden('CabinetFrameSetting.id'); ?>
+<?php //echo $this->Form->hidden('CabinetFrameSetting.frame_key'); ?>
+<?php //echo $this->Form->hidden('CabinetFrameSetting.articles_per_page'); ?>
 <?php //echo $this->Form->hidden('CabinetFrameSetting.comments_per_page'); ?>
 
 <?php echo $this->NetCommonsForm->input('Cabinet.name', array(
