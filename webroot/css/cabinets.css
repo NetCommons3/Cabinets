@@ -42,9 +42,21 @@ span.cabinets__file-list-icon{
     margin-right: 1em;
     /*height: 20px;*/
 }
+dl.cabinets__detail dd{
+    margin-bottom: 15px;
+}
 .cabinets__detail-label{
     font-weight: bold;
 }
+
+.cabinets__index__size{
+    white-space: nowrap;
+}
+.cabinets__index__modified{
+    white-space: nowrap;
+
+}
+
 /* この下つかってないかも */
 
 .cabinets_cabinetTitle {

@@ -120,9 +120,8 @@ echo $this->Html->script(
 			<thead>
 			<tr>
 				<th>名前</th>
-				<th class="hidden-sm hidden-xs"><?php echo __d('cabinets', 'サイズ') ?></th>
-				<th><?php echo __d('cabinets', '最終更新'); ?></th>
-				<th></th>
+				<th class="cabinets__index__size hidden-sm hidden-xs"><?php echo __d('cabinets', 'サイズ') ?></th>
+				<th class="cabinets__index__modified" colspan="2"><?php echo __d('cabinets', '最終更新'); ?></th>
 
 			</tr>
 			</thead>
@@ -140,7 +139,6 @@ echo $this->Html->script(
 				</td>
 				<td class="hidden-sm hidden-xs"></td>
 				<td></td>
-				<td class="hidden-md hidden-sm hidden-xs"></td>
 				<td></td>
 			</tr>
 			<?php endif ?>
@@ -158,7 +156,7 @@ echo $this->Html->script(
 
 
 					</td>
-					<td class="hidden-sm hidden-xs"><?php echo $this->Number->toReadableSize($cabinetFile['CabinetFile']['size']) ?></td>
+					<td class="cabinets__index__size  hidden-sm hidden-xs"><?php echo $this->Number->toReadableSize($cabinetFile['CabinetFile']['size']) ?></td>
 					<td><?php echo $this->Date->dateFormat($cabinetFile['CabinetFile']['modified']) ?> <?php echo $cabinetFile['TrackableUpdater']['username'] ?></td>
 
 					<td>
