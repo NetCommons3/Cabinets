@@ -29,7 +29,7 @@ echo $this->Html->script(
 </div>
 <?php endif ?>
 <dl class="cabinets__detail">
-	<dt><?php echo __d('cabinets', 'ファイル名'); ?></dt>
+	<dt><?php echo __d('cabinets', 'タイトル'); ?></dt>
 	<dd  class="form-control nc-data-label" ><?php echo $cabinetFile['CabinetFile']['filename']; ?>
 			<?php echo $this->Workflow->label($cabinetFile['CabinetFile']['status']); ?>
 	</dd>

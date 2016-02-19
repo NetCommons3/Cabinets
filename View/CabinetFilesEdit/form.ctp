@@ -54,7 +54,7 @@ echo $this->Html->script(
 						echo $this->NetCommonsForm->input(
 							'filename',
 							array(
-								'label' => __d('cabinets', 'ファイル名'),
+								'label' => __d('cabinets', 'タイトル'),
 								'required' => 'required',
 							)
 						);

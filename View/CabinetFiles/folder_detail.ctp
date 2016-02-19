@@ -43,7 +43,7 @@ echo $this->Html->script(
 </div>
 <?php endif ?>
 <dl class="cabinets__detail">
-	<dt><?php echo __d('cabinets', 'ファイル名'); ?></dt>
+	<dt><?php echo __d('cabinets', 'フォルダ名'); ?></dt>
 	<dd class="form-control nc-data-label"><?php echo $cabinetFile['CabinetFile']['filename']; ?></dd>
 
 	<dt><?php echo __d('cabinets', 'パス'); ?></dt>
