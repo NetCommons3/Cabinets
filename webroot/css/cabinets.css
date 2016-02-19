@@ -60,8 +60,20 @@ dl.cabinets__detail dd{
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
-    width:300px;
 }
+/* Extra small */
+@media (max-width: 768px) {
+    .cabinets__index__description {
+        width:200px;
+    }
+}
+/* Small */
+@media (min-width: 768px) {
+    .cabinets__index__description {
+        width:300px;
+    }
+}
+
 /* この下つかってないかも */
 
 .cabinets_cabinetTitle {
