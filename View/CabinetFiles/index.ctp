@@ -63,9 +63,11 @@ echo $this->Html->script(
 					'frame_id' => Current::read('Frame.id'),
 					'parent_id' => $parentId,
 				));
-				echo $this->Button->addLink('<span class="glyphicon glyphicon-folder-close" aria-hidden="true"></span>' . __d('cabinets', 'フォルダ') ,
-					$addUrl,
-					array('tooltip' => __d('cabinets', 'Add folder'), 'escapeTitle' => false)); // TODO
+				if (Current::permission('content_editable')){
+					echo $this->Button->addLink('<span class="glyphicon glyphicon-folder-close" aria-hidden="true"></span>' . __d('cabinets', 'フォルダ') ,
+						$addUrl,
+						array('tooltip' => __d('cabinets', 'Add folder'), 'escapeTitle' => false));
+				}
 				?>
 			</div>
 		<?php endif ?>

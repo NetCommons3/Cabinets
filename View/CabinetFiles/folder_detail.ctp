@@ -24,17 +24,22 @@ echo $this->Html->script(
 
 	<?php if ($this->Workflow->canEdit('CabinetFile', $cabinetFile)) : ?>
 <div class="text-right">
-	<?php echo $this->Button->editLink('',
-		array(
-			'controller' => 'cabinet_files_edit',
-			'action' => 'edit_folder',
-			'key' => $cabinetFile['CabinetFile']['key']
-		),
-		array(
-			'tooltip' => true,
-			'iconSize' => 'btn-xs'
-		)
-	); ?>
+	<?php
+	if (Current::permission('content_editable')) {
+		echo $this->Button->editLink(
+			'',
+			array(
+				'controller' => 'cabinet_files_edit',
+				'action' => 'edit_folder',
+				'key' => $cabinetFile['CabinetFile']['key']
+			),
+			array(
+				'tooltip' => true,
+				'iconSize' => 'btn-xs'
+			)
+		);
+	}
+	?>
 </div>
 <?php endif ?>
 <dl class="cabinets__detail">

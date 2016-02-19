@@ -38,6 +38,7 @@ class CabinetFilesEditController extends CabinetsAppController {
 			//アクセスの権限
 			'allow' => array(
 				'add,edit,delete' => 'content_creatable',
+				'add_folder,edit_folder' => 'content_editable', // フォルダの作成・編集は編集権限以上
 			),
 		),
 		'Workflow.Workflow',
@@ -402,6 +403,8 @@ class CabinetFilesEditController extends CabinetsAppController {
 	 * @return void
 	 */
 	public function edit_folder() {
+
+
 		$this->set('isEdit', true);
 		//$key = $this->request->params['named']['key'];
 		$key = $this->params['pass'][1];
