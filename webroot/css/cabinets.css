@@ -56,7 +56,12 @@ dl.cabinets__detail dd{
     white-space: nowrap;
 
 }
-
+.cabinets__index__description{
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    width:300px;
+}
 /* この下つかってないかも */
 
 .cabinets_cabinetTitle {

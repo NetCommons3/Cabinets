@@ -152,6 +152,7 @@ echo $this->Html->script(
 							$icon = '<span class="glyphicon glyphicon-folder-close cabinets__file-list-icon" aria-hidden="true"></span>';
 							echo $icon;
 							echo $this->NetCommonsHtml->link(h($cabinetFile['CabinetFile']['filename']), ['key' => $cabinetFile['CabinetFile']['key']], ['escape' => false]);
+							echo $this->Html->div('cabinets__index__description text-muted', $cabinetFile['CabinetFile']['description'])
 							?>
 
 
@@ -167,7 +168,7 @@ echo $this->Html->script(
 						?>
 
 						<a href="<?php echo $detailUrl ?>" class="btn btn-default">
-							<span class="glyphicon glyphicon-info-sign aria-hidden="true"></span>
+							<span class="glyphicon glyphicon-option-vertical aria-hidden="true"></span>
 						</a>
 
 					</td>
@@ -196,9 +197,10 @@ echo $this->Html->script(
 						<span class="badge ">
 						<?php echo $cabinetFile['UploadFile']['file']['download_count'] ?>
 						</span>
+						<?php echo $this->Html->div('cabinets__index__description text-muted', $cabinetFile['CabinetFile']['description'])?>
 
 
-						</td>
+							</td>
 						<td class="hidden-sm hidden-xs"><?php echo $this->Number->toReadableSize($cabinetFile['UploadFile']['file']['size']) ?></td>
 						<td><?php echo $this->Date->dateFormat($cabinetFile['CabinetFile']['modified']) ?> <?php echo $cabinetFile['TrackableUpdater']['username'] ?></td>
 
@@ -209,7 +211,7 @@ echo $this->Html->script(
 							?>
 
 							<a href="<?php echo $detailUrl ?>" class="btn btn-default">
-								<span class="glyphicon glyphicon-info-sign aria-hidden="true"></span>
+								<span class="glyphicon glyphicon-option-vertical aria-hidden="true"></span>
 							</a>
 
 						</td>

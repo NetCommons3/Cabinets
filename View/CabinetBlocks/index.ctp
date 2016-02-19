@@ -32,7 +32,7 @@
 					<?php echo $this->Paginator->sort('Cabinet.name', __d('cabinets', 'Cabinet name')); ?>
 				</th>
 				<th class="text-right">
-					<?php echo $this->Paginator->sort('Cabinet.size', __d('cabinets', 'Size')); ?>
+					<?php echo $this->Paginator->sort('Cabinet.total_size', __d('cabinets', 'Size')); ?>
 				</th>
 				<th>
 					<?php echo $this->Paginator->sort('Block.modified', __d('net_commons', 'Updated date')); ?>
@@ -49,7 +49,7 @@
 						<?php echo $this->NetCommonsHtml->editLink($cabinet['Cabinet']['name'], array('block_id' => $cabinet['Block']['id'])); ?>
 					</td>
 					<td class="text-right">
-						<?php echo h($cabinet['Cabinet']['size']); ?>
+						<?php echo $this->Number->toReadableSize($cabinet['Cabinet']['total_size']); ?>
 					</td>
 					<td>
 						<?php echo $this->Date->dateFormat($cabinet['Block']['modified']); ?>
