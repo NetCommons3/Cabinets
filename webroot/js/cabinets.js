@@ -34,6 +34,50 @@ NetCommonsApp.controller('Cabinets',
 
     }]
 );
+
+NetCommonsApp.controller('CabinetFile.index',
+    ['$scope', '$filter', 'NetCommonsModal', 'CabinetsShareValue', '$http', function($scope, $filter, NetCommonsModal, CabinetsShareValue, $http) {
+      //$scope.init = function(parentId) {
+      //  $scope.parent_id = parentId;
+      //}
+
+      $scope.moveFile = function() {
+        var modal = NetCommonsModal.show(
+            $scope, 'CabinetFile.edit.selectFolder',
+            $scope.baseUrl + '/cabinets/cabinet_files_edit/select_folder/' + CabinetsShareValue.blockId + '/parent_tree_id:'+CabinetsShareValue.parent_id+'?frame_id=' + CabinetsShareValue.frameId
+        );
+        modal.result.then(function(parentId){
+          console.log(parentId);
+          $scope.parent_id = parentId;
+
+          // 親ツリーIDが変更されたので、パス情報を取得しなおす。
+          //  Ajax json形式でパス情報を取得する
+
+          var url = $scope.baseUrl + '/cabinets/cabinet_files_edit/get_folder_path/' + CabinetsShareValue.blockId + '/tree_id:'+$scope.parent_id+'?frame_id=' + CabinetsShareValue.frameId
+
+          $http({
+            url: url,
+            method: 'GET'
+          })
+              .success(function (data, status, headers, config) {
+                var result = [];
+                angular.forEach(data['folderPath'], function(value, key){
+                  value['url'] = $scope.baseUrl + '/cabinets/cabinet_files/index/' + $scope.blockId + '/'+ value.CabinetFile.key +'?frame_id=' + $scope.frameId
+
+                  result[key] = value;
+                })
+                $scope.folderPath = result;
+              })
+              .error(function (data, status, headers, config) {
+                // TODO エラー処理
+                ;
+              });
+        })
+      };
+
+    }]
+);
+
 NetCommonsApp.controller('CabinetFile.addFile',
     ['$scope', '$filter', 'NetCommonsModal', 'CabinetsShareValue', '$http', function($scope, $filter, NetCommonsModal, CabinetsShareValue, $http) {
       $scope.init = function(parentId) {
@@ -122,6 +166,7 @@ NetCommonsApp.controller('CabinetFile.edit',
     ['$scope', '$filter', 'NetCommonsModal', 'CabinetsShareValue', '$http', function($scope, $filter, NetCommonsModal, CabinetsShareValue, $http) {
       $scope.init = function(parentId) {
         $scope.parent_id = parentId;
+        CabinetsShareValue.parent_id = parentId;
       }
 
       $scope.showFolderTree = function() {
@@ -179,7 +224,6 @@ NetCommonsApp.controller('CabinetFile.edit.selectFolder',
       }
     }]
 );
-
 
 
 

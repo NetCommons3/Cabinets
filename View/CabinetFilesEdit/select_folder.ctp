@@ -33,7 +33,6 @@ $currentFolderTree = array_map('intval', $currentFolderTree);
 	</li>
 	<?php
 
-
 	$this->CabinetsFolderTree->renderSelectFolderTree($folders, $currentTreeId );
 
 	?>

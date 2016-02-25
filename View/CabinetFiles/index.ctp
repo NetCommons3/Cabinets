@@ -44,6 +44,17 @@ echo $this->Html->script(
 		$(function () {
 			$('.cabinets__index__description').popover({html:true})
 		})
+		// popover外クリックでpopoverを閉じる
+		$('body').on('click', function (e) {
+			$('[data-toggle="popover"]').each(function () {
+				//the 'is' for buttons that trigger popups
+				//the 'has' for icons within a button that triggers a popup
+				if (!$(this).is(e.target) && $(this).has(e.target).length === 0 && $('.popover').has(e.target).length === 0) {
+					$(this).popover('hide');
+				}
+			});
+		});
+
 	</script>
 <h1 class="cabinets_cabinetTitle"><?php echo h($cabinet['Cabinet']['name']) ?></h1>
 <div class="clearfix">
@@ -71,7 +82,7 @@ echo $this->Html->script(
 				if (Current::permission('content_editable')){
 					echo $this->Button->addLink('<span class="glyphicon glyphicon-folder-close" aria-hidden="true"></span>' . __d('cabinets', 'フォルダ') ,
 						$addUrl,
-						array('tooltip' => __d('cabinets', 'Add folder'), 'escapeTitle' => false));
+						array('tooltip' => __d('cabinets', 'Add folder'), 'escapeTitle' => false, 'escape' => false));
 				}
 				?>
 			</div>
@@ -87,7 +98,7 @@ echo $this->Html->script(
 				));
 				echo $this->Button->addLink('<span class="glyphicon glyphicon-file" aria-hidden="true"></span>' . __d('cabinets', 'ファイル'),
 					'#',
-					array('tooltip' => __d('cabinets', 'Add file'), 'ng-click' => 'addFile()', 'escapeTitle' => false));
+					array('tooltip' => __d('cabinets', 'Add file'), 'ng-click' => 'addFile()', 'escapeTitle' => false, 'escape' => false));
 				?>
 			</div>
 		<?php endif ?>
@@ -123,7 +134,7 @@ echo $this->Html->script(
 
 	</div>
 	<div class="col-md-9 inline">
-		<table class="table">
+		<table class="table" ng-controller="CabinetFile.index" >
 			<thead>
 			<tr>
 				<th>名前</th>
@@ -182,10 +193,13 @@ echo $this->Html->script(
 
 						<div class="dropdown">
 							<button class="btn btn-default dropdown-toggle" type="button" id="cabinets__file-<?php echo $cabinetFile['CabinetFile']['id']?>" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-								<span class="glyphicon glyphicon-option-vertical aria-hidden="true"></span>
+								<span class="glyphicon glyphicon-menu-hamburger aria-hidden="true"></span>
 								<!--<span class="caret"></span>-->
 							</button>
 							<ul class="dropdown-menu dropdown-menu-right" aria-labelledby="cabinets__file-<?php echo $cabinetFile['CabinetFile']['id']?>">
+								<li>
+									<?php echo $this->NetCommonsHtml->link(__d('cabinets', '詳細'), ['controller' => 'cabinet_files', 'action' => 'folder_detail', 'key' => $cabinetFile['CabinetFile']['key']]);?>
+								</li>
 								<li><a href="#"><?php echo __d('cabinets', '移動'); ?></a></li>
 								<li>
 									<?php echo $this->NetCommonsHtml->link(__d('cabinets', '編集'), ['controller' => 'cabinet_files_edit', 'action' => 'edit_folder', 'key' => $cabinetFile['CabinetFile']['key']]);?>
@@ -236,11 +250,14 @@ echo $this->Html->script(
 						<td>
 							<div class="dropdown">
 								<button class="btn btn-default dropdown-toggle" type="button" id="cabinets__file-<?php echo $cabinetFile['CabinetFile']['id']?>" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-									<span class="glyphicon glyphicon-option-vertical aria-hidden="true"></span>
+									<span class="glyphicon glyphicon-menu-hamburger aria-hidden="true"></span>
 									<!--<span class="caret"></span>-->
 								</button>
 								<ul class="dropdown-menu dropdown-menu-right" aria-labelledby="cabinets__file-<?php echo $cabinetFile['CabinetFile']['id']?>">
-									<li><a href="#"><?php echo __d('cabinets', '移動'); ?></a></li>
+									<li>
+										<?php echo $this->NetCommonsHtml->link(__d('cabinets', '詳細'), ['controller' => 'cabinet_files', 'action' => 'view', 'key' => $cabinetFile['CabinetFile']['key']]);?>
+									</li>
+									<li><a href="#" ng-click="moveFile()"><?php echo __d('cabinets', '移動'); ?></a></li>
 									<li>
 										<?php echo $this->NetCommonsHtml->link(__d('cabinets', '編集'), ['controller' => 'cabinet_files_edit', 'action' => 'edit', 'key' => $cabinetFile['CabinetFile']['key']]);?>
 									</li>
