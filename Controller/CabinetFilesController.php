@@ -142,7 +142,8 @@ class CabinetFilesController extends CabinetsAppController {
 		//  workflowコンディションを混ぜ込む
 		$conditions = $this->CabinetFile->getWorkflowConditions($conditions);
 		// TODO ソート順変更
-		$files = $this->CabinetFile->find('all', ['conditions' => $conditions, 'order' => 'filename ASC']);
+		// TODO 昇順のときフォルダが先、降順の時フォルダが後
+		$files = $this->CabinetFile->find('all', ['conditions' => $conditions, 'order' => 'is_folder DESC, filename ASC']);
 		foreach($files as &$file){
 			$file['CabinetFile']['size'] = $this->CabinetFile->getTotalSizeByFolder($file);
 		}
