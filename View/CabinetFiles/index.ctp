@@ -109,7 +109,6 @@ echo $this->Html->script(
 
 
 <div class="row">
-<div id="test">Foo</div>
 	<?php // ============ フォルダツリー ============?>
 	<div class="col-md-3 hidden-sm hidden-xs cabinets-folder-tree inline" ng-controller="Cabinets.FolderTree" ng-init="init(<?php echo json_encode($currentFolderTree)?>)" >
 		<ul class="list-group" ng-cloak>
