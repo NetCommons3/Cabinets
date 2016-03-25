@@ -11,7 +11,7 @@
 ?>
 
 <article class="block-setting-body">
-	<?php echo $this->BlockTabs->main(BlockTabsComponent::MAIN_TAB_FRAME_SETTING); ?>
+	<?php echo $this->BlockTabs->main(BlockTabsHelper::MAIN_TAB_FRAME_SETTING); ?>
 
 	<div class="tab-content">
 		<?php echo $this->element('Blocks.edit_form', array(

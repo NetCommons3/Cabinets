@@ -302,6 +302,39 @@ class CabinetFilesController extends CabinetsAppController {
 		}
 	}
 
+	public function download_folder() {
+		// フォルダを取得
+		$folderKey = isset($this->request->params['pass'][1]) ? $this->request->params['pass'][1] : null;
+		$conditions = [
+			'CabinetFile.key' => $folderKey,
+			'CabinetFile.cabinet_id' => $this->_cabinet['Cabinet']['id']
+		];
+		$conditions = $this->CabinetFile->getWorkflowConditions($conditions);
+		$cabinetFile = $this->CabinetFile->find('first', ['conditions' => $conditions]);
+
+		// フォルダのファイルを取得
+		// zipダウンローダ準備
+		// ダウンロード実行
+		// ここから元コンテンツを取得する処理
+		$folderKey = isset($this->request->params['pass'][1]) ? $this->request->params['pass'][1] : null;
+		$conditions = [
+			'CabinetFile.key' => $folderKey,
+			'CabinetFile.cabinet_id' => $this->_cabinet['Cabinet']['id']
+		];
+		$conditions = $this->CabinetFile->getWorkflowConditions($conditions);
+		$cabinetFile = $this->CabinetFile->find('first', ['conditions' => $conditions]);
+		//$this->set('cabinetFile', $cabinetFile);
+		// ここまで元コンテンツを取得する処理
+
+		// ダウンロード実行
+		if ($cabinetFile) {
+			return $this->Download->doDownload($cabinetFile['CabinetFile']['id'], ['field' => 'file', 'download' => true]);
+		} else {
+			// 表示できないファイルへのアクセスなら404
+			throw new NotFoundException(__('Invalid cabinet file'));
+		}
+
+	}
 
 	public function thumb() {
 		// ここから元コンテンツを取得する処理

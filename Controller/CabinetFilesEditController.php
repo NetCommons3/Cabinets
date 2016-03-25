@@ -102,7 +102,7 @@ class CabinetFilesEditController extends CabinetsAppController {
 			// set cabinet_id
 			$this->request->data['CabinetFile']['cabinet_id'] = $this->_cabinet['Cabinet']['id'];
 			// set language_id
-			$this->request->data['CabinetFile']['language_id'] = $this->viewVars['languageId'];
+			$this->request->data['CabinetFile']['language_id'] = Current::read('Language.id');
 			// is_folderセット
 			$this->request->data['CabinetFile']['is_folder'] = 0;
 			//$this->request->data['CabinetFileTree']['parent_id'] = null;
@@ -190,7 +190,7 @@ class CabinetFilesEditController extends CabinetsAppController {
 			// set cabinet_id
 			$this->request->data['CabinetFile']['cabinet_id'] = $this->_cabinet['Cabinet']['id'];
 			// set language_id
-			$this->request->data['CabinetFile']['language_id'] = $this->viewVars['languageId'];
+			$this->request->data['CabinetFile']['language_id'] = Current::read('Language.id');
 
 			$data = Hash::merge($cabinetFile, $this->request->data);
 
@@ -250,7 +250,7 @@ class CabinetFilesEditController extends CabinetsAppController {
 			// set cabinet_id
 			$this->request->data['CabinetFile']['cabinet_id'] = $this->_cabinet['Cabinet']['id'];
 			// set language_id
-			$this->request->data['CabinetFile']['language_id'] = $this->viewVars['languageId'];
+			$this->request->data['CabinetFile']['language_id'] = Current::read('Language.id');
 			// is_folderセット
 			$this->request->data['CabinetFile']['is_folder'] = 1;
 			//$this->request->data['CabinetFileTree']['parent_id'] = null;
@@ -332,7 +332,7 @@ class CabinetFilesEditController extends CabinetsAppController {
 			// set cabinet_id
 			$this->request->data['CabinetFile']['cabinet_id'] = $this->_cabinet['Cabinet']['id'];
 			// set language_id
-			$this->request->data['CabinetFile']['language_id'] = $this->viewVars['languageId'];
+			$this->request->data['CabinetFile']['language_id'] = Current::read('Language.id');
 
 			$data = Hash::merge($cabinetFile, $this->request->data);
 

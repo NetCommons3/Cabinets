@@ -43,16 +43,16 @@ class CabinetBlocksController extends CabinetsAppController {
  */
 	public $components = array(
 
-		'Blocks.BlockTabs' => array(
-			'mainTabs' => array(
-				'block_index' => array('url' => array('controller' => 'cabinet_blocks')),
-				//'frame_settings' => array('url' => array('controller' => 'cabinet_frame_settings')),
-			),
-			'blockTabs' => array(
-				'block_settings' => array('url' => array('controller' => 'cabinet_blocks')),
-				'role_permissions' => array('url' => array('controller' => 'cabinet_block_role_permissions')),
-			),
-		),
+		//'Blocks.BlockTabs' => array(
+		//	'mainTabs' => array(
+		//		'block_index' => array('url' => array('controller' => 'cabinet_blocks')),
+		//		//'frame_settings' => array('url' => array('controller' => 'cabinet_frame_settings')),
+		//	),
+		//	'blockTabs' => array(
+		//		'block_settings' => array('url' => array('controller' => 'cabinet_blocks')),
+		//		'role_permissions' => array('url' => array('controller' => 'cabinet_block_role_permissions')),
+		//	),
+		//),
 		'NetCommons.Permission' => array(
 			//アクセスの権限
 			'allow' => array(
@@ -71,7 +71,16 @@ class CabinetBlocksController extends CabinetsAppController {
  */
 	public $helpers = array(
 		'Blocks.BlockForm',
-		//'Blocks.Block',
+		'Blocks.BlockTabs' => array(
+			'mainTabs' => array(
+				'block_index' => array('url' => array('controller' => 'cabinet_blocks')),
+				//'frame_settings' => array('url' => array('controller' => 'cabinet_frame_settings')),
+			),
+			'blockTabs' => array(
+				'block_settings' => array('url' => array('controller' => 'cabinet_blocks')),
+				'role_permissions' => array('url' => array('controller' => 'cabinet_block_role_permissions')),
+			),
+		),
 		'Likes.Like',
 	);
 
@@ -107,6 +116,19 @@ class CabinetBlocksController extends CabinetsAppController {
 			$this->view = 'Blocks.Blocks/not_found';
 			return;
 		}
+
+		//foreach ($cabinets as &$cabinet){
+		//	$uploadFile = ClassRegistry::init('Files.UploadFile');
+		//	$uploadFile->find('all', [
+		//		'field' => ['sum(size) AS total_size'],
+		//		'conditions' => ['block_key' => $cabinet['Block']['key']],
+		//
+		//	])
+		//	$result = $uploadFile->query('SELECT sum(size) AS total FROM upload_files WHERE block_key=' . $cabinet['Block']['key']);
+		//	debug($result);
+		//
+		//}
+
 		$this->set('cabinets', $cabinets);
 		$this->request->data['Frame'] = Current::read('Frame');
 	}
