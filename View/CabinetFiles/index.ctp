@@ -7,7 +7,6 @@
 
 $currentFolderTree = Hash::extract($folderPath, '{n}.CabinetFileTree.id');
 $currentFolderTree = array_map('intval', $currentFolderTree);
-
 ?>
 
 <?php
@@ -156,8 +155,13 @@ echo $this->Html->script(
 					?>
 				</td>
 				<td class="hidden-sm hidden-xs"></td>
-				<td></td>
-				<td></td>
+				<td colspan="2" style="text-align: right">
+					<?php
+					echo $this->Html->link(
+						__d('cabinets', '圧縮ダウンロード'),
+						$this->NetCommonsHtml->url(['action' => 'download_folder', 'key' => $currentFolder['CabinetFile']['key']]), ['class' => 'btn btn-xs btn-default']);
+					?>
+				</td>
 			</tr>
 			<?php endif ?>
 
@@ -204,7 +208,13 @@ echo $this->Html->script(
 								<li>
 									<?php echo $this->NetCommonsHtml->link(__d('cabinets', '編集'), ['controller' => 'cabinet_files_edit', 'action' => 'edit_folder', 'key' => $cabinetFile['CabinetFile']['key']]);?>
 								</li>
-								<li><a href="#"><?php echo __d('cabinets', '圧縮ダウンロード'); ?></a></li>
+								<li>
+									<?php
+									echo $this->Html->link(
+										__d('cabinets', '圧縮ダウンロード'),
+										$this->NetCommonsHtml->url(['action' => 'download_folder', 'key' => $cabinetFile['CabinetFile']['key']]))
+									?>
+								</li>
 							</ul>
 						</div>
 

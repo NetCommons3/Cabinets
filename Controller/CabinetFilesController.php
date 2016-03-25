@@ -3,6 +3,8 @@
  * CabinetEtnriesController
  */
 App::uses('CabinetsAppController', 'Cabinets.Controller');
+App::uses('ZipDownloader', 'Files.Utility');
+App::uses('TemporaryFolder', 'Files.Utility');
 
 /**
  * CabinetFiles Controller
@@ -133,6 +135,7 @@ class CabinetFilesController extends CabinetsAppController {
 		}else{
 			$currentFolder = $this->CabinetFileTree->find('first', ['conditions' => ['cabinet_file_key' => $folderKey]]);
 			$currentTreeId = $currentFolder['CabinetFileTree']['id'];
+			$this->set('currentFolder', $this->CabinetFile->find('first', ['conditions' => ['CabinetFile.key' => $folderKey]]));
 		}
 
 		$this->set('currentTreeId', $currentTreeId);
@@ -303,6 +306,7 @@ class CabinetFilesController extends CabinetsAppController {
 	}
 
 	public function download_folder() {
+		// TODO 多階層に対応させる
 		// フォルダを取得
 		$folderKey = isset($this->request->params['pass'][1]) ? $this->request->params['pass'][1] : null;
 		$conditions = [
@@ -310,30 +314,43 @@ class CabinetFilesController extends CabinetsAppController {
 			'CabinetFile.cabinet_id' => $this->_cabinet['Cabinet']['id']
 		];
 		$conditions = $this->CabinetFile->getWorkflowConditions($conditions);
-		$cabinetFile = $this->CabinetFile->find('first', ['conditions' => $conditions]);
+		$cabinetFolder = $this->CabinetFile->find('first', ['conditions' => $conditions]);
 
-		// フォルダのファイルを取得
-		// zipダウンローダ準備
-		// ダウンロード実行
-		// ここから元コンテンツを取得する処理
-		$folderKey = isset($this->request->params['pass'][1]) ? $this->request->params['pass'][1] : null;
-		$conditions = [
-			'CabinetFile.key' => $folderKey,
-			'CabinetFile.cabinet_id' => $this->_cabinet['Cabinet']['id']
-		];
-		$conditions = $this->CabinetFile->getWorkflowConditions($conditions);
-		$cabinetFile = $this->CabinetFile->find('first', ['conditions' => $conditions]);
-		//$this->set('cabinetFile', $cabinetFile);
-		// ここまで元コンテンツを取得する処理
+		$tmpFolder = new TemporaryFolder();
+		$this->_prepareDownload($tmpFolder->path, $cabinetFolder);
+		$zipDownloader = new ZipDownloader();
 
-		// ダウンロード実行
-		if ($cabinetFile) {
-			return $this->Download->doDownload($cabinetFile['CabinetFile']['id'], ['field' => 'file', 'download' => true]);
-		} else {
-			// 表示できないファイルへのアクセスなら404
-			throw new NotFoundException(__('Invalid cabinet file'));
+		list($folders, $files) = $tmpFolder->read(true, false, true);
+		foreach($folders as $folder){
+			$zipDownloader->addFolder($folder);
+		}
+		foreach ($files as $file){
+			$zipDownloader->addFile($file);
 		}
 
+		//$zipDownloader->addFolder($tmpFolder->path);
+
+		return $zipDownloader->download($cabinetFolder['CabinetFile']['filename'] . '.zip');
+	}
+
+	protected function _prepareDownload($path, $cabinetFolder) {
+		// フォルダのファイル取得
+		$files = $this->CabinetFile->find('all', [
+			'conditions' => $this->CabinetFile->getWorkflowConditions([
+				'CabinetFileTree.parent_id' => $cabinetFolder['CabinetFileTree']['id'],
+				//'CabinetFile.is_folder' => false,
+			])
+		]);
+		foreach($files as $file){
+			if($file['CabinetFile']['is_folder']){
+				mkdir($path . DS . $file['CabinetFile']['filename']);
+				$this->_prepareDownload($path . DS . $file['CabinetFile']['filename'], $file);
+			}else{
+				$filePath = WWW_ROOT . $file['UploadFile']['file']['path'] . $file['UploadFile']['file']['id'] . DS . $file['UploadFile']['file']['real_file_name'];
+				copy($filePath, $path . DS . $file['UploadFile']['file']['original_name']);
+
+			}
+		}
 	}
 
 	public function thumb() {
