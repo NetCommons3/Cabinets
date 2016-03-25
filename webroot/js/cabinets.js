@@ -37,41 +37,57 @@ NetCommonsApp.controller('Cabinets',
 
 NetCommonsApp.controller('CabinetFile.index',
     ['$scope', '$filter', 'NetCommonsModal', 'CabinetsShareValue', '$http', function($scope, $filter, NetCommonsModal, CabinetsShareValue, $http) {
-      //$scope.init = function(parentId) {
-      //  $scope.parent_id = parentId;
-      //}
+      $scope.moved = {};
+      $scope.init = function(parentId) {
+       $scope.parent_id = parentId;
+      }
 
-      $scope.moveFile = function() {
+      $scope.moveFile = function(cabinetFileKey) {
+        console.log($scope.parentId);
         var modal = NetCommonsModal.show(
             $scope, 'CabinetFile.edit.selectFolder',
-            $scope.baseUrl + '/cabinets/cabinet_files_edit/select_folder/' + CabinetsShareValue.blockId + '/parent_tree_id:'+CabinetsShareValue.parent_id+'?frame_id=' + CabinetsShareValue.frameId
+            $scope.baseUrl + '/cabinets/cabinet_files_edit/select_folder/' + CabinetsShareValue.blockId + '/parent_tree_id:'+$scope.parent_id+'?frame_id=' + CabinetsShareValue.frameId
         );
         modal.result.then(function(parentId){
-          console.log(parentId);
-          $scope.parent_id = parentId;
+          if($scope.parent_id != parentId){
+            // 移動を裏で呼び出す
+            var url = $scope.baseUrl + '/cabinets/cabinet_files_edit/move/' + CabinetsShareValue.blockId + '/' + cabinetFileKey + '/parent_id:'+parentId+'?frame_id=' + CabinetsShareValue.frameId
 
-          // 親ツリーIDが変更されたので、パス情報を取得しなおす。
-          //  Ajax json形式でパス情報を取得する
+            $http({
+              url: url,
+              method: 'POST'
+            })
+                .success(function (data, status, headers, config) {
+                  $scope.flashMessage(data.name, data.class, data.interval);
 
-          var url = $scope.baseUrl + '/cabinets/cabinet_files_edit/get_folder_path/' + CabinetsShareValue.blockId + '/tree_id:'+$scope.parent_id+'?frame_id=' + CabinetsShareValue.frameId
+                  // 違うフォルダへ移動なので、今のフォルダ内ファイル一覧から非表示にする
+                  $scope.moved[cabinetFileKey] = true;
+                  // $scope.parent_id = parentId;
 
-          $http({
-            url: url,
-            method: 'GET'
-          })
-              .success(function (data, status, headers, config) {
-                var result = [];
-                angular.forEach(data['folderPath'], function(value, key){
-                  value['url'] = $scope.baseUrl + '/cabinets/cabinet_files/index/' + $scope.blockId + '/'+ value.CabinetFile.key +'?frame_id=' + $scope.frameId
+                  // TODO フォルダを動かしたら左のフォルダツリーを再読み込み
+                  var treeUrl =  $scope.baseUrl + '/cabinets/cabinet_files/tree/' + CabinetsShareValue.blockId + '/' +$scope.parent_id+'?frame_id=' + CabinetsShareValue.frameId;
+                  $http({
+                    url: treeUrl,
+                    method: 'GET'
+                  }).success(function (data, status, headers, config) {
+                    // console.log(data);
+                    // $('#test').replaceWith(data);
+                  });
 
-                  result[key] = value;
+
+                  // var result = [];
+                  // angular.forEach(data['folderPath'], function(value, key){
+                  //   value['url'] = $scope.baseUrl + '/cabinets/cabinet_files/index/' + $scope.blockId + '/'+ value.CabinetFile.key +'?frame_id=' + $scope.frameId
+                  //
+                  //   result[key] = value;
+                  // })
+                  // $scope.folderPath = result;
                 })
-                $scope.folderPath = result;
-              })
-              .error(function (data, status, headers, config) {
-                // TODO エラー処理
-                ;
-              });
+                .error(function (data, status, headers, config) {
+                  // エラー処理
+                  $scope.flashMessage(data.name, 'danger', 0);
+                });
+          }
         })
       };
 

@@ -372,6 +372,7 @@ class CabinetFilesEditController extends CabinetsAppController {
 
 	public function select_folder() {
 		$currentTreeId = Hash::get($this->request->named, 'parent_tree_id', null);
+
 		$this->set('currentTreeId', $currentTreeId);
 		//レイアウトの設定
 		$this->viewClass = 'View';
@@ -410,6 +411,36 @@ class CabinetFilesEditController extends CabinetsAppController {
 			$this->set('folderPath', array());
 			$this->set('parentUrl', false);
 		}
+	}
+
+	public function move() {
+		if ($this->request->is(array('post', 'put'))) {
+			$key = $this->params['pass'][1];
+
+			//  keyのis_latstを元に編集を開始
+			$cabinetFile = $this->CabinetFile->findByKeyAndIsLatest($key, 1);
+			$parentId = Hash::get($this->request->named, 'parent_id', null);
+
+			$cabinetFile['CabinetFileTree']['parent_id'] = $parentId;
+
+
+			$result = $this->CabinetFileTree->save($cabinetFile);
+
+			if ($result) {
+				//正常の場合
+				$this->NetCommons->setFlashNotification(__d('cabinets', '移動しました'), array(
+					'class' => 'success',
+				));
+			} else {
+				$this->NetCommons->setFlashNotification(__d('cabinets', '移動失敗'), array(
+					'class' => 'danger',
+				));
+				//$this->NetCommons->handleValidationError($this->RolesRoomsUser->validationErrors);
+			}
+
+			//$this->set('_serialize', ['message']);
+		}
+
 	}
 
 	public function get_folder_path() {

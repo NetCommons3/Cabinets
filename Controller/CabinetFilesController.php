@@ -185,6 +185,11 @@ class CabinetFilesController extends CabinetsAppController {
 	}
 
 
+	public function tree() {
+		$parentId = isset($this->request->params['pass'][1]) ? $this->request->params['pass'][1] : null;
+
+	}
+
 	public function folder_detail() {
 		// TODO folderじゃなかったらエラー
 		$folderKey = isset($this->request->params['pass'][1]) ? $this->request->params['pass'][1] : null;
