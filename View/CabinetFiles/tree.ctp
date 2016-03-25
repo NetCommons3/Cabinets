@@ -1,3 +1,1 @@
-<div>
-	<h1>test</h1>
-</div>
+<?php echo $this->element('CabinetFiles/folder_tree');?>

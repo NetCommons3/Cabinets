@@ -42,7 +42,7 @@ NetCommonsApp.controller('CabinetFile.index',
        $scope.parent_id = parentId;
       }
 
-      $scope.moveFile = function(cabinetFileKey) {
+      $scope.moveFile = function(cabinetFileKey, isFolder) {
         console.log($scope.parentId);
         var modal = NetCommonsModal.show(
             $scope, 'CabinetFile.edit.selectFolder',
@@ -58,21 +58,23 @@ NetCommonsApp.controller('CabinetFile.index',
               method: 'POST'
             })
                 .success(function (data, status, headers, config) {
-                  $scope.flashMessage(data.name, data.class, data.interval);
 
-                  // 違うフォルダへ移動なので、今のフォルダ内ファイル一覧から非表示にする
-                  $scope.moved[cabinetFileKey] = true;
-                  // $scope.parent_id = parentId;
+                  if(isFolder){
+                    // TODO フォルダを動かしたらリロード
+                    location.reload();
+                  }else{
+                    $scope.flashMessage(data.name, data.class, data.interval);
 
-                  // TODO フォルダを動かしたら左のフォルダツリーを再読み込み
-                  var treeUrl =  $scope.baseUrl + '/cabinets/cabinet_files/tree/' + CabinetsShareValue.blockId + '/' +$scope.parent_id+'?frame_id=' + CabinetsShareValue.frameId;
-                  $http({
-                    url: treeUrl,
-                    method: 'GET'
-                  }).success(function (data, status, headers, config) {
-                    // console.log(data);
-                    // $('#test').replaceWith(data);
-                  });
+                    // 違うフォルダへ移動なので、今のフォルダ内ファイル一覧から非表示にする
+                    $scope.moved[cabinetFileKey] = true;
+                  }
+                  // var treeUrl =  $scope.baseUrl + '/cabinets/cabinet_files/tree/' + CabinetsShareValue.blockId + '/' +$scope.parent_id+'?frame_id=' + CabinetsShareValue.frameId;
+                  // $http({
+                  //   url: treeUrl,
+                  //   method: 'GET'
+                  // }).success(function (data, status, headers, config) {
+                  //   // $('#cabinet-files-folder-tree').replaceWith(data);// うまくデータ
+                  // });
 
 
                   // var result = [];

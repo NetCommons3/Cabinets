@@ -139,6 +139,7 @@ class CabinetFilesController extends CabinetsAppController {
 		}
 
 		$this->set('currentTreeId', $currentTreeId);
+
 		$conditions = [
 			'parent_id' => $currentTreeId
 		];
@@ -185,10 +186,51 @@ class CabinetFilesController extends CabinetsAppController {
 	}
 
 
-	public function tree() {
-		$parentId = isset($this->request->params['pass'][1]) ? $this->request->params['pass'][1] : null;
-
-	}
+	//public function tree() {
+	//	$this->layout = null ;
+	//	$parentId = isset($this->request->params['pass'][1]) ? $this->request->params['pass'][1] : null;
+	//	$currentTreeId = $parentId;
+	//
+	//	$this->set('currentTreeId', $currentTreeId);
+	//	$this->CabinetFileTree->recover('parent');
+	//
+	//	// 全フォルダツリーを得る
+	//	$conditions = [
+	//		'is_folder' => 1,
+	//	];
+	//	$folders = $this->CabinetFileTree->find('threaded', ['conditions' => $conditions, 'recursive' => 0, 'order' => 'CabinetFile.filename ASC']);
+	//	$this->set('folders', $folders);
+	//
+	//	// カレントフォルダのツリーパスを得る
+	//	if($currentTreeId > 0){
+	//		$folderPath = $this->CabinetFileTree->getPath($currentTreeId, null, 0);
+	//		$this->set('folderPath', $folderPath);
+	//		$nestCount = count($folderPath);
+	//		if($nestCount > 1){
+	//			// 親フォルダあり
+	//			$url = NetCommonsUrl::actionUrl(
+	//				[
+	//					'key' => $folderPath[$nestCount - 2]['CabinetFile']['key'],
+	//					'block_id' => Current::read('Block.id'),
+	//					'frame_id' => Current::read('Frame.id'),
+	//				]
+	//			);
+	//
+	//		}else{
+	//			// 親はキャビネット
+	//			$url = NetCommonsUrl::backToIndexUrl();
+	//		}
+	//		$this->set('parentUrl', $url);
+	//	}else{
+	//		// ルート
+	//		$this->set('folderPath', array());
+	//		$this->set('parentUrl', false);
+	//	}
+	//
+	//
+	//	// ajaxリクエストだがjonでなくhtml viewを返したいのでviewClass=Viewに戻す
+	//	$this->viewClass = 'View';
+	//}
 
 	public function folder_detail() {
 		// TODO folderじゃなかったらエラー

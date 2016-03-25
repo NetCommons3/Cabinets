@@ -4,11 +4,6 @@
 	 <?php echo Current::read('Frame.id') ?>
 	 )">
 
-	<?php
-
-$currentFolderTree = Hash::extract($folderPath, '{n}.CabinetFileTree.id');
-$currentFolderTree = array_map('intval', $currentFolderTree);
-?>
 
 <?php
 echo $this->Html->css(
@@ -110,30 +105,9 @@ echo $this->Html->script(
 
 <div class="row">
 	<?php // ============ フォルダツリー ============?>
-	<div class="col-md-3 hidden-sm hidden-xs cabinets-folder-tree inline" ng-controller="Cabinets.FolderTree" ng-init="init(<?php echo json_encode($currentFolderTree)?>)" >
-		<ul class="list-group" ng-cloak>
-			<?php if ($currentTreeId > 0): ?>
-			<li class="list-group-item cabinets__folder-tree__folder">
-				<?php
-				echo '<span class="glyphicon glyphicon-hdd" aria-hidden="true"></span>';
-				echo $this->NetCommonsHtml->link( h($cabinet['Cabinet']['name']), NetCommonsUrl::backToIndexUrl(), ['escape' => false]);
-				?>
-			</li>
-			<?php else:?>
-			<li class="list-group-item active cabinets__folder-tree__folder">
-				<?php
-				echo '<span class="glyphicon glyphicon-hdd" aria-hidden="true"></span>' . h($cabinet['Cabinet']['name']);
-				?>
-			</li>
-			<?php endif ?>
-			<?php
-
-			$this->CabinetsFolderTree->render($folders, $currentTreeId);
-
-			?>
-		</ul>
+	<div class="col-md-3 hidden-sm hidden-xs cabinets-folder-tree inline" ng-controller="Cabinets.FolderTree" >
+		<?php echo $this->element('CabinetFiles/folder_tree');?>
 	</div>
-
 
 	<div class="col-md-9 inline">
 		<table class="table" ng-controller="CabinetFile.index" ng-init="init(<?php echo $currentTreeId ?>)">
@@ -207,7 +181,7 @@ echo $this->Html->script(
 								<li>
 									<?php echo $this->NetCommonsHtml->link(__d('cabinets', '詳細'), ['controller' => 'cabinet_files', 'action' => 'folder_detail', 'key' => $cabinetFile['CabinetFile']['key']]);?>
 								</li>
-								<li><a href="#" ng-click="moveFile('<?php echo $cabinetFile['CabinetFile']['key']?>')"><?php echo __d('cabinets', '移動'); ?></a></li>
+								<li><a href="#" ng-click="moveFile('<?php echo $cabinetFile['CabinetFile']['key']?>', true)"><?php echo __d('cabinets', '移動'); ?></a></li>
 								<li>
 									<?php echo $this->NetCommonsHtml->link(__d('cabinets', '編集'), ['controller' => 'cabinet_files_edit', 'action' => 'edit_folder', 'key' => $cabinetFile['CabinetFile']['key']]);?>
 								</li>
@@ -268,7 +242,7 @@ echo $this->Html->script(
 									<li>
 										<?php echo $this->NetCommonsHtml->link(__d('cabinets', '詳細'), ['controller' => 'cabinet_files', 'action' => 'view', 'key' => $cabinetFile['CabinetFile']['key']]);?>
 									</li>
-									<li><a href="#" ng-click="moveFile('<?php echo $cabinetFile['CabinetFile']['key']?>')"><?php echo __d('cabinets', '移動'); ?></a></li>
+									<li><a href="#" ng-click="moveFile('<?php echo $cabinetFile['CabinetFile']['key']?>', false)"><?php echo __d('cabinets', '移動'); ?></a></li>
 									<li>
 										<?php echo $this->NetCommonsHtml->link(__d('cabinets', '編集'), ['controller' => 'cabinet_files_edit', 'action' => 'edit', 'key' => $cabinetFile['CabinetFile']['key']]);?>
 									</li>

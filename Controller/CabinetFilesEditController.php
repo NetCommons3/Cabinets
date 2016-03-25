@@ -428,9 +428,17 @@ class CabinetFilesEditController extends CabinetsAppController {
 
 			if ($result) {
 				//正常の場合
-				$this->NetCommons->setFlashNotification(__d('cabinets', '移動しました'), array(
-					'class' => 'success',
-				));
+				//if($cabinetFile['CabinetFile']['is_folder']) {
+					// reloadするのでSession::flash
+					//$this->Flash->set(__d('cabinets', '移動しました'), );
+					//$this->Session->setFlash('移動しました');
+
+				//}else{
+					$this->NetCommons->setFlashNotification(__d('cabinets', '移動しました'), array(
+						'class' => 'success',
+						'ajax' => !$cabinetFile['CabinetFile']['is_folder']
+					));
+				//}
 			} else {
 				$this->NetCommons->setFlashNotification(__d('cabinets', '移動失敗'), array(
 					'class' => 'danger',
