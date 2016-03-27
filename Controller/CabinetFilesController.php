@@ -122,6 +122,7 @@ class CabinetFilesController extends CabinetsAppController {
 		// 全フォルダツリーを得る
 		$conditions = [
 			'is_folder' => 1,
+			'cabinet_key' => $this->viewVars['cabinet']['Cabinet']['key']
 		];
 		$folders = $this->CabinetFileTree->find('threaded', ['conditions' => $conditions, 'recursive' => 0, 'order' => 'CabinetFile.filename ASC']);
 		$this->set('folders', $folders);
@@ -141,7 +142,8 @@ class CabinetFilesController extends CabinetsAppController {
 		$this->set('currentTreeId', $currentTreeId);
 
 		$conditions = [
-			'parent_id' => $currentTreeId
+			'parent_id' => $currentTreeId,
+			'cabinet_id' => $this->viewVars['cabinet']['Cabinet']['id']
 		];
 		//  workflowコンディションを混ぜ込む
 		$conditions = $this->CabinetFile->getWorkflowConditions($conditions);
