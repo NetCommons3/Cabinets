@@ -174,7 +174,7 @@ echo $this->Html->script(
 
 						<div class="dropdown">
 							<button class="btn btn-default dropdown-toggle" type="button" id="cabinets__file-<?php echo $cabinetFile['CabinetFile']['id']?>" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-								<span class="glyphicon glyphicon-option-vertical aria-hidden="true"></span>
+								<span class="glyphicon glyphicon-option-vertical" aria-hidden="true"></span>
 								<!--<span class="caret"></span>-->
 							</button>
 							<ul class="dropdown-menu dropdown-menu-right" aria-labelledby="cabinets__file-<?php echo $cabinetFile['CabinetFile']['id']?>">
@@ -235,7 +235,7 @@ echo $this->Html->script(
 						<td>
 							<div class="dropdown">
 								<button class="btn btn-default dropdown-toggle" type="button" id="cabinets__file-<?php echo $cabinetFile['CabinetFile']['id']?>" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-									<span class="glyphicon glyphicon-option-vertical aria-hidden="true"></span>
+									<span class="glyphicon glyphicon-option-vertical" aria-hidden="true"></span>
 									<!--<span class="caret"></span>-->
 								</button>
 								<ul class="dropdown-menu dropdown-menu-right" aria-labelledby="cabinets__file-<?php echo $cabinetFile['CabinetFile']['id']?>">
