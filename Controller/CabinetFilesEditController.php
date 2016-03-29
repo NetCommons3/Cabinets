@@ -372,15 +372,26 @@ class CabinetFilesEditController extends CabinetsAppController {
 
 	public function select_folder() {
 		$currentTreeId = Hash::get($this->request->named, 'parent_tree_id', null);
+		//$targetFileKey =
 
 		$this->set('currentTreeId', $currentTreeId);
 		//レイアウトの設定
 		$this->viewClass = 'View';
 		$this->layout = 'NetCommons.modal';
 
+
+
 		// 全フォルダツリーを得る
 		$conditions = [
 			'is_folder' => 1,
+			// TODO フォルダだったら、自分より下はいれない
+			//'NOT' => array(
+			//	'AND' => array(
+			//		'CabinetFileTree.lft >=' => Current::read('Page.lft'),
+			//		'CabinetFileTree.rght <=' => Current::read('Page.rght')
+			//	)
+			//)
+
 		];
 		$folders = $this->CabinetFileTree->find('threaded', ['conditions' => $conditions, 'recursive' => 0, 'order' => 'CabinetFile.filename ASC']);
 		$this->set('folders', $folders);

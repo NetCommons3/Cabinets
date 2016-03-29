@@ -70,9 +70,9 @@ class CabinetFilesController extends CabinetsAppController {
 		'Files.Download',
 		'AuthorizationKeys.AuthorizationKey' => [
 			//'operationType' => AuthorizationKeyComponent::OPERATION_REDIRECT,
-			'operationType' => 'popup',
+			'operationType' => 'redirect',
 			//'operationType' => 'redirect',
-			'targetAction' => 'download_pdf',
+			'targetAction' => 'download',
 			'model' => 'CabinetFile',
 		],
 	);
@@ -344,6 +344,8 @@ class CabinetFilesController extends CabinetsAppController {
 		$cabinetFile = $this->CabinetFile->find('first', ['conditions' => $conditions]);
 		//$this->set('cabinetFile', $cabinetFile);
 		// ここまで元コンテンツを取得する処理
+
+		$this->AuthorizationKey->guard('redirect', 'CabinetFile', $cabinetFile);
 
 		// ダウンロード実行
 		if ($cabinetFile) {
