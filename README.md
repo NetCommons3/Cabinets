@@ -8,6 +8,6 @@ Cabinets for NetComomns3
 
 | dependencies | status |
 | ------------ | ------ |
-| composer.json | [![Dependency Status](https://www.versioneye.com/user/projects/554ff3a6ba36fc476d000002/badge.svg?style=flat)](https://www.versioneye.com/user/projects/554ff3a6ba36fc476d000002) |
+| composer.json | [![Dependency Status](https://www.versioneye.com/user/projects/57060976fcd19a004543fc60/badge.svg?style=flat)](https://www.versioneye.com/user/projects/57060976fcd19a004543fc60) |
 
 
