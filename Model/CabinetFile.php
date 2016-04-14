@@ -128,6 +128,32 @@ class CabinetFile extends CabinetsAppModel {
 		return $validate;
 	}
 
+	public function getRootFolder($cabinet) {
+		return $this->find('first', ['condtions' => $this->_getRootFolderConditions($cabinet)]);
+	}
+
+/**
+ * キャビネットのルートフォルダとキャビネットの同期
+ * ルートフォルダがなければ作成する
+ *
+ * @param array $cabinet Cabinet model data
+ * @return bool
+ * @throws Exception
+ */
+	public function syncRootFolder($cabinet) {
+		if ($this->rootFolderExist($cabinet)) {
+			// ファイル名同期
+			$options = [
+				'conditions' => $this->_getRootFolderConditions($cabinet)
+			];
+			$rootFolder = $this->find('first', $options);
+			$rootFolder['CabinetFile']['filename'] = $cabinet['Cabinet']['name'];
+			return ($this->save($rootFolder)) ? true : false;
+		} else {
+			return $this->makeRootFolder($cabinet);
+		}
+	}
+
 /**
  * Cabinetのルートフォルダを作成する
  *
@@ -171,10 +197,7 @@ class CabinetFile extends CabinetsAppModel {
  */
 	public function rootFolderExist($cabinet) {
 		// ルートフォルダが既に存在するかを探す
-		$conditions = [
-			'cabinet_key' => $cabinet['Cabinet']['key'],
-			'parent_id' => null,
-		];
+		$conditions = $this->_getRootFolderConditions($cabinet);
 		$count = $this->find('count', ['conditions' => $conditions]);
 		return ($count > 0);
 	}
@@ -442,6 +465,18 @@ class CabinetFile extends CabinetsAppModel {
 			$this->name . '.is_active' => 1,
 			'CabinetFile.publish_start <=' => $currentDateTime,
 		);
+	}
+
+	/**
+	 * @param $cabinet
+	 * @return array
+	 */
+	protected function _getRootFolderConditions($cabinet) {
+		$conditions = [
+			'cabinet_key' => $cabinet['Cabinet']['key'],
+			'parent_id' => null,
+		];
+		return $conditions;
 	}
 
 }

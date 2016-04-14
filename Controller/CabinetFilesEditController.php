@@ -110,7 +110,7 @@ class CabinetFilesEditController extends CabinetsAppController {
 
 			// タイトルをファイル名にする
 			$this->request->data['CabinetFile']['filename'] = $this->request->data['CabinetFile']['file']['name'];
-			if (($result = $this->CabinetFile->saveFile(Current::read('Block.id'), Current::read('Frame.id'), $this->request->data))) {
+			if (($result = $this->CabinetFile->saveFile($this->request->data))) {
 
 				$parentFolder = $this->CabinetFileTree->findById($this->request->data['CabinetFileTree']['parent_id']);
 				$url = NetCommonsUrl::actionUrl(
@@ -196,7 +196,7 @@ class CabinetFilesEditController extends CabinetsAppController {
 
 			unset($data['CabinetFile']['id']); // 常に新規保存
 
-			if ($this->CabinetFile->saveFile(Current::read('Block.id'), Current::read('Frame.id'), $data)) {
+			if ($this->CabinetFile->saveFile($data)) {
 				$parentFolder = $this->CabinetFileTree->findById($this->request->data['CabinetFileTree']['parent_id']);
 				$url = NetCommonsUrl::actionUrl(
 					array(
@@ -256,7 +256,7 @@ class CabinetFilesEditController extends CabinetsAppController {
 			//$this->request->data['CabinetFileTree']['parent_id'] = null;
 			$this->request->data['CabinetFileTree']['cabinet_key'] = $this->_cabinet['Cabinet']['key'];
 
-			if (($result = $this->CabinetFile->saveFile(Current::read('Block.id'), Current::read('Frame.id'), $this->request->data))) {
+			if (($result = $this->CabinetFile->saveFile($this->request->data))) {
 				$url = NetCommonsUrl::actionUrl(
 					array(
 						'controller' => 'cabinet_files',
@@ -338,7 +338,7 @@ class CabinetFilesEditController extends CabinetsAppController {
 
 			unset($data['CabinetFile']['id']); // 常に新規保存
 
-			if ($this->CabinetFile->saveFile(Current::read('Block.id'), Current::read('Frame.id'), $data)) {
+			if ($this->CabinetFile->saveFile($data)) {
 				$url = NetCommonsUrl::actionUrl(
 					array(
 						'controller' => 'cabinet_files',

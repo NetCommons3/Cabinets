@@ -42,16 +42,28 @@ class CabinetFixture extends CakeTestFixture {
  */
 	public $records = array(
 		array(
-			'id' => 1,
-			'block_id' => 1,
-			'name' => 'Lorem ipsum dolor sit amet',
-			'key' => 'Lorem ipsum dolor sit amet',
+			'id' => 2,
+			'block_id' => '2',
+			'name' => 'Cabinet2',
+			'key' => 'content_block_1',
 			'created_user' => 1,
 			'created' => '2016-04-14 02:49:44',
 			'modified_user' => 1,
 			'modified' => '2016-04-14 02:49:44',
-			'total_size' => 1
+			'total_size' => '1'
 		),
+		array(
+			'id' => 4,
+			'block_id' => '4',
+			'name' => 'Cabinet4',
+			'key' => 'content_block_2',
+			'created_user' => 1,
+			'created' => '2016-04-14 02:49:44',
+			'modified_user' => 1,
+			'modified' => '2016-04-14 02:49:44',
+			'total_size' => '1'
+		),
+		// この上までテストテンプレの予約
 		array(
 			'id' => 3,
 			'block_id' => 3,

@@ -80,6 +80,9 @@ class Cabinet extends CabinetsAppModel {
 			'foreignKey' => 'cabinet_key',
 			'dependent' => false
 		),
+		//'CabinetFile' => [
+		//	'className' => 'Cabinets.CabinetFile'
+		//]
 	);
 
 /**
@@ -165,7 +168,9 @@ class Cabinet extends CabinetsAppModel {
 		}
 
 		// ルートフォルダがまだなければルートフォルダをつくる
-		$this->CabinetFile->makeRootFolder($this->data);
+		if (! $this->CabinetFile->syncRootFolder($this->data)){
+			throw new InternalErrorException(__d('net_commons', 'Internal Server Error'));
+		}
 
 		//CabinetFrameSetting登録
 		//if (isset($this->CabinetFrameSetting->data['CabinetFrameSetting']) && ! $this->CabinetFrameSetting->data['CabinetFrameSetting']['id']) {

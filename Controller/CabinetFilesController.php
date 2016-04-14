@@ -119,6 +119,20 @@ class CabinetFilesController extends CabinetsAppController {
 
 		$this->CabinetFileTree->recover('parent');
 
+		// currentFolderを取得
+		$folderKey = isset($this->request->params['pass'][1]) ? $this->request->params['pass'][1] : null;
+		if (is_null($folderKey)){
+			// 指定がなければルートフォルダを取得する
+			$currentFolder = $this->CabinetFile->getRootFolder($this->_cabinet);
+			$currentTreeId = $currentFolder['CabinetFileTree']['id'];
+		}else{
+			$currentFolder = $this->CabinetFile->find('first', ['conditions' => ['CabinetFile.key' => $folderKey]]);
+			$currentTreeId = $currentFolder['CabinetFileTree']['id'];
+		}
+
+		$this->set('currentFolder', $currentFolder);
+		$this->set('currentTreeId', $currentTreeId);
+
 		// 全フォルダツリーを得る
 		$conditions = [
 			'is_folder' => 1,
@@ -127,20 +141,7 @@ class CabinetFilesController extends CabinetsAppController {
 		$folders = $this->CabinetFileTree->find('threaded', ['conditions' => $conditions, 'recursive' => 0, 'order' => 'CabinetFile.filename ASC']);
 		$this->set('folders', $folders);
 
-
-
 		// カレントフォルダのファイル・フォルダリストを得る。
-		$folderKey = isset($this->request->params['pass'][1]) ? $this->request->params['pass'][1] : null;
-		if (is_null($folderKey)){
-			$currentTreeId = null;
-		}else{
-			$currentFolder = $this->CabinetFileTree->find('first', ['conditions' => ['cabinet_file_key' => $folderKey]]);
-			$currentTreeId = $currentFolder['CabinetFileTree']['id'];
-			$this->set('currentFolder', $this->CabinetFile->find('first', ['conditions' => ['CabinetFile.key' => $folderKey]]));
-		}
-
-		$this->set('currentTreeId', $currentTreeId);
-
 		$conditions = [
 			'parent_id' => $currentTreeId,
 			'cabinet_id' => $this->viewVars['cabinet']['Cabinet']['id']
@@ -156,30 +157,24 @@ class CabinetFilesController extends CabinetsAppController {
 		$this->set('cabinetFiles', $files);
 
 		// カレントフォルダのツリーパスを得る
-		if($currentTreeId > 0){
-			$folderPath = $this->CabinetFileTree->getPath($currentTreeId, null, 0);
-			$this->set('folderPath', $folderPath);
-			$nestCount = count($folderPath);
-			if($nestCount > 1){
-				// 親フォルダあり
-				$url = NetCommonsUrl::actionUrl(
-					[
-						'key' => $folderPath[$nestCount - 2]['CabinetFile']['key'],
-						'block_id' => Current::read('Block.id'),
-						'frame_id' => Current::read('Frame.id'),
-					]
-				);
+		$folderPath = $this->CabinetFileTree->getPath($currentTreeId, null, 0);
+		$this->set('folderPath', $folderPath);
+		$nestCount = count($folderPath);
+		if($nestCount > 2){
+			// 親フォルダあり
+			$url = NetCommonsUrl::actionUrl(
+				[
+					'key' => $folderPath[$nestCount - 2]['CabinetFile']['key'],
+					'block_id' => Current::read('Block.id'),
+					'frame_id' => Current::read('Frame.id'),
+				]
+			);
 
-			}else{
-				// 親はキャビネット
-				$url = NetCommonsUrl::backToIndexUrl();
-			}
-			$this->set('parentUrl', $url);
 		}else{
-			// ルート
-			$this->set('folderPath', array());
-			$this->set('parentUrl', false);
+			// 親はキャビネット（ルートフォルダ）
+			$url = NetCommonsUrl::backToPageUrl();
 		}
+		$this->set('parentUrl', $url);
 
 		$this->set('listTitle', $this->_cabinetTitle);
 
