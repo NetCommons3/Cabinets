@@ -166,10 +166,16 @@ NetCommonsApp.controller('Cabinets.FolderTree',
 NetCommonsApp.controller('Cabinets.path',
     ['$scope', function($scope) {
 
-      $scope.init = function(folderPath){
+      $scope.init = function(folderPath, pageUrl){
 
+        // TODO 一つ目だけPageUrlにする
         angular.forEach(folderPath, function(value, key){
-          value['url'] = $scope.baseUrl + '/cabinets/cabinet_files/index/' + $scope.blockId + '/'+ value.CabinetFile.key +'?frame_id=' + $scope.frameId
+          if (key == 0) {
+            value['url'] = pageUrl;
+          } else {
+            value['url'] = $scope.baseUrl + '/cabinets/cabinet_files/index/' + $scope.blockId + '/'+ value.CabinetFile.key +'?frame_id=' + $scope.frameId
+
+          }
 
           $scope.folderPath[key] = value;
         })

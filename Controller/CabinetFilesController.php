@@ -159,9 +159,11 @@ class CabinetFilesController extends CabinetsAppController {
 		// カレントフォルダのツリーパスを得る
 		$folderPath = $this->CabinetFileTree->getPath($currentTreeId, null, 0);
 		$this->set('folderPath', $folderPath);
-		$nestCount = count($folderPath);
-		if($nestCount > 2){
+
+		// 1つ上へのリンク
+		if ($currentFolder['CabinetFileTree']['parent_id'] && $currentFolder['CabinetFileTree']['parent_id'] != $folderPath[0]['CabinetFileTree']['id']) {
 			// 親フォルダあり
+			$nestCount = count($folderPath);
 			$url = NetCommonsUrl::actionUrl(
 				[
 					'key' => $folderPath[$nestCount - 2]['CabinetFile']['key'],
@@ -169,11 +171,15 @@ class CabinetFilesController extends CabinetsAppController {
 					'frame_id' => Current::read('Frame.id'),
 				]
 			);
-
-		}else{
+		} else {
 			// 親はキャビネット（ルートフォルダ）
 			$url = NetCommonsUrl::backToPageUrl();
+
 		}
+		// TODO urlをafterFindで混ぜ込んだらどう？
+		// folderならindex
+		// ファイルならdownload
+		// ルートフォルダならbackToPageUrl();
 		$this->set('parentUrl', $url);
 
 		$this->set('listTitle', $this->_cabinetTitle);

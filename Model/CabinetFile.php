@@ -129,7 +129,7 @@ class CabinetFile extends CabinetsAppModel {
 	}
 
 	public function getRootFolder($cabinet) {
-		return $this->find('first', ['condtions' => $this->_getRootFolderConditions($cabinet)]);
+		return $this->find('first', ['conditions' => $this->_getRootFolderConditions($cabinet)]);
 	}
 
 /**

@@ -56,7 +56,7 @@ echo $this->Html->script(
 	<h1 class="cabinets_cabinetTitle"><?php echo h($cabinet['Cabinet']['name']) ?></h1>
 <div class="clearfix">
 	<div class="pull-left cabinets__index__file-path">
-		<?php echo $this->element('file_path'); ?>
+		<?php echo $this->element('file_path', ['currentFile' => $currentFolder]); ?>
 	</div>
 
 	<div class="pull-right">
