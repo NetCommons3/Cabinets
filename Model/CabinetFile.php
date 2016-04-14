@@ -128,6 +128,12 @@ class CabinetFile extends CabinetsAppModel {
 		return $validate;
 	}
 
+/**
+ * Cabinetのルートフォルダを作成する
+ *
+ * @param array $cabinet Cabinetモデルデータ
+ * @return bool
+ */
 	public function makeRootFolder($cabinet) {
 		if ($this->rootFolderExist($cabinet)) {
 			return true;
@@ -143,20 +149,26 @@ class CabinetFile extends CabinetsAppModel {
 			]
 		];
 
-		if ($rootFolder = $this->save($rootFolder)){
+		if ($rootFolder = $this->save($rootFolder)) {
 			$tree = [
 				'CabinetFileTree' => [
 					'cabinet_key' => $cabinet['Cabinet']['key'],
 					'cabinet_file_key' => $rootFolder['CabinetFile']['key'],
 				]
 			];
-			return $result = $this->CabinetFileTree->save($tree);
+			$result = $this->CabinetFileTree->save($tree);
+			return ($result) ? true : false;
 		} else {
 			return false;
 		}
 	}
 
-
+/**
+ * Cabinetのルートフォルダが存在するか
+ *
+ * @param $cabinet
+ * @return bool true:存在する false:存在しない
+ */
 	public function rootFolderExist($cabinet) {
 		// ルートフォルダが既に存在するかを探す
 		$conditions = [

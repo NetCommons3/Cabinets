@@ -1,6 +1,6 @@
 <?php
 /**
- * CabinetFile::makeRootFolder()のテスト
+ * CabinetFile::rootFolderExist()のテスト
  *
  * @author Noriko Arai <arai@nii.ac.jp>
  * @author Ryuji AMANO <ryuji@ryus.co.jp>
@@ -9,16 +9,15 @@
  * @copyright Copyright 2014, NetCommons Project
  */
 
-App::uses('WorkflowSaveTest', 'Workflow.TestSuite');
-App::uses('CabinetFileFixture', 'Cabinets.Test/Fixture');
+App::uses('WorkflowGetTest', 'Workflow.TestSuite');
 
 /**
- * CabinetFile::makeRootFolder()のテスト
+ * CabinetFile::rootFolderExist()のテスト
  *
  * @author Ryuji AMANO <ryuji@ryus.co.jp>
  * @package NetCommons\Cabinets\Test\Case\Model\CabinetFile
  */
-class CabinetFileMakeRootFolderTest extends WorkflowSaveTest {
+class CabinetFileMakeRootFolderTest extends WorkflowGetTest {
 
 /**
  * Fixtures
@@ -57,66 +56,52 @@ class CabinetFileMakeRootFolderTest extends WorkflowSaveTest {
 	protected $_methodName = 'makeRootFolder';
 
 /**
- * Save用DataProvider
+ * rootFolderExist()のテスト
  *
- * ### 戻り値
- *  - data 登録データ
- *
- * @return array テストデータ
+ * @return void
  */
-	public function dataProviderSave() {
-		$data['CabinetFile'] = (new CabinetFileFixture())->records[1];
-		$data['CabinetFile']['status'] = '1';
+	public function testMakeRootFolderWithRootFolderExist() {
+		$model = $this->_modelName;
+		$methodName = $this->_methodName;
 
-		//TODO:テストパタンを書く
-		$results = array();
-		// * 編集の登録処理
-		$results[0] = array($data);
-		// * 新規の登録処理
-		$results[1] = array($data);
-		$results[1] = Hash::insert($results[1], '0.CabinetFile.id', null);
-		$results[1] = Hash::insert($results[1], '0.CabinetFile.key', null); //TODO:不要なら削除する
-		$results[1] = Hash::remove($results[1], '0.CabinetFile.created_user');
+		//データ生成
+		$cabinet = [
+			'Cabinet' => [
+				'id' => 3,
+				'key' => 'cabinet_3',
+				'name' => 'Cabinet3',
+			],
+		];
 
-		return $results;
+		//テスト実施
+		$result = $this->$model->$methodName($cabinet);
+
+		$this->assertTrue($result);
 	}
 
 /**
- * SaveのExceptionError用DataProvider
+ * rootFolderExist()のテスト
  *
- * ### 戻り値
- *  - data 登録データ
- *  - mockModel Mockのモデル
- *  - mockMethod Mockのメソッド
- *
- * @return array テストデータ
+ * @return void
  */
-	public function dataProviderSaveOnExceptionError() {
-		$data = $this->dataProviderSave()[0][0];
+	public function testNewMakeRootFolder() {
+		Current::$current['Block']['id'] = 10;
 
-		//TODO:テストパタンを書く
-		return array(
-			array($data, 'Cabinets.CabinetFile', 'save'),
-		);
+		$model = $this->_modelName;
+		$methodName = $this->_methodName;
+
+		//データ生成
+		$cabinet = [
+			'Cabinet' => [
+				'id' => 4,
+				'key' => 'cabinet_4',
+				'name' => 'Cabinet4',
+			],
+		];
+
+		//テスト実施
+		$result = $this->$model->$methodName($cabinet);
+
+		$this->assertTrue($result);
 	}
-
-/**
- * SaveのValidationError用DataProvider
- *
- * ### 戻り値
- *  - data 登録データ
- *  - mockModel Mockのモデル
- *  - mockMethod Mockのメソッド(省略可：デフォルト validates)
- *
- * @return array テストデータ
- */
-	public function dataProviderSaveOnValidationError() {
-		$data = $this->dataProviderSave()[0][0];
-
-		//TODO:テストパタンを書く
-		return array(
-			array($data, 'Cabinets.CabinetFile'),
-		);
-	}
-
 }
