@@ -128,6 +128,45 @@ class CabinetFile extends CabinetsAppModel {
 		return $validate;
 	}
 
+	public function makeRootFolder($cabinet) {
+		if ($this->rootFolderExist($cabinet)) {
+			return true;
+		}
+		//
+		$this->create();
+		$rootFolder = [
+			'CabinetFile' => [
+				'cabinet_id' => $cabinet['Cabinet']['id'],
+				'status' => WorkflowComponent::STATUS_PUBLISHED,
+				'filename' => $cabinet['Cabinet']['name'],
+				'is_folder' => 1,
+			]
+		];
+
+		if ($rootFolder = $this->save($rootFolder)){
+			$tree = [
+				'CabinetFileTree' => [
+					'cabinet_key' => $cabinet['Cabinet']['key'],
+					'cabinet_file_key' => $rootFolder['CabinetFile']['key'],
+				]
+			];
+			return $result = $this->CabinetFileTree->save($tree);
+		} else {
+			return false;
+		}
+	}
+
+
+	public function rootFolderExist($cabinet) {
+		// ルートフォルダが既に存在するかを探す
+		$conditions = [
+			'cabinet_key' => $cabinet['Cabinet']['key'],
+			'parent_id' => null,
+		];
+		$count = $this->find('count', ['conditions' => $conditions]);
+		return ($count > 0);
+	}
+
 /**
  * 空の新規データを返す
  *
@@ -264,7 +303,7 @@ class CabinetFile extends CabinetsAppModel {
  * @return bool
  * @throws InternalErrorException
  */
-	public function saveFile($blockId, $frameId, $data) {
+	public function saveFile($data) {
 		$this->begin();
 		try {
 			$this->create(); // 常に新規登録
@@ -279,6 +318,7 @@ class CabinetFile extends CabinetsAppModel {
 				throw new InternalErrorException(__d('net_commons', 'Internal Server Error'));
 			}
 
+			// TODO afterSaveへ
 			$count = $this->CabinetFileTree->find('count',['conditions' => ['cabinet_file_key' => $data[$this->alias]['key']]]);
 			if($count == 0){
 				// 新規保存

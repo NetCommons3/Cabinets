@@ -164,6 +164,9 @@ class Cabinet extends CabinetsAppModel {
 			}
 		}
 
+		// ルートフォルダがまだなければルートフォルダをつくる
+		$this->CabinetFile->makeRootFolder($this->data);
+
 		//CabinetFrameSetting登録
 		//if (isset($this->CabinetFrameSetting->data['CabinetFrameSetting']) && ! $this->CabinetFrameSetting->data['CabinetFrameSetting']['id']) {
 		//	if (! $this->CabinetFrameSetting->save(null, false)) {
@@ -247,6 +250,7 @@ class Cabinet extends CabinetsAppModel {
 			'Cabinet' => 'Cabinets.Cabinet',
 			'CabinetSetting' => 'Cabinets.CabinetSetting',
 			//'CabinetFrameSetting' => 'Cabinets.CabinetFrameSetting',
+			'CabinetFile' => 'Cabinets.CabinetFile'
 		]);
 
 		//トランザクションBegin
