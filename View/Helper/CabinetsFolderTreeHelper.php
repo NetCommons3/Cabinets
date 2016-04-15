@@ -33,7 +33,7 @@ class CabinetsFolderTreeHelper extends AppHelper {
 		$this->_render($folders);
 	}
 
-	public function _render($folders, $nest = 0, $parentFolderId = 0){
+	public function _render($folders, $nest = -1, $parentFolderId = 0){
 		foreach($folders as $folder){
 			$treeId = $folder['CabinetFileTree']['id'];
 			$isActiveFolder = ($treeId == $this->_currentTreeId);
@@ -47,37 +47,22 @@ class CabinetsFolderTreeHelper extends AppHelper {
 			}else {
 				$active = '';
 			}
-			// open or close
-			//if(in_array($folder['CabinetFile']['id'], $this->_currentFolderTree)){
-			//	// カレント or カレントの親フォルダ
-			//	$arrowIcon = '<span class="glyphicon glyphicon-menu-down" style="width: 15px"></span>';
-			//	$folderIcon = ' <span class="glyphicon glyphicon-folder-open" aria-hidden="true" ></span>';
-			//}else{
-				// 下位のフォルダがなければアローアイコン不要
+			// 下位のフォルダがなければアローアイコン不要
+			if($nest == -1){
+				// Cabinet
+				$arrowIcon = '';
+				$folderIcon = '<span class="glyphicon glyphicon-hdd" aria-hidden="true" ></span>';
+			}else{
 				if(Hash::get($folder, 'children', false)) {
 					$arrowIcon = '<span class="glyphicon cabinets__folder-tree-toggle" aria-hidden="true"  style="width: 15px" ng-class="{\'glyphicon-menu-down\': folder['.$treeId.'], \'glyphicon-menu-right\': ! folder['.$treeId.']}" ng-click="toggle('.$treeId.')"></span> ';
-					//$arrowIcon = $this->Html->link(
-					//	$arrowIcon,
-					//	'#cabinets-folder-tree-children-' . $folderId,
-					//	[
-					//		//'data-toggle' => 'collapse',
-					//		//'aria-controls' => 'cabinets-folder-tree-children-' . $folderId,
-					//		//'aria-expanded' => 'true',
-					//		'escape' => false,
-					//		'ng-click' => 'toggle('.$folderId.')',
-					//	]
-					//	);
 				}else{
 					$arrowIcon = '<span  class="glyphicon" style="width: 15px"></span> ';
 				}
 
-				//$arrowIcon = '   <a data-toggle="collapse" aria-controls="cabinets-folder-tree-children-'.$folderId.'" href="#cabinets-folder-tree-children-'.$folderId.'" aria-expanded="false">===</a>';
 				$folderIcon = '<span class="glyphicon " aria-hidden="true" ng-class="{\'glyphicon-folder-open\': folder['.$treeId.'], \'glyphicon-folder-close\': ! folder['.$treeId.']}"></span>';
-			//}
-			//echo $this->Html->link($tree . $arrowIcon . $folderIcon . $folder['CabinetFile']['filename'],
-			//	'',
-			//	['escape' => false, 'class' => 'list-group-item ' . $active]
-			//);
+
+
+			}
 			$options = [
 				'escape' => false,
 				'class' => 'cabinets__folder-tree__folder list-group-item ' . $active,
