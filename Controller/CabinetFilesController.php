@@ -180,6 +180,10 @@ class CabinetFilesController extends CabinetsAppController {
 		// folderならindex
 		// ファイルならdownload
 		// ルートフォルダならbackToPageUrl();
+		if ($currentFolder['CabinetFileTree']['parent_id'] == null) {
+			// root folder
+			$url = null;
+		}
 		$this->set('parentUrl', $url);
 
 		$this->set('listTitle', $this->_cabinetTitle);
