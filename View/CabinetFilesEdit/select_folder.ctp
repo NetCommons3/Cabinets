@@ -26,11 +26,6 @@ $currentFolderTree = array_map('intval', $currentFolderTree);
 	}
 </style>
 <ul class="list-group" ng-controller="Cabinets.FolderTree" ng-init="init(<?php echo json_encode($currentFolderTree)?>)">
-	<li class="list-group-item ">
-		<?php
-		echo $this->NetCommonsHtml->link('<span class="glyphicon glyphicon-hdd" aria-hidden="true"></span>' . h($cabinet['Cabinet']['name']), NetCommonsUrl::backToIndexUrl(), ['escape' => false]);
-		?>
-	</li>
 	<?php
 
 	$this->CabinetsFolderTree->renderSelectFolderTree($folders, $currentTreeId );

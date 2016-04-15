@@ -21,7 +21,8 @@ echo $this->Html->script(
 	 <?php echo Current::read('Frame.id') ?>
 	 )">
 	<div class="cabinetFiles form" ng-controller="CabinetFile.edit" ng-init="init(
-	 <?php echo Hash::get($this->request->data, 'CabinetFileTree.parent_id', 0); ?>
+	 <?php echo Hash::get($this->request->data, 'CabinetFileTree.parent_id', 0); ?>,
+	 '<?php echo Hash::get($this->request->data, 'CabinetFile.key', 0); ?>'
 	 )"
 		 id="cabinetFileForm_<?php echo Current::read('Frame.id')?>"
 	>

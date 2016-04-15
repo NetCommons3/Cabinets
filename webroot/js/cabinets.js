@@ -43,10 +43,10 @@ NetCommonsApp.controller('CabinetFile.index',
       }
 
       $scope.moveFile = function(cabinetFileKey, isFolder) {
-        console.log($scope.parentId);
         var modal = NetCommonsModal.show(
             $scope, 'CabinetFile.edit.selectFolder',
-            $scope.baseUrl + '/cabinets/cabinet_files_edit/select_folder/' + CabinetsShareValue.blockId + '/parent_tree_id:'+$scope.parent_id+'?frame_id=' + CabinetsShareValue.frameId
+            // $scope.baseUrl + '/cabinets/cabinet_files_edit/select_folder/' + CabinetsShareValue.blockId + '/parent_tree_id:'+$scope.parent_id+'?frame_id=' + CabinetsShareValue.frameId
+            $scope.baseUrl + '/cabinets/cabinet_files_edit/select_folder/' + CabinetsShareValue.blockId + '/'+cabinetFileKey+'?frame_id=' + CabinetsShareValue.frameId
         );
         modal.result.then(function(parentId){
           if($scope.parent_id != parentId){
@@ -188,15 +188,16 @@ NetCommonsApp.controller('Cabinets.path',
  */
 NetCommonsApp.controller('CabinetFile.edit',
     ['$scope', '$filter', 'NetCommonsModal', 'CabinetsShareValue', '$http', function($scope, $filter, NetCommonsModal, CabinetsShareValue, $http) {
-      $scope.init = function(parentId) {
+      $scope.init = function(parentId, fileKey) {
         $scope.parent_id = parentId;
         CabinetsShareValue.parent_id = parentId;
+        CabinetsShareValue.fileKey = fileKey;
       }
 
       $scope.showFolderTree = function() {
         var modal = NetCommonsModal.show(
             $scope, 'CabinetFile.edit.selectFolder',
-            $scope.baseUrl + '/cabinets/cabinet_files_edit/select_folder/' + CabinetsShareValue.blockId + '/parent_tree_id:'+CabinetsShareValue.parent_id+'?frame_id=' + CabinetsShareValue.frameId
+            $scope.baseUrl + '/cabinets/cabinet_files_edit/select_folder/' + CabinetsShareValue.blockId + '/' + CabinetsShareValue.fileKey + '?frame_id=' + CabinetsShareValue.frameId
         );
         modal.result.then(function(parentId){
           console.log(parentId);
@@ -234,7 +235,7 @@ NetCommonsApp.controller('CabinetFile.edit',
  * User modal controller
  */
 NetCommonsApp.controller('CabinetFile.edit.selectFolder',
-    ['$scope', '$modalInstance', 'CabinetsShareValue', function($scope, $modalInstance, CabinetsShareValue) {
+    ['$scope', '$uibModalInstance', 'CabinetsShareValue', function($scope, $modalInstance, CabinetsShareValue) {
       /**
        * dialog cancel
        *

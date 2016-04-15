@@ -371,7 +371,16 @@ class CabinetFilesEditController extends CabinetsAppController {
 
 
 	public function select_folder() {
-		$currentTreeId = Hash::get($this->request->named, 'parent_tree_id', null);
+		//$currentTreeId = Hash::get($this->request->named, 'parent_tree_id', null);
+		$key = isset($this->request->params['pass'][1]) ? $this->request->params['pass'][1] : null;
+		$conditions = [
+			'CabinetFile.key' => $key,
+			'CabinetFile.cabinet_id' => $this->_cabinet['Cabinet']['id']
+		];
+		$conditions = $this->CabinetFile->getWorkflowConditions($conditions);
+		$cabinetFile = $this->CabinetFile->find('first', ['conditions' => $conditions]);
+		$currentTreeId = $cabinetFile['CabinetFileTree']['parent_id'];
+
 		//$targetFileKey =
 
 		$this->set('currentTreeId', $currentTreeId);
@@ -384,15 +393,17 @@ class CabinetFilesEditController extends CabinetsAppController {
 		// 全フォルダツリーを得る
 		$conditions = [
 			'is_folder' => 1,
-			// TODO フォルダだったら、自分より下はいれない
-			//'NOT' => array(
-			//	'AND' => array(
-			//		'CabinetFileTree.lft >=' => Current::read('Page.lft'),
-			//		'CabinetFileTree.rght <=' => Current::read('Page.rght')
-			//	)
-			//)
+			'cabinet_key' => $this->_cabinet['Cabinet']['key'],
+			];
+		if($cabinetFile['CabinetFile']['is_folder']){
+			$conditions['NOT'] = array(
+				'AND' => array(
+					'CabinetFileTree.lft >=' => $cabinetFile['CabinetFileTree']['lft'],
+					'CabinetFileTree.rght <=' => $cabinetFile['CabinetFileTree']['rght']
+				)
+			);
+		}
 
-		];
 		$folders = $this->CabinetFileTree->find('threaded', ['conditions' => $conditions, 'recursive' => 0, 'order' => 'CabinetFile.filename ASC']);
 		$this->set('folders', $folders);
 
