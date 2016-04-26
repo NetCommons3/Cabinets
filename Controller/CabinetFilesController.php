@@ -18,13 +18,11 @@ App::uses('TemporaryFolder', 'Files.Utility');
  * @property CabinetFile $CabinetFile
  * @property CabinetCategory $CabinetCategory
  */
-
-
 class CabinetFilesController extends CabinetsAppController {
 
-/**
- * @var array use models
- */
+	/**
+	 * @var array use models
+	 */
 	public $uses = array(
 		'Cabinets.CabinetFile',
 		'Cabinets.CabinetFileTree',
@@ -32,10 +30,10 @@ class CabinetFilesController extends CabinetsAppController {
 		'Categories.Category',
 	);
 
-/**
- * @var array helpers
- * @var array helpers
- */
+	/**
+	 * @var array helpers
+	 * @var array helpers
+	 */
 	public $helpers = array(
 		'NetCommons.Token',
 		'NetCommons.BackTo',
@@ -43,11 +41,11 @@ class CabinetFilesController extends CabinetsAppController {
 		'Users.DisplayUser'
 	);
 
-/**
- * Components
- *
- * @var array
- */
+	/**
+	 * Components
+	 *
+	 * @var array
+	 */
 	public $components = array(
 		'Paginator',
 		//'NetCommons.NetCommonsWorkflow',
@@ -61,9 +59,9 @@ class CabinetFilesController extends CabinetsAppController {
 		'NetCommons.Permission' => array(
 			//アクセスの権限
 			'allow' => array(
-					//'add,edit,delete' => 'content_creatable',
-					//'reply' => 'content_comment_creatable',
-					//'approve' => 'content_comment_publishable',
+				//'add,edit,delete' => 'content_creatable',
+				//'reply' => 'content_comment_creatable',
+				//'approve' => 'content_comment_publishable',
 			),
 		),
 		'Categories.Categories',
@@ -77,9 +75,9 @@ class CabinetFilesController extends CabinetsAppController {
 		],
 	);
 
-/**
- * @var array 絞り込みフィルタ保持値
- */
+	/**
+	 * @var array 絞り込みフィルタ保持値
+	 */
 	protected $_filter = array(
 		'categoryId' => 0,
 		'status' => 0,
@@ -88,14 +86,22 @@ class CabinetFilesController extends CabinetsAppController {
 
 	protected $_cabinet;
 
-/**
- * beforeFilter
- *
- * @return void
- */
+	/**
+	 * beforeFilter
+	 *
+	 * @return void
+	 */
 	public function beforeFilter() {
 		// ゲストアクセスOKのアクションを設定
-		$this->Auth->allow('index', 'view', 'category', 'tag', 'year_month', 'download', 'download_pdf');
+		$this->Auth->allow(
+			'index',
+			'view',
+			'category',
+			'tag',
+			'year_month',
+			'download',
+			'download_pdf'
+		);
 		//$this->Categories->initCategories();
 		//$this->AuthorizationKey->contentId =23; // TODO hardcord
 		//$this->AuthorizationKey->model ='CabinetFile'; // TODO hardcord
@@ -105,13 +111,13 @@ class CabinetFilesController extends CabinetsAppController {
 		$this->set('cabinet', $this->_cabinet);
 	}
 
-/**
- * index
- *
- * @return void
- */
+	/**
+	 * index
+	 *
+	 * @return void
+	 */
 	public function index() {
-		if (! Current::read('Block.id')) {
+		if (!Current::read('Block.id')) {
 			$this->autoRender = false;
 			return;
 		}
@@ -121,12 +127,15 @@ class CabinetFilesController extends CabinetsAppController {
 
 		// currentFolderを取得
 		$folderKey = isset($this->request->params['pass'][1]) ? $this->request->params['pass'][1] : null;
-		if (is_null($folderKey)){
+		if (is_null($folderKey)) {
 			// 指定がなければルートフォルダを取得する
 			$currentFolder = $this->CabinetFile->getRootFolder($this->_cabinet);
 			$currentTreeId = $currentFolder['CabinetFileTree']['id'];
-		}else{
-			$currentFolder = $this->CabinetFile->find('first', ['conditions' => ['CabinetFile.key' => $folderKey]]);
+		} else {
+			$currentFolder = $this->CabinetFile->find(
+				'first',
+				['conditions' => ['CabinetFile.key' => $folderKey]]
+			);
 			$currentTreeId = $currentFolder['CabinetFileTree']['id'];
 		}
 
@@ -138,7 +147,10 @@ class CabinetFilesController extends CabinetsAppController {
 			'is_folder' => 1,
 			'cabinet_key' => $this->viewVars['cabinet']['Cabinet']['key']
 		];
-		$folders = $this->CabinetFileTree->find('threaded', ['conditions' => $conditions, 'recursive' => 0, 'order' => 'CabinetFile.filename ASC']);
+		$folders = $this->CabinetFileTree->find(
+			'threaded',
+			['conditions' => $conditions, 'recursive' => 0, 'order' => 'CabinetFile.filename ASC']
+		);
 		$this->set('folders', $folders);
 
 		// カレントフォルダのファイル・フォルダリストを得る。
@@ -150,8 +162,11 @@ class CabinetFilesController extends CabinetsAppController {
 		$conditions = $this->CabinetFile->getWorkflowConditions($conditions);
 		// TODO ソート順変更
 		// TODO 昇順のときフォルダが先、降順の時フォルダが後
-		$files = $this->CabinetFile->find('all', ['conditions' => $conditions, 'order' => 'is_folder DESC, filename ASC']);
-		foreach($files as &$file){
+		$files = $this->CabinetFile->find(
+			'all',
+			['conditions' => $conditions, 'order' => 'is_folder DESC, filename ASC']
+		);
+		foreach ($files as &$file) {
 			$file['CabinetFile']['size'] = $this->CabinetFile->getTotalSizeByFolder($file);
 		}
 		$this->set('cabinetFiles', $files);
@@ -241,7 +256,8 @@ class CabinetFilesController extends CabinetsAppController {
 
 	public function folder_detail() {
 		// TODO folderじゃなかったらエラー
-		$folderKey = isset($this->request->params['pass'][1]) ? $this->request->params['pass'][1] : null;
+		$folderKey = Hash::get($this->request->params, 'pass.1', null);
+
 		$conditions = [
 			'CabinetFile.key' => $folderKey,
 			'CabinetFile.cabinet_id' => $this->_cabinet['Cabinet']['id']
@@ -249,7 +265,9 @@ class CabinetFilesController extends CabinetsAppController {
 		$conditions = $this->CabinetFile->getWorkflowConditions($conditions);
 		$cabinetFile = $this->CabinetFile->find('first', ['conditions' => $conditions]);
 
-		$cabinetFile['CabinetFile']['size'] = $this->CabinetFile->getTotalSizeByFolder($cabinetFile);
+		$cabinetFile['CabinetFile']['size'] = $this->CabinetFile->getTotalSizeByFolder(
+			$cabinetFile
+		);
 		//$cabinetFile['CabinetFile']['size'] =
 
 		$this->set('cabinetFile', $cabinetFile);
@@ -264,11 +282,11 @@ class CabinetFilesController extends CabinetsAppController {
 	}
 
 
-/**
- * 権限の取得
- *
- * @return array
- */
+	/**
+	 * 権限の取得
+	 *
+	 * @return array
+	 */
 	protected function _getPermission() {
 		$permissionNames = array(
 			'content_readable',
@@ -283,12 +301,12 @@ class CabinetFilesController extends CabinetsAppController {
 		return $permission;
 	}
 
-/**
- * 一覧
- *
- * @param array $extraConditions 追加conditions
- * @return void
- */
+	/**
+	 * 一覧
+	 *
+	 * @param array $extraConditions 追加conditions
+	 * @return void
+	 */
 	protected function _list($extraConditions = array()) {
 
 		//$this->_setYearMonthOptions();
@@ -318,12 +336,12 @@ class CabinetFilesController extends CabinetsAppController {
 		$this->render('index');
 	}
 
-/**
- * view method
- *
- * @throws NotFoundException
- * @return void
- */
+	/**
+	 * view method
+	 *
+	 * @throws NotFoundException
+	 * @return void
+	 */
 	public function view() {
 		// TODO ファイルでなければエラー
 		$folderKey = isset($this->request->params['pass'][1]) ? $this->request->params['pass'][1] : null;
@@ -354,7 +372,10 @@ class CabinetFilesController extends CabinetsAppController {
 
 		// ダウンロード実行
 		if ($cabinetFile) {
-			return $this->Download->doDownload($cabinetFile['CabinetFile']['id'], ['field' => 'file', 'download' => true]);
+			return $this->Download->doDownload(
+				$cabinetFile['CabinetFile']['id'],
+				['field' => 'file', 'download' => true]
+			);
 		} else {
 			// 表示できないファイルへのアクセスなら404
 			throw new NotFoundException(__('Invalid cabinet file'));
@@ -377,10 +398,10 @@ class CabinetFilesController extends CabinetsAppController {
 		$zipDownloader = new ZipDownloader();
 
 		list($folders, $files) = $tmpFolder->read(true, false, true);
-		foreach($folders as $folder){
+		foreach ($folders as $folder) {
 			$zipDownloader->addFolder($folder);
 		}
-		foreach ($files as $file){
+		foreach ($files as $file) {
 			$zipDownloader->addFile($file);
 		}
 
@@ -391,17 +412,22 @@ class CabinetFilesController extends CabinetsAppController {
 
 	protected function _prepareDownload($path, $cabinetFolder) {
 		// フォルダのファイル取得
-		$files = $this->CabinetFile->find('all', [
-			'conditions' => $this->CabinetFile->getWorkflowConditions([
-				'CabinetFileTree.parent_id' => $cabinetFolder['CabinetFileTree']['id'],
-				//'CabinetFile.is_folder' => false,
-			])
-		]);
-		foreach($files as $file){
-			if($file['CabinetFile']['is_folder']){
+		$files = $this->CabinetFile->find(
+			'all',
+			[
+				'conditions' => $this->CabinetFile->getWorkflowConditions(
+					[
+						'CabinetFileTree.parent_id' => $cabinetFolder['CabinetFileTree']['id'],
+						//'CabinetFile.is_folder' => false,
+					]
+				)
+			]
+		);
+		foreach ($files as $file) {
+			if ($file['CabinetFile']['is_folder']) {
 				mkdir($path . DS . $file['CabinetFile']['filename']);
 				$this->_prepareDownload($path . DS . $file['CabinetFile']['filename'], $file);
-			}else{
+			} else {
 				$filePath = WWW_ROOT . $file['UploadFile']['file']['path'] . $file['UploadFile']['file']['id'] . DS . $file['UploadFile']['file']['real_file_name'];
 				copy($filePath, $path . DS . $file['UploadFile']['file']['original_name']);
 
@@ -423,7 +449,10 @@ class CabinetFilesController extends CabinetsAppController {
 
 		// ダウンロード実行
 		if ($cabinetFile) {
-			return $this->Download->doDownload($cabinetFile['CabinetFile']['id'], ['field' => 'file', 'size' => 'thumb']);
+			return $this->Download->doDownload(
+				$cabinetFile['CabinetFile']['id'],
+				['field' => 'file', 'size' => 'thumb']
+			);
 		} else {
 			// 表示できないファイルへのアクセスなら404
 			throw new NotFoundException(__('Invalid cabinet file'));
@@ -436,16 +465,16 @@ class CabinetFilesController extends CabinetsAppController {
 		$key = $this->params['pass'][1];
 
 		$conditions = $this->CabinetFile->getConditions(
-				Current::read('Block.id'),
-				$this->Auth->user('id'),
-				$this->_getPermission(),
-				$this->_getCurrentDateTime()
+			Current::read('Block.id'),
+			$this->Auth->user('id'),
+			$this->_getPermission(),
+			$this->_getCurrentDateTime()
 		);
 
 		$conditions['CabinetFile.key'] = $key;
 		$options = array(
-				'conditions' => $conditions,
-				'recursive' => 1,
+			'conditions' => $conditions,
+			'recursive' => 1,
 		);
 		$cabinetFile = $this->CabinetFile->find('first', $options);
 		// ここまで元コンテンツを取得する処理
@@ -454,11 +483,15 @@ class CabinetFilesController extends CabinetsAppController {
 
 		// ダウンロード実行
 		if ($cabinetFile) {
-			return $this->Download->doDownload($cabinetFile['CabinetFile']['id'], ['filed' => 'pdf']);
+			return $this->Download->doDownload(
+				$cabinetFile['CabinetFile']['id'],
+				['filed' => 'pdf']
+			);
 		} else {
 			// 表示できないファイルへのアクセスなら404
 			throw new NotFoundException(__('Invalid cabinet file'));
 		}
 	}
+
 
 }

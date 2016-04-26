@@ -39,6 +39,7 @@ class CabinetFilesEditController extends CabinetsAppController {
 			'allow' => array(
 				'add,edit,delete' => 'content_creatable',
 				'add_folder,edit_folder' => 'content_editable', // フォルダの作成・編集は編集権限以上
+				'unzip' => 'content_publishable'
 			),
 		),
 		'Workflow.Workflow',
@@ -160,7 +161,7 @@ class CabinetFilesEditController extends CabinetsAppController {
 	public function edit() {
 		$this->set('isEdit', true);
 		//$key = $this->request->params['named']['key'];
-		$key = $this->params['pass'][1];
+		$key = $this->request->params['pass'][1];
 
 		//  keyのis_latstを元に編集を開始
 		$cabinetFile = $this->CabinetFile->findByKeyAndIsLatest($key, 1);
@@ -304,7 +305,7 @@ class CabinetFilesEditController extends CabinetsAppController {
 
 		$this->set('isEdit', true);
 		//$key = $this->request->params['named']['key'];
-		$key = $this->params['pass'][1];
+		$key = $this->request->params['pass'][1];
 
 		//  keyのis_latstを元に編集を開始
 		$cabinetFile = $this->CabinetFile->findByKeyAndIsLatest($key, 1);
@@ -614,6 +615,27 @@ class CabinetFilesEditController extends CabinetsAppController {
 
 		//return $csvWriter->download('export.csv');
 		return $csvWriter->zipDownload('test.zip', '日本語ファイル名.csv', 'pass');
+	}
+	
+	public function unzip() {
+		// unzipには公開権限必要
+		$key = $this->request->params['pass'][1];
+
+		$options = [
+			'conditions' => [
+				'CabinetFile.key' => $key,
+				'CabinetFile.cabinet_id' => $this->_cabinet['Cabinet']['id']
+			]
+		];
+
+		$cabinetFile = $this->CabinetFile->find('first', $options);
+
+		if($cabinetFile && $cabinetFile['UploadFile']['file']['extension'] == 'zip'){
+			$this->CabinetFile->unzip($cabinetFile);
+		} else {
+			return $this->throwBadRequest();
+		}
+
 	}
 
 }

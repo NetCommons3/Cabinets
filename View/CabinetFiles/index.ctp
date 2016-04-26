@@ -252,7 +252,9 @@ echo $this->Html->script(
 										$unzipDisabled = 'class="disabled"';
 									}
 									?>
-									<li <?php echo $unzipDisabled ?>><a href="#"><?php echo __d('cabinets', '解凍'); // TODO zip only ?></a></li>
+									<li <?php echo $unzipDisabled ?>>
+										<?php echo $this->NetCommonsHtml->link(__d('cabinets', '解凍'), ['controller' => 'cabinet_files_edit', 'action' => 'unzip', 'key' => $cabinetFile['CabinetFile']['key']]);?>
+									</li>
 								</ul>
 							</div>
 

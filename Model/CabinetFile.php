@@ -359,13 +359,11 @@ class CabinetFile extends CabinetsAppModel {
 				// 新規保存
 				$this->CabinetFileTree->create();
 				$data['CabinetFileTree']['cabinet_file_key'] = $savedData[$this->alias]['key'];
-				// TODO 例外処理
-				$this->CabinetFileTree->save($data);
-			}else{
-				// update
-				// TODO 例外処理
-				$this->CabinetFileTree->save($data);
 			}
+			// TODO 例外処理
+			$treeData = $this->CabinetFileTree->save($data);
+			$savedData = Hash::merge($savedData, $treeData);
+
 
 			$this->commit();
 			return $savedData;
@@ -478,5 +476,101 @@ class CabinetFile extends CabinetsAppModel {
 		];
 		return $conditions;
 	}
+
+	public function unzip($cabinetFile) {
+		// TODO begin
+
+
+		// テンポラリフォルダにunzip
+		$zipPath = WWW_ROOT . $cabinetFile['UploadFile']['file']['path'] .
+			$cabinetFile['UploadFile']['file']['id'] . DS .
+			$cabinetFile['UploadFile']['file']['real_file_name'];
+		//debug($zipPath);
+		App::uses('UnZip', 'Files.Utility');
+		$unzip = new UnZip($zipPath);
+		$tmpFolder = $unzip->extract();
+		if($tmpFolder === false){
+			throw new InternalErrorException('UnZip Failed.');
+		}
+		// 再帰ループで登録処理
+		$parentCabinetFolder = $this->find('first', ['conditions' => ['CabinetFileTree.id' => $cabinetFile['CabinetFileTree']['parent_id']]]);
+
+		list($folders, $files) = $tmpFolder->read(true, false, true);
+		foreach ($files as $file){
+			$this->_addFileFromPath($parentCabinetFolder, $file);
+		}
+		foreach ($folders as $folder){
+			$this->_addFolderFromPath($parentCabinetFolder, $folder);
+		}
+	}
+
+	protected function _addFolderFromPath($parentCabinetFolder, $folderPath) {
+		$newFolder = [
+			'CabinetFile' => [
+				'cabinet_id' => $parentCabinetFolder['CabinetFile']['cabinet_id'],
+				'is_folder' => true,
+				'filename' => $this->_basename($folderPath),
+				'status' => WorkflowComponent::STATUS_PUBLISHED,
+			],
+			'CabinetFileTree' => [
+				'parent_id' => $parentCabinetFolder['CabinetFileTree']['id'],
+				'cabinet_key' => $parentCabinetFolder['CabinetFileTree']['cabinet_key'],
+			],
+		];
+		$newFolder = $this->create($newFolder);
+
+		if (!$savedFolder = $this->saveFile($newFolder)) {
+			throw new InternalErrorException('Save Failed');
+		}
+		//// folder配下のread
+		$thisFolder = new Folder($folderPath);
+		list($folders, $files) = $thisFolder->read(true, false, true);
+		// 配下のファイル登録
+		foreach($files as $childFilePath){
+			$this->_addFileFromPath($savedFolder, $childFilePath);
+		}
+		// 配下のフォルダ登録
+		foreach($folders as $childFolderPath){
+			$this->_addFolderFromPath($savedFolder, $childFolderPath);
+		}
+	}
+
+	protected function _addFileFromPath($parentCabinetFolder, $filePath) {
+		$newFile = [
+			'CabinetFile' => [
+				'cabinet_id' => $parentCabinetFolder['CabinetFile']['cabinet_id'],
+				'is_folder' => false,
+				'filename' => $this->_basename($filePath),
+				'status' => WorkflowComponent::STATUS_PUBLISHED,
+			],
+			'CabinetFileTree' => [
+				'parent_id' => $parentCabinetFolder['CabinetFileTree']['id'],
+				'cabinet_key' => $parentCabinetFolder['CabinetFileTree']['cabinet_key'],
+			],
+		];
+		$newFile = $this->create($newFile);
+
+		if (!$savedFile = $this->saveFile($newFile)) {
+			throw new InternalErrorException('Save Failed');
+		}
+		$this->attachFile($savedFile, 'file', $filePath);
+	}
+
+
+	/**
+	 * php builtinのbasenameがlocale依存なので自前で
+	 *
+	 * @param $filePath
+	 * @return mixed
+	 */
+	protected function _basename($filePath) {
+		// Win pathを / 区切りに変換しちゃう
+		$filePath = str_replace('\\', '/', $filePath);
+		$separatedPath = explode('/', $filePath);
+		// 最後を取り出す
+		$basenaem = array_pop($separatedPath);
+		return $basenaem;
+	}
+
 
 }
