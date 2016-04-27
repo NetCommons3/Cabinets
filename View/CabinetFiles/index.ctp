@@ -134,9 +134,12 @@ echo $this->Html->script(
 				<td class="hidden-sm hidden-xs"></td>
 				<td colspan="2" style="text-align: right">
 					<?php
-					echo $this->Html->link(
-						__d('cabinets', '圧縮ダウンロード'),
-						$this->NetCommonsHtml->url(['action' => 'download_folder', 'key' => $currentFolder['CabinetFile']['key']]), ['class' => 'btn btn-xs btn-default']);
+					if (count($cabinetFiles) > 0) {
+						echo $this->Html->link(
+							__d('cabinets', '圧縮ダウンロード'),
+							$this->NetCommonsHtml->url(['action' => 'download_folder', 'key' => $currentFolder['CabinetFile']['key']]), ['class' => 'btn btn-xs btn-default']);
+
+					}
 					?>
 				</td>
 			</tr>
