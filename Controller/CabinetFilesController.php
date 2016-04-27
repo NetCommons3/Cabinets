@@ -375,7 +375,11 @@ class CabinetFilesController extends CabinetsAppController {
 		if ($cabinetFile) {
 			return $this->Download->doDownload(
 				$cabinetFile['CabinetFile']['id'],
-				['field' => 'file', 'download' => true]
+				[
+					'field' => 'file',
+					'download' => true,
+					'name' => $cabinetFile['CabinetFile']['filename'],
+				]
 			);
 		} else {
 			// 表示できないファイルへのアクセスなら404
@@ -430,7 +434,8 @@ class CabinetFilesController extends CabinetsAppController {
 				$this->_prepareDownload($path . DS . $file['CabinetFile']['filename'], $file);
 			} else {
 				$filePath = WWW_ROOT . $file['UploadFile']['file']['path'] . $file['UploadFile']['file']['id'] . DS . $file['UploadFile']['file']['real_file_name'];
-				copy($filePath, $path . DS . $file['UploadFile']['file']['original_name']);
+				//copy($filePath, $path . DS . $file['UploadFile']['file']['original_name']);
+				copy($filePath, $path . DS . $file['CabinetFile']['filename']);
 
 			}
 		}

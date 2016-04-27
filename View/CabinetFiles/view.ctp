@@ -29,7 +29,7 @@ echo $this->Html->script(
 </div>
 <?php endif ?>
 <dl class="cabinets__detail">
-	<dt><?php echo __d('cabinets', 'タイトル'); ?></dt>
+	<dt><?php echo __d('cabinets', 'ファイル名'); ?></dt>
 	<dd  class="form-control nc-data-label" ><?php echo $cabinetFile['CabinetFile']['filename']; ?>
 			<?php echo $this->Workflow->label($cabinetFile['CabinetFile']['status']); ?>
 	</dd>
@@ -39,10 +39,6 @@ echo $this->Html->script(
 
 	<dt><?php echo __d('cabinets', 'サイズ'); ?></dt>
 	<dd  class="form-control nc-data-label" ><?php echo $this->Number->toReadableSize($cabinetFile['UploadFile']['file']['size']); ?></dd>
-
-	<dt><?php echo __d('cabinets', 'ダウンロードファイル名'); ?></dt>
-	<dd  class="form-control nc-data-label" ><?php echo $cabinetFile['UploadFile']['file']['original_name']; ?></dd>
-
 
 	<dt><?php echo __d('cabinets', 'ダウンロード回数'); ?></dt>
 	<dd  class="form-control nc-data-label" ><?php echo $cabinetFile['UploadFile']['file']['download_count']; ?></dd>

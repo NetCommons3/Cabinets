@@ -186,6 +186,18 @@ class CabinetFilesEditController extends CabinetsAppController {
 			// set status folderは常に公開
 			$status = $this->Workflow->parseStatus();
 
+			// ファイル名変更
+			if ($this->request->data['CabinetFile']['file']['error'] == UPLOAD_ERR_NO_FILE) {
+				// 新たなアップロードがなければ元の拡張子をつける。
+				list($withOutExtFileName, $ext) = $this->CabinetFile->splitFileName($cabinetFile['CabinetFile']['filename']);
+			} else {
+				// 新たなアップロードがあれば新たなファイルの拡張子をつける
+				$ext = pathinfo($this->request->data['CabinetFile']['file']['name'], PATHINFO_EXTENSION);
+			}
+			if( $ext !== null){
+				$this->request->data['CabinetFile']['filename'] .= '.' . $ext;
+			}
+
 			$this->request->data['CabinetFile']['status'] = $status;
 
 			// set cabinet_id
@@ -217,6 +229,9 @@ class CabinetFilesEditController extends CabinetsAppController {
 		} else {
 
 			$this->request->data = $cabinetFile;
+			// 拡張子はとりのぞいておく
+			list($withOutExtFileName, $ext) = $this->CabinetFile->splitFileName($cabinetFile['CabinetFile']['filename']);
+			$this->request->data['CabinetFile']['filename'] = $withOutExtFileName;
 			if ($this->CabinetFile->canEditWorkflowContent($cabinetFile) === false) {
 				throw new ForbiddenException(__d('net_commons', 'Permission denied'));
 			}

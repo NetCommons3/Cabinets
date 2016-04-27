@@ -38,6 +38,7 @@ class CabinetFile extends CabinetsAppModel {
 		//'Likes.Like',
 		'Workflow.WorkflowComment',
 		//'Categories.Category',
+		'Cabinets.CabinetFileRename',
 		'Files.Attachment' => [
 			//'foo_photo' => [
 			//		'thumbnailSizes' => array(
@@ -545,7 +546,7 @@ class CabinetFile extends CabinetsAppModel {
 			'CabinetFile' => [
 				'cabinet_id' => $parentCabinetFolder['CabinetFile']['cabinet_id'],
 				'is_folder' => true,
-				'filename' => $this->_basename($folderPath),
+				'filename' => $this->basename($folderPath),
 				'status' => WorkflowComponent::STATUS_PUBLISHED,
 			],
 			'CabinetFileTree' => [
@@ -576,7 +577,7 @@ class CabinetFile extends CabinetsAppModel {
 			'CabinetFile' => [
 				'cabinet_id' => $parentCabinetFolder['CabinetFile']['cabinet_id'],
 				'is_folder' => false,
-				'filename' => $this->_basename($filePath),
+				'filename' => $this->basename($filePath),
 				'status' => WorkflowComponent::STATUS_PUBLISHED,
 			],
 			'CabinetFileTree' => [
@@ -599,13 +600,38 @@ class CabinetFile extends CabinetsAppModel {
  * @param string $filePath ファイルパス
  * @return string basename
  */
-	protected function _basename($filePath) {
+	public function basename($filePath) {
 		// Win pathを / 区切りに変換しちゃう
 		$filePath = str_replace('\\', '/', $filePath);
 		$separatedPath = explode('/', $filePath);
 		// 最後を取り出す
 		$basenaem = array_pop($separatedPath);
 		return $basenaem;
+	}
+
+	/**
+	 * 拡張子抜きのファイル名と拡張子にわける
+	 *
+	 */
+	public function splitFileName($fileName) {
+		// .あるか
+		if(strpos($fileName, '.')){
+			// .あり
+			$splitFileName = explode('.', $fileName);
+			$extension = array_pop($splitFileName); // 最後の.以降が拡張子
+			$withOutExtFilename = implode('.', $splitFileName);
+			$ret = [
+				$withOutExtFilename,
+				$extension
+			];
+		} else{
+			// .なし
+			$ret = [
+				$fileName,
+				null
+			];
+		}
+		return $ret;
 	}
 
 }
