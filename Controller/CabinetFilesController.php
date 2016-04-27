@@ -168,6 +168,7 @@ class CabinetFilesController extends CabinetsAppController {
 		);
 		foreach ($files as &$file) {
 			$file['CabinetFile']['size'] = $this->CabinetFile->getTotalSizeByFolder($file);
+			$file['CabinetFile']['has_children'] = $this->CabinetFile->hasChildren($file);
 		}
 		$this->set('cabinetFiles', $files);
 

@@ -492,6 +492,22 @@ class CabinetFile extends CabinetsAppModel {
 		return $parentCabinetFolder;
 	}
 
+/**
+ * 子ノードがあるか
+ *
+ * @param array $cabinetFile cabinetFile(folder)data
+ * @return bool true:あり
+ */
+	public function hasChildren($cabinetFile) {
+		// 自分自身が親IDとして登録されてるデータがあれば子ノードあり
+		$conditions = [
+			'CabinetFileTree.parent_id' => $cabinetFile['CabinetFileTree']['id'],
+		];
+		$conditions = $this->getWorkflowConditions($conditions);
+		$count = $this->find('count', ['conditions' => $conditions]);
+		return ($count > 0);
+	}
+
 	public function unzip($cabinetFile) {
 		$this->begin();
 

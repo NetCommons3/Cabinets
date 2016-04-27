@@ -188,11 +188,17 @@ echo $this->Html->script(
 								<li>
 									<?php echo $this->NetCommonsHtml->link(__d('cabinets', '編集'), ['controller' => 'cabinet_files_edit', 'action' => 'edit_folder', 'key' => $cabinetFile['CabinetFile']['key']]);?>
 								</li>
-								<li>
+								<?php
+								$zipDisabled = '';
+								if($cabinetFile['CabinetFile']['has_children'] === false) {
+									$zipDisabled = 'class="disabled"';
+								}
+								?>
+								<li <?php echo $zipDisabled; ?>>
 									<?php
 									echo $this->Html->link(
 										__d('cabinets', '圧縮ダウンロード'),
-										$this->NetCommonsHtml->url(['action' => 'download_folder', 'key' => $cabinetFile['CabinetFile']['key']]))
+										$this->NetCommonsHtml->url(['action' => 'download_folder', 'key' => $cabinetFile['CabinetFile']['key']]));
 									?>
 								</li>
 							</ul>
