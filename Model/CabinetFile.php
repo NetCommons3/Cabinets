@@ -362,8 +362,9 @@ class CabinetFile extends CabinetsAppModel {
 				$data['CabinetFileTree']['cabinet_file_key'] = $savedData[$this->alias]['key'];
 			}
 			// TODO 例外処理
+			// ここは単純マージじゃダメ
 			$treeData = $this->CabinetFileTree->save($data);
-			$savedData = Hash::merge($savedData, $treeData);
+			$savedData['CabinetFileTree'] = $treeData['CabinetFileTree'];
 
 
 			$this->commit();
