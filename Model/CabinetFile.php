@@ -477,31 +477,51 @@ class CabinetFile extends CabinetsAppModel {
 		return $conditions;
 	}
 
+/**
+ * 親フォルダデータを返す
+ *
+ * @param array $cabinetFile cabinetFile data
+ * @return array cabinetFile data
+ */
+	public function getParent($cabinetFile) {
+		$conditions = [
+			'CabinetFileTree.id' => $cabinetFile['CabinetFileTree']['parent_id'],
+		];
+
+		$parentCabinetFolder = $this->find('first', ['conditions' => $conditions]);
+		return $parentCabinetFolder;
+	}
+
 	public function unzip($cabinetFile) {
-		// TODO begin
+		$this->begin();
 
+		try {
+			// テンポラリフォルダにunzip
+			$zipPath = WWW_ROOT . $cabinetFile['UploadFile']['file']['path'] .
+				$cabinetFile['UploadFile']['file']['id'] . DS .
+				$cabinetFile['UploadFile']['file']['real_file_name'];
+			//debug($zipPath);
+			App::uses('UnZip', 'Files.Utility');
+			$unzip = new UnZip($zipPath);
+			$tmpFolder = $unzip->extract();
+			if($tmpFolder === false){
+				throw new InternalErrorException('UnZip Failed.');
+			}
+			// 再帰ループで登録処理
+			$parentCabinetFolder = $this->find('first', ['conditions' => ['CabinetFileTree.id' => $cabinetFile['CabinetFileTree']['parent_id']]]);
 
-		// テンポラリフォルダにunzip
-		$zipPath = WWW_ROOT . $cabinetFile['UploadFile']['file']['path'] .
-			$cabinetFile['UploadFile']['file']['id'] . DS .
-			$cabinetFile['UploadFile']['file']['real_file_name'];
-		//debug($zipPath);
-		App::uses('UnZip', 'Files.Utility');
-		$unzip = new UnZip($zipPath);
-		$tmpFolder = $unzip->extract();
-		if($tmpFolder === false){
-			throw new InternalErrorException('UnZip Failed.');
+			list($folders, $files) = $tmpFolder->read(true, false, true);
+			foreach ($files as $file){
+				$this->_addFileFromPath($parentCabinetFolder, $file);
+			}
+			foreach ($folders as $folder){
+				$this->_addFolderFromPath($parentCabinetFolder, $folder);
+			}
+		} catch (Exception $e) {
+			$this->rollback($e);
 		}
-		// 再帰ループで登録処理
-		$parentCabinetFolder = $this->find('first', ['conditions' => ['CabinetFileTree.id' => $cabinetFile['CabinetFileTree']['parent_id']]]);
-
-		list($folders, $files) = $tmpFolder->read(true, false, true);
-		foreach ($files as $file){
-			$this->_addFileFromPath($parentCabinetFolder, $file);
-		}
-		foreach ($folders as $folder){
-			$this->_addFolderFromPath($parentCabinetFolder, $folder);
-		}
+		$this->commit();
+		return true;
 	}
 
 	protected function _addFolderFromPath($parentCabinetFolder, $folderPath) {
@@ -557,12 +577,12 @@ class CabinetFile extends CabinetsAppModel {
 	}
 
 
-	/**
-	 * php builtinのbasenameがlocale依存なので自前で
-	 *
-	 * @param $filePath
-	 * @return mixed
-	 */
+/**
+ * php builtinのbasenameがlocale依存なので自前で
+ *
+ * @param string $filePath ファイルパス
+ * @return string basename
+ */
 	protected function _basename($filePath) {
 		// Win pathを / 区切りに変換しちゃう
 		$filePath = str_replace('\\', '/', $filePath);
@@ -571,6 +591,5 @@ class CabinetFile extends CabinetsAppModel {
 		$basenaem = array_pop($separatedPath);
 		return $basenaem;
 	}
-
 
 }

@@ -616,9 +616,13 @@ class CabinetFilesEditController extends CabinetsAppController {
 		//return $csvWriter->download('export.csv');
 		return $csvWriter->zipDownload('test.zip', '日本語ファイル名.csv', 'pass');
 	}
-	
+
+	/**
+	 * unzip action
+	 *
+	 * @return void
+	 */
 	public function unzip() {
-		// unzipには公開権限必要
 		$key = $this->request->params['pass'][1];
 
 		$options = [
@@ -632,6 +636,13 @@ class CabinetFilesEditController extends CabinetsAppController {
 
 		if($cabinetFile && $cabinetFile['UploadFile']['file']['extension'] == 'zip'){
 			$this->CabinetFile->unzip($cabinetFile);
+			$parentCabinetFolder = $this->CabinetFile->getParent($cabinetFile);
+			$this->redirect(NetCommonsUrl::actionUrl([
+				'controller' => 'cabinet_files',
+				'action' => 'index',
+				'key' => $parentCabinetFolder['CabinetFile']['key'],
+				'block_id' => Current::read('Block.id'),
+			]));
 		} else {
 			return $this->throwBadRequest();
 		}
