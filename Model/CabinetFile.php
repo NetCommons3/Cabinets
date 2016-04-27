@@ -386,7 +386,6 @@ class CabinetFile extends CabinetsAppModel {
  * @return bool
  */
 	public function deleteFileByKey($key) {
-		// ε(　　　　 v ﾟωﾟ)　＜タグリンク削除
 		$this->begin();
 		try{
 			//コメントの削除
@@ -395,8 +394,12 @@ class CabinetFile extends CabinetsAppModel {
 			$this->deleteCommentsByContentKey($deleteFile['CabinetFile']['key']);
 
 			// ファイル削除
-			$conditions = array('key' => $key);
+			$conditions = array('CabinetFile.key' => $key);
 			if ($result = $this->deleteAll($conditions, true, true)) {
+				// TODO CabinetFileTreeも削除
+				$conditions = [
+					'cabinet_file_key'
+				];
 				$this->commit();
 				return $result;
 			} else {
