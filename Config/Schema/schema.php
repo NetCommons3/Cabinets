@@ -31,7 +31,7 @@ class CabinetsSchema extends CakeSchema {
 	public $cabinet_files = array(
 		'id' => array('type' => 'integer', 'null' => false, 'default' => null, 'unsigned' => false, 'key' => 'primary', 'comment' => 'ID |  |  | '),
 		'cabinet_id' => array('type' => 'integer', 'null' => false, 'default' => null, 'unsigned' => false),
-		'parent_id' => array('type' => 'integer', 'null' => true, 'default' => null, 'unsigned' => false),
+		'cabinet_file_tree_parent_id' => array('type' => 'integer', 'null' => true, 'default' => null, 'unsigned' => false),
 		'status' => array('type' => 'integer', 'null' => false, 'default' => null, 'length' => 4, 'unsigned' => false, 'comment' => 'public status, 1: public, 2: public pending, 3: draft during 4: remand | 公開状況  1:公開中、2:公開申請中、3:下書き中、4:差し戻し |  | '),
 		'is_active' => array('type' => 'boolean', 'null' => false, 'default' => '0'),
 		'is_latest' => array('type' => 'boolean', 'null' => true, 'default' => null),
