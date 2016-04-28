@@ -14,6 +14,7 @@ class CabinetsSchema extends CakeSchema {
 		'id' => array('type' => 'integer', 'null' => false, 'default' => null, 'unsigned' => false, 'key' => 'primary', 'comment' => 'ID | | | '),
 		'cabinet_key' => array('type' => 'string', 'null' => false, 'default' => null, 'collate' => 'utf8_general_ci', 'comment' => 'bbs key | キャビネットキー | Hash値 | ', 'charset' => 'utf8'),
 		'cabinet_file_key' => array('type' => 'string', 'null' => false, 'default' => null, 'collate' => 'utf8_general_ci', 'comment' => 'bbs articles key | ファイルキー | Hash値 | ', 'charset' => 'utf8'),
+		'cabinet_file_id' => array('type' => 'integer', 'null' => false, 'default' => null, 'unsigned' => false),
 		'parent_id' => array('type' => 'integer', 'null' => true, 'default' => null, 'unsigned' => false, 'comment' => 'parent id | 親フォルダのID treeビヘイビア必須カラム | | '),
 		'lft' => array('type' => 'integer', 'null' => false, 'default' => null, 'unsigned' => false, 'comment' => 'lft | treeビヘイビア必須カラム | | '),
 		'rght' => array('type' => 'integer', 'null' => false, 'default' => null, 'unsigned' => false, 'comment' => 'rght | treeビヘイビア必須カラム | | '),
@@ -30,6 +31,7 @@ class CabinetsSchema extends CakeSchema {
 	public $cabinet_files = array(
 		'id' => array('type' => 'integer', 'null' => false, 'default' => null, 'unsigned' => false, 'key' => 'primary', 'comment' => 'ID |  |  | '),
 		'cabinet_id' => array('type' => 'integer', 'null' => false, 'default' => null, 'unsigned' => false),
+		'parent_id' => array('type' => 'integer', 'null' => true, 'default' => null, 'unsigned' => false),
 		'status' => array('type' => 'integer', 'null' => false, 'default' => null, 'length' => 4, 'unsigned' => false, 'comment' => 'public status, 1: public, 2: public pending, 3: draft during 4: remand | 公開状況  1:公開中、2:公開申請中、3:下書き中、4:差し戻し |  | '),
 		'is_active' => array('type' => 'boolean', 'null' => false, 'default' => '0'),
 		'is_latest' => array('type' => 'boolean', 'null' => true, 'default' => null),
