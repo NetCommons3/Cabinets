@@ -360,6 +360,9 @@ class CabinetFile extends CabinetsAppModel {
 			// TODO afterSaveへ
 			if ($data['CabinetFile']['is_folder']){
 				// フォルダは treeをupdate
+				//if(isset($data['CabinetFileTree']['id']) === false){
+				//	$data['CabinetFileTree']['id'] = null;
+				//}
 			} else {
 				// ファイルは treeを常にinsert
 				$data['CabinetFileTree']['id'] = null;
@@ -377,6 +380,7 @@ class CabinetFile extends CabinetsAppModel {
 
 			// TODO 例外処理
 			// ここは単純マージじゃダメ
+			$this->CabinetFileTree->create();
 			$treeData = $this->CabinetFileTree->save($data);
 			$savedData['CabinetFileTree'] = $treeData['CabinetFileTree'];
 
@@ -408,14 +412,33 @@ class CabinetFile extends CabinetsAppModel {
 			$this->deleteCommentsByContentKey($deleteFile['CabinetFile']['key']);
 
 			// ファイル削除
+			// TODO 子ノードを全て取得
+			//children($id = null, $direct = false, $fields = null, $order = null, $limit = null, $page = 1, $recursive = null)
+
+			$children = $this->CabinetFileTree->children($deleteFile['CabinetFileTree']['id'], false, null, null, null, 1, 0);
+			if($children){
+				foreach ($children as $child){
+					if($child['CabinetFile']['is_latest']){
+						// TODO is_latestデータはdeleteFileByKeyする
+						if ( !$this->deleteFileByKey($child['CabinetFile']['key'])){
+							throw new InternalErrorException(__d('net_commons', 'Internal Server Error'));
+						}
+					}else{
+						// is_latestでなければ履歴データとしてCabinetFileは残してTreeだけ削除（ツリービヘイビアが勝手にけしてくれる）
+					}
+				}
+			}
 			$conditions = array('CabinetFile.key' => $key);
 			if ($result = $this->deleteAll($conditions, true, true)) {
-				// TODO CabinetFileTreeも削除
+				// CabinetFileTreeも削除
 				$conditions = [
-					'cabinet_file_key'
+					'cabinet_file_key' => $key,
 				];
+				if(!$this->CabinetFileTree->deleteAll($conditions, true, true)){
+					throw new InternalErrorException(__d('net_commons', 'Internal Server Error'));
+				}
 				$this->commit();
-				return $result;
+				return true;
 			} else {
 				throw new InternalErrorException(__d('net_commons', 'Internal Server Error'));
 			}
