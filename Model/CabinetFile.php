@@ -68,7 +68,8 @@ class CabinetFile extends CabinetsAppModel {
 			'type' => 'INNER',
 			'className' => 'Cabinets.CabinetFileTree',
 			'foreignKey' => false,
-			'conditions' => 'CabinetFileTree.cabinet_file_key=CabinetFile.key',
+			//'conditions' => 'CabinetFileTree.cabinet_file_key=CabinetFile.key',
+			'conditions' => 'CabinetFileTree.cabinet_file_id=CabinetFile.id',
 			'fields' => '',
 			'order' => ''
 		),
@@ -181,6 +182,7 @@ class CabinetFile extends CabinetsAppModel {
 				'CabinetFileTree' => [
 					'cabinet_key' => $cabinet['Cabinet']['key'],
 					'cabinet_file_key' => $rootFolder['CabinetFile']['key'],
+					'cabinet_file_id' => $rootFolder['CabinetFile']['id'],
 				]
 			];
 			$result = $this->CabinetFileTree->save($tree);
@@ -343,6 +345,7 @@ class CabinetFile extends CabinetsAppModel {
 		$this->begin();
 		try {
 			$this->create(); // 常に新規登録
+			$data['CabinetFile']['cabinet_file_tree_parent_id'] = $data['CabinetFileTree']['parent_id'];
 			// 先にvalidate 失敗したらfalse返す
 			$this->set($data);
 			if (!$this->validates($data)) {
@@ -355,12 +358,23 @@ class CabinetFile extends CabinetsAppModel {
 			}
 
 			// TODO afterSaveへ
-			$count = $this->CabinetFileTree->find('count',['conditions' => ['cabinet_file_key' => $data[$this->alias]['key']]]);
-			if($count == 0){
-				// 新規保存
-				$this->CabinetFileTree->create();
-				$data['CabinetFileTree']['cabinet_file_key'] = $savedData[$this->alias]['key'];
+			if ($data['CabinetFile']['is_folder']){
+				// フォルダは treeをupdate
+			} else {
+				// ファイルは treeを常にinsert
+				$data['CabinetFileTree']['id'] = null;
 			}
+			$data['CabinetFileTree']['cabinet_file_key'] = $savedData[$this->alias]['key'];
+			$data['CabinetFileTree']['cabinet_file_id'] = $savedData[$this->alias]['id'];
+			//$count = $this->CabinetFileTree->find('count',['conditions' => ['cabinet_file_key' => $data[$this->alias]['key']]]);
+			//if($count == 0){
+			//	// 新規保存
+			//	$this->CabinetFileTree->create();
+			//	$data['CabinetFileTree']['cabinet_file_key'] = $savedData[$this->alias]['key'];
+			//}
+
+			// TODO treeはファイルなら常に新規INSERT フォルダだったらアップデート
+
 			// TODO 例外処理
 			// ここは単純マージじゃダメ
 			$treeData = $this->CabinetFileTree->save($data);

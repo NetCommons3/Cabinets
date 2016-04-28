@@ -42,7 +42,8 @@ class CabinetFileTree extends CabinetsAppModel {
 		'CabinetFile' => array(
 			'className' => 'Cabinets.CabinetFile',
 			'foreignKey' => false,
-			'conditions' => 'CabinetFileTree.cabinet_file_key=CabinetFile.key  ',
+			//'conditions' => 'CabinetFileTree.cabinet_file_key=CabinetFile.key  ',
+			'conditions' => 'CabinetFileTree.cabinet_file_id=CabinetFile.id  ',
 			'fields' => '',
 			'order' => ''
 		),
@@ -51,7 +52,8 @@ class CabinetFileTree extends CabinetsAppModel {
 	public function beforeFind($query) {
 		// workflow連動でアソシエーションさせる！
 		$associationConditions = [
-			'CabinetFileTree.cabinet_file_key = CabinetFile.key'
+			//'CabinetFileTree.cabinet_file_key = CabinetFile.key'
+			'CabinetFileTree.cabinet_file_id = CabinetFile.id'
 		];
 		$cabinetFileCondition = $this->CabinetFile->getWorkflowConditions($associationConditions);
 
