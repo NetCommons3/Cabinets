@@ -159,7 +159,7 @@ class Cabinet extends CabinetsAppModel {
 	public function afterSave($created, $options = array()) {
 		//CabinetSetting登録
 		if (isset($this->CabinetSetting->data['CabinetSetting'])) {
-			if (Hash::get($this->CabinetSetting->data, 'CabinetSetting.cabinet_key', false)) {
+			if (! Hash::get($this->CabinetSetting->data, 'CabinetSetting.cabinet_key', false)) {
 				$this->CabinetSetting->data['CabinetSetting']['cabinet_key'] = $this->data[$this->alias]['key'];
 			}
 			if (! $this->CabinetSetting->save(null, false)) {
