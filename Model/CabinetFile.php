@@ -38,7 +38,7 @@ class CabinetFile extends CabinetsAppModel {
 		//'Likes.Like',
 		'Workflow.WorkflowComment',
 		//'Categories.Category',
-		'Cabinets.CabinetFileRename',
+		//'Cabinets.CabinetFileRename',
 		'Files.Attachment' => [
 			//'foo_photo' => [
 			//		'thumbnailSizes' => array(
@@ -343,6 +343,7 @@ class CabinetFile extends CabinetsAppModel {
  */
 	public function saveFile($data) {
 		$this->begin();
+		$this->_autoRename($data);
 		try {
 			$this->create(); // 常に新規登録
 			$data['CabinetFile']['cabinet_file_tree_parent_id'] = $data['CabinetFileTree']['parent_id'];
@@ -406,21 +407,57 @@ class CabinetFile extends CabinetsAppModel {
 	public function deleteFileByKey($key) {
 		$this->begin();
 		try{
-			//コメントの削除
 			$deleteFile = $this->findByKey($key);
-			//コメントの削除
-			$this->deleteCommentsByContentKey($deleteFile['CabinetFile']['key']);
 
-			// ファイル削除
-			// TODO 子ノードを全て取得
-			//children($id = null, $direct = false, $fields = null, $order = null, $limit = null, $page = 1, $recursive = null)
+			if( $deleteFile['CabinetFile']['is_folder']){
+				return $this->_deleteFolder($deleteFile);
+			}else{
+				return $this->_deleteFile($deleteFile);
+			}
+			$this->commit();
+		} catch (Exception $e) {
+			$this->rollback($e);
+			throw $e;
+		}
+	}
 
-			$children = $this->CabinetFileTree->children($deleteFile['CabinetFileTree']['id'], false, null, null, null, 1, 0);
-			if($children){
-				foreach ($children as $child){
+	protected function _deleteFile($cabinetFile){
+		//コメントの削除
+		$this->deleteCommentsByContentKey($cabinetFile['CabinetFile']['key']);
+
+		$conditions = array('CabinetFile.key' => $cabinetFile['CabinetFile']['key']);
+
+		if ($result = $this->deleteAll($conditions, true, true)) {
+			// CabinetFileTreeも削除
+			$conditions = [
+				'cabinet_file_key' => $cabinetFile['CabinetFile']['key'],
+			];
+			if(!$this->CabinetFileTree->deleteAll($conditions, true, true)){
+				throw new InternalErrorException(__d('net_commons', 'Internal Server Error'));
+			}
+			return true;
+		} else {
+			throw new InternalErrorException(__d('net_commons', 'Internal Server Error'));
+		}
+	}
+
+	protected function _deleteFolder($cabinetFile){
+		$key = $cabinetFile['CabinetFile']['key'];
+
+		// 子ノードを全て取得
+		$children = $this->CabinetFileTree->children($cabinetFile['CabinetFileTree']['id'], false, null, null, null, 1, 0);
+		if($children){
+			foreach ($children as $child){
+				if($child['CabinetFile']['is_folder']){
+					// folder delete
+					$conditions = array('CabinetFile.key' => $child['CabinetFile']['key']);
+					if ( !$this->deleteAll($conditions)) {
+						throw new InternalErrorException(__d('net_commons', 'Internal Server Error'));
+					}
+				}else{
 					if($child['CabinetFile']['is_latest']){
-						// TODO is_latestデータはdeleteFileByKeyする
-						if ( !$this->deleteFileByKey($child['CabinetFile']['key'])){
+						$conditions = array('CabinetFile.key' => $child['CabinetFile']['key']);
+						if ( !$this->deleteAll($conditions, true, true)) {
 							throw new InternalErrorException(__d('net_commons', 'Internal Server Error'));
 						}
 					}else{
@@ -428,26 +465,23 @@ class CabinetFile extends CabinetsAppModel {
 					}
 				}
 			}
-			$conditions = array('CabinetFile.key' => $key);
-			if ($result = $this->deleteAll($conditions, true, true)) {
-				// CabinetFileTreeも削除
-				$conditions = [
-					'cabinet_file_key' => $key,
-				];
-				if(!$this->CabinetFileTree->deleteAll($conditions, true, true)){
-					throw new InternalErrorException(__d('net_commons', 'Internal Server Error'));
-				}
-				$this->commit();
-				return true;
-			} else {
+		}
+		$conditions = array('CabinetFile.key' => $key);
+		if ($result = $this->deleteAll($conditions, true, true)) {
+
+			// CabinetFileTreeも削除 Treeビヘイビアにより子ノードのTreeデータは自動的に削除される
+			$conditions = [
+				'cabinet_file_key' => $key,
+			];
+			if(!$this->CabinetFileTree->deleteAll($conditions, true, true)){
 				throw new InternalErrorException(__d('net_commons', 'Internal Server Error'));
 			}
-		} catch (Exception $e) {
-			$this->rollback();
-			//エラー出力
-			CakeLog::error($e);
-			throw $e;
+			$this->commit();
+			return true;
+		} else {
+			throw new InternalErrorException(__d('net_commons', 'Internal Server Error'));
 		}
+
 	}
 
 /**
@@ -673,6 +707,42 @@ class CabinetFile extends CabinetsAppModel {
 			];
 		}
 		return $ret;
+	}
+
+	protected function _existSameFilename($cabinetFile) {
+		$conditions = [
+			'CabinetFile.key !=' => $cabinetFile['CabinetFile']['key'],
+			'CabinetFileTree.parent_id' => $cabinetFile['CabinetFileTree']['parent_id'],
+			'CabinetFile.filename' => $cabinetFile['CabinetFile']['filename'],
+		];
+		$count = $this->find('count', ['conditions' => $conditions]);
+		return ($count > 0);
+	}
+
+	protected function _autoRename($cabinetFile) {
+		$index = 0;
+		if ($cabinetFile['CabinetFile']['is_folder']) {
+			// folder
+			$baseFolderName = $cabinetFile['CabinetFile']['filename'];
+			while($this->_existSameFilename($cabinetFile)){
+				// 重複し続ける限り数字を増やす
+				$index++;
+				$newFilename = sprintf('%s%03d', $baseFolderName, $index);
+				$cabinetFile['CabinetFile']['filename'] = $newFilename;
+			}
+			$this->data['CabinetFile']['filename'] = $cabinetFile['CabinetFile']['filename'];
+		} else {
+			list($baseFileName, $ext) = $this->splitFileName($cabinetFile['CabinetFile']['filename']);
+			$extString = is_null($ext) ? '' : '.' . $ext;
+
+			while($this->_existSameFilename($cabinetFile)){
+				// 重複し続ける限り数字を増やす
+				$index++;
+				$newFilename = sprintf('%s%03d', $baseFileName, $index);
+				$cabinetFile['CabinetFile']['filename'] = $newFilename . $extString;
+			}
+			$this->data['CabinetFile']['filename'] = $cabinetFile['CabinetFile']['filename'];
+		}
 	}
 
 }
