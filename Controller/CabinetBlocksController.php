@@ -18,6 +18,7 @@ App::uses('CabinetsAppController', 'Cabinets.Controller');
  * @package NetCommons\Cabinets\Controller
  *
  * @property Cabinet $Cabinet
+ * @property CabinetFile $CabinetFile
  */
 class CabinetBlocksController extends CabinetsAppController {
 
@@ -36,6 +37,7 @@ class CabinetBlocksController extends CabinetsAppController {
 	public $uses = array(
 		//'Cabinets.CabinetFrameSetting',
 		'Blocks.Block',
+		'Cabinets.CabinetFile',
 	);
 
 /**
@@ -103,6 +105,10 @@ class CabinetBlocksController extends CabinetsAppController {
 		//	debug($result);
 		//
 		//}
+		foreach ($cabinets as &$cabinet){
+			$rootFolder = $this->CabinetFile->getRootFolder($cabinet);
+			$cabinet['Cabinet']['total_size'] = $this->CabinetFile->getTotalSizeByFolder($rootFolder);
+		}
 
 		$this->set('cabinets', $cabinets);
 		$this->request->data['Frame'] = Current::read('Frame');

@@ -388,7 +388,6 @@ class CabinetFilesController extends CabinetsAppController {
 	}
 
 	public function download_folder() {
-		// TODO 多階層に対応させる
 		// フォルダを取得
 		$folderKey = isset($this->request->params['pass'][1]) ? $this->request->params['pass'][1] : null;
 		$conditions = [
