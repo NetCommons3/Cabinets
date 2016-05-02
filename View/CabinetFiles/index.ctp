@@ -208,36 +208,30 @@ echo $this->Html->script(
 				<?php else:?>
 					<?php // File ?>
 						<td>
-								<?php
-								// TODO ビヘイビアに移動？
-								//$thumbPath = WWW_ROOT . $cabinetFile['UploadFile']['file']['path'] . $cabinetFile['UploadFile']['file']['id'] . DS . 'thumb_' . $cabinetFile['UploadFile']['file']['real_file_name'];
-								//if(file_exists($thumbPath)){
-								//	$url = $this->NetCommonsHtml->url([
-								//		'action' => 'thumb',
-								//		'key' => $cabinetFile['CabinetFile']['key'],
-								//	]);
-								//	$icon = $this->Html->image($url, ['class' => 'cabinets__thumb']);
-								//}else{
-								//	$icon = '<span class="glyphicon glyphicon-file text-primary cabinets__file-list-icon" aria-hidden="true"></span>';
-								//}
-								$icon = '<span class="glyphicon glyphicon-file text-primary cabinets__file-list-icon" aria-hidden="true"></span>';
-								echo $icon;
-								echo $this->NetCommonsHtml->link(h($cabinetFile['CabinetFile']['filename']), ['action' => 'download', 'key' => $cabinetFile['CabinetFile']['key']], ['escape' => false]);
-								?>
+							<?php
+							$icon = '<span class="glyphicon glyphicon-file text-primary cabinets__file-list-icon" aria-hidden="true"></span>';
+							echo $icon;
+							echo $this->NetCommonsHtml->link(h($cabinetFile['CabinetFile']['filename']), ['action' => 'download', 'key' => $cabinetFile['CabinetFile']['key']], ['escape' => false]);
+							?>
 							<?php echo $this->Workflow->label($cabinetFile['CabinetFile']['status']); ?>
-						<span class="badge ">
-						<?php echo $cabinetFile['UploadFile']['file']['download_count'] ?>
-						</span>
-						<div class="cabinets__index__description text-muted small"
-							 data-content="<?php echo nl2br(h($cabinetFile['CabinetFile']['description']));?>"
-							 data-toggle="popover"
-							 data-placement="bottom"
-						>
-							<?php echo (h($cabinetFile['CabinetFile']['description']));?>
-						</div>
+							<?php if (isset($cabinetFile['AuthorizationKey'])):?>
+								<span class="glyphicon glyphicon-lock" aria-hidden="true"
+									  title="<?php echo __d('cabinets', 'ダウンロードにはパスワードが必要です')?>"></span>
+							<?php endif ?>
+							<span class="badge ">
+							<?php echo $cabinetFile['UploadFile']['file']['download_count'] ?>
+							</span>
+
+							<div class="cabinets__index__description text-muted small"
+								 data-content="<?php echo nl2br(h($cabinetFile['CabinetFile']['description']));?>"
+								 data-toggle="popover"
+								 data-placement="bottom"
+							>
+								<?php echo (h($cabinetFile['CabinetFile']['description']));?>
+							</div>
 
 
-							</td>
+						</td>
 						<td class="hidden-sm hidden-xs"><?php echo $this->Number->toReadableSize($cabinetFile['UploadFile']['file']['size']) ?></td>
 						<td><?php echo $this->Date->dateFormat($cabinetFile['CabinetFile']['modified']) ?> <?php echo $cabinetFile['TrackableUpdater']['username'] ?></td>
 
