@@ -16,6 +16,10 @@ echo $this->Html->script(
 	)
 );
 ?>
+<?php $this->start('title_for_modal'); ?>
+<?php echo $cabinet['Cabinet']['name'] ?>
+<?php $this->end(); ?>
+
 <div ng-controller="Cabinets" ng-init="init(
 	 <?php echo Current::read('Block.id') ?>,
 	 <?php echo Current::read('Frame.id') ?>
@@ -26,8 +30,10 @@ echo $this->Html->script(
 		 id="cabinetFileForm_<?php echo Current::read('Frame.id')?>"
 	>
 		<article>
-			<h1><?php echo $cabinet['Cabinet']['name'] ?></h1>
-			<div class="panel panel-default">
+			<div>
+				<?php echo $this->element('file_path'); ?>
+			</div>
+		<div class="panel panel-default">
 
 				<?php echo $this->NetCommonsForm->create(
 					'CabinetFile',
