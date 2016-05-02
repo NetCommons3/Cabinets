@@ -394,6 +394,9 @@ class CabinetFilesController extends CabinetsAppController {
 				if (isset($file['AuthorizationKey'])) {
 					throw new Exception(__d('cabinets', 'ダウンロードパスワードが設定されてるファイルが存在するフォルダは圧縮ダウンロードできません。'));
 				}
+				// ダウンロードカウントアップ
+				$this->CabinetFile->downloadCountUp($file, 'file');
+
 				$filePath = WWW_ROOT . $file['UploadFile']['file']['path'] . $file['UploadFile']['file']['id'] . DS . $file['UploadFile']['file']['real_file_name'];
 				//copy($filePath, $path . DS . $file['UploadFile']['file']['original_name']);
 				copy($filePath, $path . DS . $file['CabinetFile']['filename']);
