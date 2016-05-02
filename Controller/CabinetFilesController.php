@@ -208,53 +208,6 @@ class CabinetFilesController extends CabinetsAppController {
 
 	}
 
-
-	//public function tree() {
-	//	$this->layout = null ;
-	//	$parentId = isset($this->request->params['pass'][1]) ? $this->request->params['pass'][1] : null;
-	//	$currentTreeId = $parentId;
-	//
-	//	$this->set('currentTreeId', $currentTreeId);
-	//	$this->CabinetFileTree->recover('parent');
-	//
-	//	// 全フォルダツリーを得る
-	//	$conditions = [
-	//		'is_folder' => 1,
-	//	];
-	//	$folders = $this->CabinetFileTree->find('threaded', ['conditions' => $conditions, 'recursive' => 0, 'order' => 'CabinetFile.filename ASC']);
-	//	$this->set('folders', $folders);
-	//
-	//	// カレントフォルダのツリーパスを得る
-	//	if($currentTreeId > 0){
-	//		$folderPath = $this->CabinetFileTree->getPath($currentTreeId, null, 0);
-	//		$this->set('folderPath', $folderPath);
-	//		$nestCount = count($folderPath);
-	//		if($nestCount > 1){
-	//			// 親フォルダあり
-	//			$url = NetCommonsUrl::actionUrl(
-	//				[
-	//					'key' => $folderPath[$nestCount - 2]['CabinetFile']['key'],
-	//					'block_id' => Current::read('Block.id'),
-	//					'frame_id' => Current::read('Frame.id'),
-	//				]
-	//			);
-	//
-	//		}else{
-	//			// 親はキャビネット
-	//			$url = NetCommonsUrl::backToIndexUrl();
-	//		}
-	//		$this->set('parentUrl', $url);
-	//	}else{
-	//		// ルート
-	//		$this->set('folderPath', array());
-	//		$this->set('parentUrl', false);
-	//	}
-	//
-	//
-	//	// ajaxリクエストだがjonでなくhtml viewを返したいのでviewClass=Viewに戻す
-	//	$this->viewClass = 'View';
-	//}
-
 	public function folder_detail() {
 		// TODO folderじゃなかったらエラー
 		$folderKey = Hash::get($this->request->params, 'pass.1', null);
@@ -398,7 +351,13 @@ class CabinetFilesController extends CabinetsAppController {
 		$cabinetFolder = $this->CabinetFile->find('first', ['conditions' => $conditions]);
 
 		$tmpFolder = new TemporaryFolder();
-		$this->_prepareDownload($tmpFolder->path, $cabinetFolder);
+		try {
+			$this->_prepareDownload($tmpFolder->path, $cabinetFolder);
+		} catch (Exception $e) {
+			$this->set('error', $e->getMessage());
+			
+			return;
+		}
 		$zipDownloader = new ZipDownloader();
 
 		list($folders, $files) = $tmpFolder->read(true, false, true);
@@ -432,6 +391,9 @@ class CabinetFilesController extends CabinetsAppController {
 				mkdir($path . DS . $file['CabinetFile']['filename']);
 				$this->_prepareDownload($path . DS . $file['CabinetFile']['filename'], $file);
 			} else {
+				if (isset($file['AuthorizationKey'])) {
+					throw new Exception(__d('cabinets', 'ダウンロードパスワードが設定されてるファイルが存在するフォルダは圧縮ダウンロードできません。'));
+				}
 				$filePath = WWW_ROOT . $file['UploadFile']['file']['path'] . $file['UploadFile']['file']['id'] . DS . $file['UploadFile']['file']['real_file_name'];
 				//copy($filePath, $path . DS . $file['UploadFile']['file']['original_name']);
 				copy($filePath, $path . DS . $file['CabinetFile']['filename']);
