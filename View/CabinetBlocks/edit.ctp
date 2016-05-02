@@ -25,7 +25,12 @@
 		<?php if ($this->request->params['action'] === 'edit') : ?>
 			<?php echo $this->element('Blocks.delete_form', array(
 				'model' => 'CabinetBlock',
-				'action' => 'delete/' . Current::read('Frame.id') . '/' . Current::read('Block.id'),
+				'action' => NetCommonsUrl::actionUrl(array(
+					'controller' => $this->params['controller'],
+					'action' => 'delete',
+					'block_id' => Current::read('Block.id'),
+					'frame_id' => Current::read('Frame.id')
+				)),
 				'callback' => 'Cabinets.CabinetBlocks/delete_form'
 			)); ?>
 		<?php endif; ?>

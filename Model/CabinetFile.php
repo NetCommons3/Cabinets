@@ -65,7 +65,7 @@ class CabinetFile extends CabinetsAppModel {
  */
 	public $belongsTo = array(
 		'CabinetFileTree' => array(
-			'type' => 'INNER',
+			'type' => 'LEFT',
 			'className' => 'Cabinets.CabinetFileTree',
 			'foreignKey' => false,
 			//'conditions' => 'CabinetFileTree.cabinet_file_key=CabinetFile.key',
@@ -74,7 +74,7 @@ class CabinetFile extends CabinetsAppModel {
 			'order' => ''
 		),
 		'Cabinet' => array(
-			'type' => 'INNER',
+			'type' => 'LEFT',
 			'className' => 'Cabinets.Cabinet',
 			'foreignKey' => false,
 			'conditions' => 'CabinetFile.cabinet_id=Cabinet.id',

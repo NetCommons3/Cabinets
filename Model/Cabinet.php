@@ -295,19 +295,20 @@ class Cabinet extends CabinetsAppModel {
 			'Cabinet' => 'Cabinets.Cabinet',
 			'CabinetSetting' => 'Cabinets.CabinetSetting',
 			'CabinetFile' => 'Cabinets.CabinetFile',
+			'CabinetFileTree' => 'Cabinets.CabinetFileTree',
 		]);
 
 		//トランザクションBegin
 		$this->begin();
 
-		//$conditions = array(
-		//	$this->alias . '.key' => $data['Cabinet']['key']
-		//);
-		//$cabinets = $this->find('list', array(
-		//	'recursive' => -1,
-		//	'conditions' => $conditions,
-		//));
-		//$cabinetIds = array_keys($cabinets);
+		$conditions = array(
+			$this->alias . '.key' => $data['Cabinet']['key']
+		);
+		$cabinets = $this->find('list', array(
+			'recursive' => -1,
+			'conditions' => $conditions,
+		));
+		$cabinetIds = array_keys($cabinets);
 
 		try {
 			if (! $this->deleteAll(array($this->alias . '.key' => $data['Cabinet']['key']), false, false)) {
@@ -317,8 +318,11 @@ class Cabinet extends CabinetsAppModel {
 			if (! $this->CabinetSetting->deleteAll(array($this->CabinetSetting->alias . '.cabinet_key' => $data['Cabinet']['key']), false, false)) {
 				throw new InternalErrorException(__d('net_commons', 'Internal Server Error'));
 			}
-
-			if (! $this->CabinetFile->deleteAll(array($this->CabinetFile->alias . '.cabinet_key' => $data['Cabinet']['key']), false)) {
+			// アップロードファイルの削除をしたいのでコールバック有効にする
+			if (! $this->CabinetFile->deleteAll(array($this->CabinetFile->alias . '.cabinet_id' => $cabinetIds), true, true)) {
+				throw new InternalErrorException(__d('net_commons', 'Internal Server Error'));
+			}
+			if (! $this->CabinetFileTree->deleteAll(array($this->CabinetFileTree->alias . '.cabinet_key' => $data['Cabinet']['key']), false)) {
 				throw new InternalErrorException(__d('net_commons', 'Internal Server Error'));
 			}
 

@@ -169,4 +169,5 @@ class CabinetBlocksController extends CabinetsAppController {
 
 		return $this->throwBadRequest();
 	}
+
 }
