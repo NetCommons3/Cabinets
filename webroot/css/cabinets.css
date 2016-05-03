@@ -49,11 +49,21 @@ dl.cabinets__detail dd{
     font-weight: bold;
 }
 
+
+.cabinets__index__file-list{
+    table-layout: fixed;
+}
+
+.cabinets__index__name{
+    width:60%;
+}
 .cabinets__index__size{
     white-space: nowrap;
+    width:15%;
 }
 .cabinets__index__modified{
     white-space: nowrap;
+    width:25%;
 
 }
 .cabinets__index__description{
@@ -62,17 +72,17 @@ dl.cabinets__detail dd{
     text-overflow: ellipsis;
 }
 /* Extra small */
-@media (max-width: 768px) {
-    .cabinets__index__description {
-        width:200px;
-    }
-}
-/* Small */
-@media (min-width: 768px) {
-    .cabinets__index__description {
-        width:300px;
-    }
-}
+/*@media (max-width: 768px) {*/
+    /*.cabinets__index__description {*/
+        /*width:200px;*/
+    /*}*/
+/*}*/
+/*!* Small *!*/
+/*@media (min-width: 768px) {*/
+    /*.cabinets__index__description {*/
+        /*width:10em;*/
+    /*}*/
+/*}*/
 
 /* この下つかってないかも */
 

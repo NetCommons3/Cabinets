@@ -110,10 +110,11 @@ echo $this->Html->script(
 	</div>
 
 	<div class="col-md-9 inline">
-		<table class="table" ng-controller="CabinetFile.index" ng-init="init(<?php echo $currentTreeId ?>)">
+		<table class="table cabinets__index__file-list" ng-controller="CabinetFile.index" ng-init="init(<?php echo
+		$currentTreeId ?>)">
 			<thead>
 			<tr>
-				<th>名前</th>
+				<th class="cabinets__index__name">名前</th>
 				<th class="cabinets__index__size hidden-sm hidden-xs"><?php echo __d('cabinets', 'サイズ') ?></th>
 				<th class="cabinets__index__modified" colspan="2"><?php echo __d('cabinets', '最終更新'); ?></th>
 
