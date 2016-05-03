@@ -51,16 +51,26 @@ echo $this->Html->script(
 
 					<fieldset>
 
-						<?php
-						echo $this->NetCommonsForm->input(
-							'filename',
-							array(
-								'label' => __d('cabinets', 'タイトル'),
-								'required' => 'required',
-							)
-						);
-						?>
-						<?php  echo $this->NetCommonsForm->uploadFile('file', ['label' => __d('cabinets', 'ファイル'), 'remove' => false])?>
+						<div class="form-group">
+							<?php echo $this->NetCommonsForm->label('filename', __d('cabinets',
+							'ファイル名'),
+								['required' => true]);?>
+							<?php
+							echo $this->NetCommonsForm->input(
+								'filename',
+								array(
+									//'label' => __d('cabinets', 'ファイル名'),
+									'label' => false,
+									'required' => 'required',
+									'after' =>  ' .' .
+										$this->request->data['UploadFile']['file']['extension'],
+									'div' => 'form-inline'
+								)
+							);
+							?>
+
+						</div>
+						<?php  echo $this->NetCommonsForm->uploadFile('file', ['label' => __d('cabinets', 'ファイル'), 'remove' => false, 'filename' => false])?>
 
 						<div class="form-group">
 						<input type="checkbox" ng-model="use_auth_key"/><?php echo __d('cabinets', 'ダウンロードパスワードを設定する');?>
