@@ -45,6 +45,8 @@ class AddRecord extends NetCommonsMigration {
 				'type' => 1,
 				'default_action' => 'cabinet_files/index',
 				'default_setting_action' => 'cabinet_blocks/index',
+				'display_topics' => 1,
+				'display_search' => 1,
 			),
 			//英語
 			array(
@@ -55,6 +57,8 @@ class AddRecord extends NetCommonsMigration {
 				'type' => 1,
 				'default_action' => 'cabinet_files/index',
 				'default_setting_action' => 'cabinet_blocks/index',
+				'display_topics' => 1,
+				'display_search' => 1,
 			),
 		),
 		'PluginsRole' => array(
