@@ -331,6 +331,9 @@ class CabinetFilesController extends CabinetsAppController {
 		$this->set('cabinetFile', $cabinetFile);
 
 		$this->_setFolderPath($cabinetFile);
+
+		//新着データを既読にする
+		$this->CabinetFile->saveTopicUserStatus($cabinetFile);
 	}
 
 	public function download() {

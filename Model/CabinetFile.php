@@ -54,8 +54,14 @@ class CabinetFile extends CabinetsAppModel {
 				//'thumbnails' => false,
 			]
 		],
-			'AuthorizationKeys.AuthorizationKey',
-		);
+		'AuthorizationKeys.AuthorizationKey',
+		'Topics.Topics' => array(
+			'fields' => array(
+				'title' => 'filename',
+				'summary' => 'description',
+			),
+		),
+	);
 
 /**
  * belongsTo associations
