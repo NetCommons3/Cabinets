@@ -59,6 +59,7 @@ class CabinetFile extends CabinetsAppModel {
 			'fields' => array(
 				'title' => 'filename',
 				'summary' => 'description',
+				'path' => '/:plugin_key/cabinet_files/view/:block_id/:content_key',
 			),
 		),
 	);
