@@ -9,7 +9,7 @@
 
 		<!--	TODO 投稿者アバター-->
 		<!--	TODO　投稿者名 リンク-->
-		<?php echo $this->Html->link($cabinetFile['TrackableCreator']['username'], array()); ?>&nbsp;
+		<?php echo $this->Html->link($cabinetFile['TrackableCreator']['handlename'], array()); ?>&nbsp;
 		<?php echo __d('cabinets', 'Category') ?>:<?php echo $this->Html->link(
 			$cabinetFile['Category']['name'],
 			$this->NetCommonsHtml->url(
