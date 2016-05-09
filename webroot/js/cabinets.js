@@ -228,17 +228,17 @@ NetCommonsApp.controller('CabinetFile.edit',
  * User modal controller
  */
 NetCommonsApp.controller('CabinetFile.edit.selectFolder',
-    ['$scope', '$modalInstance', 'CabinetsShareValue', function($scope, $modalInstance, CabinetsShareValue) {
+    ['$scope', '$uibModalInstance', 'CabinetsShareValue', function($scope, $uibModalInstance, CabinetsShareValue) {
       /**
        * dialog cancel
        *
        * @return {void}
        */
       $scope.cancel = function() {
-        $modalInstance.dismiss('cancel');
+        $uibModalInstance.dismiss('cancel');
       };
       $scope.select = function(parentid) {
-        $modalInstance.close(parentid);
+        $uibModalInstance.close(parentid);
       }
     }]
 );
