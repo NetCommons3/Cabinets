@@ -121,7 +121,7 @@ NetCommonsApp.controller('CabinetFile.addFile',
  * AddFile Modal
  */
 NetCommonsApp.controller('CabinetFile.addFileModal',
-    ['$scope', '$uibModalInstance', 'CabinetsShareValue', function($scope, $modalInstance, CabinetsShareValue) {
+    ['$scope', '$uibModalInstance', 'CabinetsShareValue', function($scope, $uibModalInstance, CabinetsShareValue) {
 
       /**
        * dialog cancel
@@ -129,7 +129,7 @@ NetCommonsApp.controller('CabinetFile.addFileModal',
        * @return {void}
        */
       $scope.cancel = function() {
-        $modalInstance.dismiss('cancel');
+        $uibModalInstance.dismiss('cancel');
       };
     }]
 );
@@ -221,20 +221,20 @@ NetCommonsApp.controller('CabinetFile.edit',
 );
 
 /**
- * User modal controller
+ * selectFolder
  */
 NetCommonsApp.controller('CabinetFile.edit.selectFolder',
-    ['$scope', '$uibModalInstance', 'CabinetsShareValue', function($scope, $modalInstance, CabinetsShareValue) {
+    ['$scope', '$uibModalInstance', 'CabinetsShareValue', function($scope, $uibModalInstance, CabinetsShareValue) {
       /**
        * dialog cancel
        *
        * @return {void}
        */
       $scope.cancel = function() {
-        $modalInstance.dismiss('cancel');
+        $uibModalInstance.dismiss('cancel');
       };
       $scope.select = function(parentid) {
-        $modalInstance.close(parentid);
+        $uibModalInstance.close(parentid);
       }
     }]
 );
