@@ -53,7 +53,7 @@ echo $this->Html->script(
 
 						<div class="form-group">
 							<?php echo $this->NetCommonsForm->label('filename', __d('cabinets',
-							'ファイル名'),
+							'File name'),
 								['required' => true]);?>
 							<?php
 							echo $this->NetCommonsForm->input(
@@ -70,25 +70,25 @@ echo $this->Html->script(
 							?>
 
 						</div>
-						<?php  echo $this->NetCommonsForm->uploadFile('file', ['label' => __d('cabinets', 'ファイル'), 'remove' => false, 'filename' => false])?>
+						<?php  echo $this->NetCommonsForm->uploadFile('file', ['label' => __d('cabinets', 'File'), 'remove' => false, 'filename' => false])?>
 
 						<div class="form-group">
-						<input type="checkbox" ng-model="use_auth_key"/><?php echo __d('cabinets', 'ダウンロードパスワードを設定する');?>
+						<input type="checkbox" ng-model="use_auth_key"/><?php echo __d('cabinets', 'Set download password.');?>
 						<div ng-show="use_auth_key">
 							<?php echo $this->element('AuthorizationKeys.edit_form', ['options' => [
-								'label' => __d('cabinets', 'パスワード')],
+								'label' => __d('cabinets', 'Password')],
 							]) ?>
 						</div>
 						</div>
 
 						<div class="form-group">
-							<?php echo $this->NetCommonsForm->label('parent_id', __d('cabinets', 'パス')); ?>
+							<?php echo $this->NetCommonsForm->label('parent_id', __d('cabinets', 'Path')); ?>
 							<div>
 								<?php echo $this->element('file_path'); ?>
 
 								<a href="#" class="btn btn-default" ng-click="showFolderTree()"><span class="glyphicon glyphicon-move" aria-hidden="true"></span><?php echo __d(
-										'cabinets',
-										'移動'
+										'net_commons',
+										'Move'
 									); ?></a>
 
 								<?php
@@ -100,7 +100,7 @@ echo $this->Html->script(
 						echo $this->NetCommonsForm->input(
 							'description',
 							array(
-								'label' => __d('cabinets', '説明'),
+								'label' => __d('cabinets', 'Description'),
 								'required' => 'required',
 							)
 						);
@@ -129,7 +129,7 @@ echo $this->Html->script(
 						<?php echo $this->NetCommonsForm->input('key', array('type' => 'hidden')); ?>
 
 						<span class="nc-tooltip" tooltip="<?php echo __d('net_commons', 'Delete'); ?>">
-						<button class="btn btn-danger" onClick="return confirm('<?php echo __d('net_commons', 'Deleting the %s. Are you sure to proceed?', __d('cabinets', 'CabinetFile')) ?>')"><span class="glyphicon glyphicon-trash"> </span></button>
+						<button class="btn btn-danger" onClick="return confirm('<?php echo __d('net_commons', 'Deleting the %s. Are you sure to proceed?', __d('cabinets', 'File')) ?>')"><span class="glyphicon glyphicon-trash"> </span></button>
 
 
 					</span>

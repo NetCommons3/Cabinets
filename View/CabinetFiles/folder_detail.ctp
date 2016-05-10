@@ -43,33 +43,33 @@ echo $this->Html->script(
 </div>
 <?php endif ?>
 <dl class="cabinets__detail">
-	<dt><?php echo __d('cabinets', 'フォルダ名'); ?></dt>
+	<dt><?php echo __d('cabinets', 'Folder name'); ?></dt>
 	<dd class="form-control nc-data-label"><?php echo $cabinetFile['CabinetFile']['filename']; ?></dd>
 
-	<dt><?php echo __d('cabinets', 'パス'); ?></dt>
+	<dt><?php echo __d('cabinets', 'Path'); ?></dt>
 	<dd class="form-control nc-data-label"><?php echo $this->element('file_path'); ?></dd>
 
-	<dt><?php echo __d('cabinets', '合計サイズ'); ?></dt>
+	<dt><?php echo __d('cabinets', 'Total size'); ?></dt>
 	<dd class="form-control nc-data-label"><?php echo $this->Number->toReadableSize(
 			$cabinetFile['CabinetFile']['size']
 		); ?></dd>
 
 
-	<dt><?php echo __d('cabinets', '説明'); ?></dt>
+	<dt><?php echo __d('cabinets', 'Description'); ?></dt>
 	<dd class="form-control nc-data-label"><?php echo h($cabinetFile['CabinetFile']['description']); ?></dd>
 
-	<dt><?php echo __d('cabinets', '作成者'); ?></dt>
+	<dt><?php echo __d('net_commons', 'Created user'); ?></dt>
 	<dd class="form-control nc-data-label"><?php echo $this->DisplayUser->handleLink(
 			$cabinetFile,
 			array('avatar' => true)
 		); ?></dd>
 
-	<dt><?php echo __d('cabinets', '作成日時'); ?></dt>
+	<dt><?php echo __d('net_commons', 'Created datetime'); ?></dt>
 	<dd class="form-control nc-data-label"><?php echo $this->Date->dateFormat(
 			$cabinetFile['CabinetFile']['created']
 		); ?></dd>
 
-	<dt><?php echo __d('cabinets', '更新者'); ?></dt>
+	<dt><?php echo __d('net_commons', 'Modified user'); ?></dt>
 	<dd class="form-control nc-data-label"><?php echo $this->DisplayUser->handleLink(
 			$cabinetFile,
 			array('avatar' => true),
@@ -77,7 +77,7 @@ echo $this->Html->script(
 			'TrackableUpdater'
 		); ?></dd>
 
-	<dt><?php echo __d('cabinets', '更新日時'); ?></dt>
+	<dt><?php echo __d('net_commons', 'Modified datetime'); ?></dt>
 	<dd class="form-control nc-data-label"><?php echo $this->Date->dateFormat(
 			$cabinetFile['CabinetFile']['modified']
 		); ?></dd>
@@ -101,14 +101,14 @@ echo $this->Html->script(
 		];
 	}
 	echo $this->Html->link(
-		__d('cabinets', '一覧へ戻る'),
+		__d('cabinets', 'Go to List'),
 		$this->NetCommonsHtml->url($url),
 		['class' => 'btn btn-default']
 	)
 	?>
 	<?php
 	echo $this->Html->link(
-		__d('cabinets', 'ダウンロード'),
+		__d('cabinets', 'Download'),
 		$this->NetCommonsHtml->url(['action' => 'download_folder', 'key' => $cabinetFile['CabinetFile']['key']]),
 		['class' => 'btn btn-primary']
 	)

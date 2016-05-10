@@ -143,7 +143,7 @@ class CabinetFilesEditController extends CabinetsAppController {
 
 		$folderPath[] = [
 			'CabinetFile' => [
-				'filename' => __d('cabinets', '新規ファイル')
+				'filename' => __d('cabinets', 'Add File')
 			]
 		];
 		$this->set('folderPath', $folderPath);
@@ -300,7 +300,7 @@ class CabinetFilesEditController extends CabinetsAppController {
 
 		$folderPath[] = [
 				'CabinetFile' => [
-					'filename' => __d('cabinets', '新規フォルダ')
+					'filename' => __d('cabinets', 'Add Folder')
 				]
 			];
 		$this->set('folderPath', $folderPath);
@@ -472,13 +472,13 @@ class CabinetFilesEditController extends CabinetsAppController {
 					//$this->Session->setFlash('移動しました');
 
 				//}else{
-					$this->NetCommons->setFlashNotification(__d('cabinets', '移動しました'), array(
+					$this->NetCommons->setFlashNotification(__d('cabinets', 'Moved.'), array(
 						'class' => 'success',
 						'ajax' => !$cabinetFile['CabinetFile']['is_folder']
 					));
 				//}
 			} else {
-				$this->NetCommons->setFlashNotification(__d('cabinets', '移動失敗'), array(
+				$this->NetCommons->setFlashNotification(__d('cabinets', 'Move failed'), array(
 					'class' => 'danger',
 				));
 				//$this->NetCommons->handleValidationError($this->RolesRoomsUser->validationErrors);

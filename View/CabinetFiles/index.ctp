@@ -77,9 +77,9 @@ echo $this->Html->script(
 					'parent_id' => $parentId,
 				));
 				if (Current::permission('content_editable')){
-					echo $this->Button->addLink('<span class="glyphicon glyphicon-folder-close" aria-hidden="true"></span>' . __d('cabinets', 'フォルダ') ,
+					echo $this->Button->addLink('<span class="glyphicon glyphicon-folder-close" aria-hidden="true"></span>' . __d('cabinets', 'Folder') ,
 						$addUrl,
-						array('tooltip' => __d('cabinets', 'Add folder'), 'escapeTitle' => false, 'escape' => false));
+						array('tooltip' => __d('cabinets', 'Add Folder'), 'escapeTitle' => false, 'escape' => false));
 				}
 				?>
 			</div>
@@ -93,9 +93,9 @@ echo $this->Html->script(
 					'frame_id' => Current::read('Frame.id'),
 					'parent_id' => $parentId,
 				));
-				echo $this->Button->addLink('<span class="glyphicon glyphicon-file" aria-hidden="true"></span>' . __d('cabinets', 'ファイル'),
+				echo $this->Button->addLink('<span class="glyphicon glyphicon-file" aria-hidden="true"></span>' . __d('cabinets', 'File'),
 					'#',
-					array('tooltip' => __d('cabinets', 'Add file'), 'ng-click' => 'addFile()', 'escapeTitle' => false, 'escape' => false));
+					array('tooltip' => __d('cabinets', 'Add File'), 'ng-click' => 'addFile()', 'escapeTitle' => false, 'escape' => false));
 				?>
 			</div>
 		<?php endif ?>
@@ -115,8 +115,8 @@ echo $this->Html->script(
 			<thead>
 			<tr>
 				<th class="cabinets__index__name">名前</th>
-				<th class="cabinets__index__size hidden-sm hidden-xs"><?php echo __d('cabinets', 'サイズ') ?></th>
-				<th class="cabinets__index__modified" colspan="2"><?php echo __d('cabinets', '最終更新'); ?></th>
+				<th class="cabinets__index__size hidden-sm hidden-xs"><?php echo __d('cabinets', 'Size') ?></th>
+				<th class="cabinets__index__modified" colspan="2"><?php echo __d('net_commons', 'Modified datetime'); ?></th>
 
 			</tr>
 			</thead>
@@ -128,7 +128,7 @@ echo $this->Html->script(
 					<?php
 					echo $this->Html->link('<span class="glyphicon glyphicon-circle-arrow-up" aria-hidden="true"></span>' . __d(
 							'cabinets',
-							'一つ上へ'
+							'Parent folder'
 						), $parentUrl, ['escape' => false]);
 					?>
 				</td>
@@ -137,7 +137,7 @@ echo $this->Html->script(
 					<?php
 					if (count($cabinetFiles) > 0) {
 						echo $this->Html->link(
-							__d('cabinets', '圧縮ダウンロード'),
+							__d('cabinets', 'Zip download'),
 							$this->NetCommonsHtml->url(['action' => 'download_folder', 'key' => $currentFolder['CabinetFile']['key']]), ['class' => 'btn btn-xs btn-default']);
 
 					}
@@ -183,11 +183,11 @@ echo $this->Html->script(
 							</button>
 							<ul class="dropdown-menu dropdown-menu-right" aria-labelledby="cabinets__file-<?php echo $cabinetFile['CabinetFile']['id']?>">
 								<li>
-									<?php echo $this->NetCommonsHtml->link(__d('cabinets', '詳細'), ['controller' => 'cabinet_files', 'action' => 'folder_detail', 'key' => $cabinetFile['CabinetFile']['key']]);?>
+									<?php echo $this->NetCommonsHtml->link(__d('cabinets', 'Description'), ['controller' => 'cabinet_files', 'action' => 'folder_detail', 'key' => $cabinetFile['CabinetFile']['key']]);?>
 								</li>
-								<li><a href="#" ng-click="moveFile('<?php echo $cabinetFile['CabinetFile']['key']?>', true)"><?php echo __d('cabinets', '移動'); ?></a></li>
+								<li><a href="#" ng-click="moveFile('<?php echo $cabinetFile['CabinetFile']['key']?>', true)"><?php echo __d('net_commons', 'Move'); ?></a></li>
 								<li>
-									<?php echo $this->NetCommonsHtml->link(__d('cabinets', '編集'), ['controller' => 'cabinet_files_edit', 'action' => 'edit_folder', 'key' => $cabinetFile['CabinetFile']['key']]);?>
+									<?php echo $this->NetCommonsHtml->link(__d('net_commons', 'Edit'), ['controller' => 'cabinet_files_edit', 'action' => 'edit_folder', 'key' => $cabinetFile['CabinetFile']['key']]);?>
 								</li>
 								<?php
 								$zipDisabled = '';
@@ -198,7 +198,7 @@ echo $this->Html->script(
 								<li <?php echo $zipDisabled; ?>>
 									<?php
 									echo $this->Html->link(
-										__d('cabinets', '圧縮ダウンロード'),
+										__d('cabinets', 'Zip download'),
 										$this->NetCommonsHtml->url(['action' => 'download_folder', 'key' => $cabinetFile['CabinetFile']['key']]));
 									?>
 								</li>
@@ -217,7 +217,7 @@ echo $this->Html->script(
 							<?php echo $this->Workflow->label($cabinetFile['CabinetFile']['status']); ?>
 							<?php if (isset($cabinetFile['AuthorizationKey'])):?>
 								<span class="glyphicon glyphicon-lock" aria-hidden="true"
-									  title="<?php echo __d('cabinets', 'ダウンロードにはパスワードが必要です')?>"></span>
+									  title="<?php echo __d('cabinets', 'Password is required to download.')?>"></span>
 							<?php endif ?>
 							<span class="badge ">
 							<?php echo $cabinetFile['UploadFile']['file']['download_count'] ?>
@@ -244,11 +244,11 @@ echo $this->Html->script(
 								</button>
 								<ul class="dropdown-menu dropdown-menu-right" aria-labelledby="cabinets__file-<?php echo $cabinetFile['CabinetFile']['id']?>">
 									<li>
-										<?php echo $this->NetCommonsHtml->link(__d('cabinets', '詳細'), ['controller' => 'cabinet_files', 'action' => 'view', 'key' => $cabinetFile['CabinetFile']['key']]);?>
+										<?php echo $this->NetCommonsHtml->link(__d('cabinets', 'Description'), ['controller' => 'cabinet_files', 'action' => 'view', 'key' => $cabinetFile['CabinetFile']['key']]);?>
 									</li>
-									<li><a href="#" ng-click="moveFile('<?php echo $cabinetFile['CabinetFile']['key']?>', false)"><?php echo __d('cabinets', '移動'); ?></a></li>
+									<li><a href="#" ng-click="moveFile('<?php echo $cabinetFile['CabinetFile']['key']?>', false)"><?php echo __d('net_commons', 'Move'); ?></a></li>
 									<li>
-										<?php echo $this->NetCommonsHtml->link(__d('cabinets', '編集'), ['controller' => 'cabinet_files_edit', 'action' => 'edit', 'key' => $cabinetFile['CabinetFile']['key']]);?>
+										<?php echo $this->NetCommonsHtml->link(__d('net_commons', 'Edit'), ['controller' => 'cabinet_files_edit', 'action' => 'edit', 'key' => $cabinetFile['CabinetFile']['key']]);?>
 									</li>
 									<?php
 									$unzipDisabled = '';
@@ -257,7 +257,7 @@ echo $this->Html->script(
 									}
 									?>
 									<li <?php echo $unzipDisabled ?>>
-										<?php echo $this->NetCommonsHtml->link(__d('cabinets', '解凍'), ['controller' => 'cabinet_files_edit', 'action' => 'unzip', 'key' => $cabinetFile['CabinetFile']['key']]);?>
+										<?php echo $this->NetCommonsHtml->link(__d('cabinets', 'Unzip'), ['controller' => 'cabinet_files_edit', 'action' => 'unzip', 'key' => $cabinetFile['CabinetFile']['key']]);?>
 									</li>
 								</ul>
 							</div>

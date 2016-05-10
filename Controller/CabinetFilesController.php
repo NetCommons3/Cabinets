@@ -395,7 +395,7 @@ class CabinetFilesController extends CabinetsAppController {
 				$this->_prepareDownload($path . DS . $file['CabinetFile']['filename'], $file);
 			} else {
 				if (isset($file['AuthorizationKey'])) {
-					throw new Exception(__d('cabinets', 'ダウンロードパスワードが設定されてるファイルが存在するフォルダは圧縮ダウンロードできません。'));
+					throw new Exception(__d('cabinets', 'Folder that contains the files that are password is set can not be downloaded ZIP.'));
 				}
 				// ダウンロードカウントアップ
 				$this->CabinetFile->downloadCountUp($file, 'file');

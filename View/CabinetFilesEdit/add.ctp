@@ -56,13 +56,13 @@ echo $this->Html->script(
 
 					<fieldset>
 
-						<?php  echo $this->NetCommonsForm->uploadFile('file', ['label' => __d('cabinets', 'ファイル'), 'remove' => false])?>
+						<?php  echo $this->NetCommonsForm->uploadFile('file', ['label' => __d('cabinets', 'File'), 'remove' => false])?>
 
 						<div class="form-group">
-						<input type="checkbox" ng-model="use_auth_key"/><?php echo __d('cabinets', 'ダウンロードパスワードを設定する');?>
+						<input type="checkbox" ng-model="use_auth_key"/><?php echo __d('cabinets', 'Set download password.');?>
 						<div ng-show="use_auth_key">
 							<?php echo $this->element('AuthorizationKeys.edit_form', ['options' => [
-								'label' => __d('cabinets', 'パスワード')],
+								'label' => __d('cabinets', 'Password')],
 							]) ?>
 						</div>
 						</div>
@@ -75,28 +75,6 @@ echo $this->Html->script(
 					<?php echo $this->Workflow->buttons('CabinetFile.status'); ?>
 
 				<?php echo $this->NetCommonsForm->end() ?>
-				<?php if ($isEdit && $isDeletable) : ?>
-					<div  class="panel-footer" style="text-align: right;">
-						<?php echo $this->NetCommonsForm->create('CabinetFile',
-							array(
-								'type' => 'delete',
-								'url' => $this->NetCommonsHtml->url(
-									array('controller' => 'cabinet_files_edit', 'action' => 'delete', 'frame_id' => Current::read('Frame.id')))
-							)
-						) ?>
-						<?php echo $this->NetCommonsForm->input('key', array('type' => 'hidden')); ?>
-
-						<span class="nc-tooltip" tooltip="<?php echo __d('net_commons', 'Delete'); ?>">
-						<button class="btn btn-danger" onClick="return confirm('<?php echo __d('net_commons', 'Deleting the %s. Are you sure to proceed?', __d('cabinets', 'CabinetFile')) ?>')"><span class="glyphicon glyphicon-trash"> </span></button>
-
-
-					</span>
-
-
-						<?php echo $this->NetCommonsForm->end() ?>
-					</div>
-				<?php endif ?>
-
 			</div>
 		</article>
 
