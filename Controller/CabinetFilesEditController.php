@@ -93,6 +93,12 @@ class CabinetFilesEditController extends CabinetsAppController {
 		$this->set('cabinetFile', $cabinetFile);
 
 		if ($this->request->is('post')) {
+
+			if (! Hash::get($this->request->data, 'use_auth_key', false)) {
+				// 認証キーを使わない設定だったら、認証キーのPOST値を握りつぶす
+				unset($this->request->data['AuthorizationKey']);
+			}
+
 			$this->CabinetFile->create();
 			$this->request->data['CabinetFile']['cabinet_key'] = ''; // https://github.com/NetCommons3/NetCommons3/issues/7 対策
 
@@ -206,6 +212,11 @@ class CabinetFilesEditController extends CabinetsAppController {
 			$this->request->data['CabinetFile']['language_id'] = Current::read('Language.id');
 
 			$data = Hash::merge($cabinetFile, $this->request->data);
+
+			if (! Hash::get($this->request->data, 'CabinetFile.use_auth_key', false)) {
+				// 認証キーを使わない設定だったら、認証キーのPOST値を握りつぶす
+				unset($data['AuthorizationKey']);
+			}
 
 			unset($data['CabinetFile']['id']); // 常に新規保存
 

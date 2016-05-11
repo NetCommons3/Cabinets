@@ -59,8 +59,7 @@ echo $this->Html->script(
 						<?php  echo $this->NetCommonsForm->uploadFile('file', ['label' => __d('cabinets', 'File'), 'remove' => false])?>
 
 						<div class="form-group">
-						<input type="checkbox" ng-model="use_auth_key"/><?php echo __d('cabinets', 'Set download password.');?>
-						<div ng-show="use_auth_key">
+							<input type="checkbox" ng-model="use_auth_key" name="data[use_auth_key]" value="1" /><?php echo __d('cabinets', 'Set download password.');?>						<div ng-show="use_auth_key">
 							<?php echo $this->element('AuthorizationKeys.edit_form', ['options' => [
 								'label' => __d('cabinets', 'Password')],
 							]) ?>
