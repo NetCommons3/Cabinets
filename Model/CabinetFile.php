@@ -358,7 +358,7 @@ class CabinetFile extends CabinetsAppModel {
  *
  * @param array $data CabinetFileデータ
  * @return bool|mixed
- * @throws Exception
+ * @throws InternalErrorException
  */
 	public function saveFile($data) {
 		$this->begin();

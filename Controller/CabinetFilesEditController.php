@@ -339,7 +339,9 @@ class CabinetFilesEditController extends CabinetsAppController {
 /**
  * edit method
  *
- * @throws NotFoundException|ForbiddenException|InternalErrorException
+ * @throws NotFoundException
+ * @throws ForbiddenException
+ * @throws InternalErrorException
  * @return void
  */
 	public function edit_folder() {
