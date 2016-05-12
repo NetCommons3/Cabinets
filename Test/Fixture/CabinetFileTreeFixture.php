@@ -2,11 +2,11 @@
 /**
  * CabinetFileTreeFixture
  *
-* @author Noriko Arai <arai@nii.ac.jp>
-* @author Your Name <yourname@domain.com>
-* @link http://www.netcommons.org NetCommons Project
-* @license http://www.netcommons.org/license.txt NetCommons License
-* @copyright Copyright 2014, NetCommons Project
+ * @author Noriko Arai <arai@nii.ac.jp>
+ * @author Your Name <yourname@domain.com>
+ * @link http://www.netcommons.org NetCommons Project
+ * @license http://www.netcommons.org/license.txt NetCommons License
+ * @copyright Copyright 2014, NetCommons Project
  */
 
 /**
@@ -20,20 +20,85 @@ class CabinetFileTreeFixture extends CakeTestFixture {
  * @var array
  */
 	public $fields = array(
-		'id' => array('type' => 'integer', 'null' => false, 'default' => null, 'unsigned' => false, 'key' => 'primary', 'comment' => 'ID | | | '),
-		'cabinet_key' => array('type' => 'string', 'null' => false, 'default' => null, 'collate' => 'utf8_general_ci', 'comment' => 'bbs key | キャビネットキー | Hash値 | ', 'charset' => 'utf8'),
-		'cabinet_file_key' => array('type' => 'string', 'null' => false, 'default' => null, 'collate' => 'utf8_general_ci', 'comment' => 'bbs articles key | ファイルキー | Hash値 | ', 'charset' => 'utf8'),
-		'parent_id' => array('type' => 'integer', 'null' => true, 'default' => null, 'unsigned' => false, 'comment' => 'parent id | 親フォルダのID treeビヘイビア必須カラム | | '),
-		'lft' => array('type' => 'integer', 'null' => false, 'default' => null, 'unsigned' => false, 'comment' => 'lft | treeビヘイビア必須カラム | | '),
-		'rght' => array('type' => 'integer', 'null' => false, 'default' => null, 'unsigned' => false, 'comment' => 'rght | treeビヘイビア必須カラム | | '),
-		'created_user' => array('type' => 'integer', 'null' => true, 'default' => '0', 'unsigned' => false, 'comment' => 'created user | 作成者 | users.id | '),
-		'created' => array('type' => 'datetime', 'null' => true, 'default' => null, 'comment' => 'created datetime | 作成日時 | | '),
-		'modified_user' => array('type' => 'integer', 'null' => true, 'default' => '0', 'unsigned' => false, 'comment' => 'modified user | 更新者 | users.id | '),
-		'modified' => array('type' => 'datetime', 'null' => true, 'default' => null, 'comment' => 'modified datetime | 更新日時 | | '),
+		'id' => array(
+			'type' => 'integer',
+			'null' => false,
+			'default' => null,
+			'unsigned' => false,
+			'key' => 'primary',
+			'comment' => 'ID | | | '
+		),
+		'cabinet_key' => array(
+			'type' => 'string',
+			'null' => false,
+			'default' => null,
+			'collate' => 'utf8_general_ci',
+			'comment' => 'bbs key | キャビネットキー | Hash値 | ',
+			'charset' => 'utf8'
+		),
+		'cabinet_file_key' => array(
+			'type' => 'string',
+			'null' => false,
+			'default' => null,
+			'collate' => 'utf8_general_ci',
+			'comment' => 'bbs articles key | ファイルキー | Hash値 | ',
+			'charset' => 'utf8'
+		),
+		'parent_id' => array(
+			'type' => 'integer',
+			'null' => true,
+			'default' => null,
+			'unsigned' => false,
+			'comment' => 'parent id | 親フォルダのID treeビヘイビア必須カラム | | '
+		),
+		'lft' => array(
+			'type' => 'integer',
+			'null' => false,
+			'default' => null,
+			'unsigned' => false,
+			'comment' => 'lft | treeビヘイビア必須カラム | | '
+		),
+		'rght' => array(
+			'type' => 'integer',
+			'null' => false,
+			'default' => null,
+			'unsigned' => false,
+			'comment' => 'rght | treeビヘイビア必須カラム | | '
+		),
+		'created_user' => array(
+			'type' => 'integer',
+			'null' => true,
+			'default' => '0',
+			'unsigned' => false,
+			'comment' => 'created user | 作成者 | users.id | '
+		),
+		'created' => array(
+			'type' => 'datetime',
+			'null' => true,
+			'default' => null,
+			'comment' => 'created datetime | 作成日時 | | '
+		),
+		'modified_user' => array(
+			'type' => 'integer',
+			'null' => true,
+			'default' => '0',
+			'unsigned' => false,
+			'comment' => 'modified user | 更新者 | users.id | '
+		),
+		'modified' => array(
+			'type' => 'datetime',
+			'null' => true,
+			'default' => null,
+			'comment' => 'modified datetime | 更新日時 | | '
+		),
 		'indexes' => array(
 			'PRIMARY' => array('column' => 'id', 'unique' => 1)
 		),
-		'tableParameters' => array('charset' => 'utf8', 'collate' => 'utf8_general_ci', 'engine' => 'InnoDB')
+		'tableParameters' => array(
+			'charset' => 'utf8',
+			'collate' => 'utf8_general_ci',
+			'engine' => 'InnoDB'
+		)
 	);
 
 /**

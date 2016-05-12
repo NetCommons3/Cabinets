@@ -98,15 +98,18 @@ class CabinetFile extends CabinetsAppModel {
 	protected function _getValidateSpecification() {
 		$validate = array(
 			'pdf' => [
-					'rule' => array('isValidExtension', array('pdf'), false),
-					'message' => 'pdf only'
+				'rule' => array('isValidExtension', array('pdf'), false),
+				'message' => 'pdf only'
 			],
 
 
 			'filename' => array(
 				'notBlank' => [
 					'rule' => array('notBlank'),
-					'message' => sprintf(__d('net_commons', 'Please input %s.'), __d('cabinets', 'Title')),
+					'message' => sprintf(
+						__d('net_commons', 'Please input %s.'),
+						__d('cabinets', 'Title')
+					),
 					//'allowEmpty' => false,
 					'required' => true,
 					//'last' => false, // Stop validation after this rule
@@ -223,6 +226,7 @@ class CabinetFile extends CabinetsAppModel {
 		$new['CabinetFile']['publish_start'] = $netCommonsTime->getNowDatetime();
 		return $new;
 	}
+
 /**
  * UserIdと権限から参照可能なFileを取得するCondition配列を返す
  *
@@ -301,7 +305,8 @@ class CabinetFile extends CabinetsAppModel {
 					'count(*) AS CabinetFile__count'
 				),
 				'conditions' => $conditions,
-				'group' => array('CabinetFile__year_month'), //GROUP BY YEAR(record_date), MONTH(record_date)
+				'group' => array('CabinetFile__year_month'),
+				//GROUP BY YEAR(record_date), MONTH(record_date)
 			)
 		);
 		// 使ったバーチャルFieldを削除
@@ -311,7 +316,8 @@ class CabinetFile extends CabinetsAppModel {
 		$ret = array();
 		// $retをゼロ埋め
 		//　一番古いファイルを取得
-		$oldestFile = $this->find('first',
+		$oldestFile = $this->find(
+			'first',
 			array(
 				'conditions' => $conditions,
 				'order' => 'publish_start ASC',
@@ -320,7 +326,10 @@ class CabinetFile extends CabinetsAppModel {
 
 		// 一番古いファイルの年月から現在までを先にゼロ埋め
 		if (isset($oldestFile['CabinetFile'])) {
-			$currentYearMonthDay = date('Y-m-01', strtotime($oldestFile['CabinetFile']['publish_start']));
+			$currentYearMonthDay = date(
+				'Y-m-01',
+				strtotime($oldestFile['CabinetFile']['publish_start'])
+			);
 		} else {
 			// ファイルがなかったら今月だけ
 			$currentYearMonthDay = date('Y-m-01', strtotime($currentDateTime));
@@ -366,7 +375,7 @@ class CabinetFile extends CabinetsAppModel {
 			}
 
 			// TODO afterSaveへ
-			if ($data['CabinetFile']['is_folder']){
+			if ($data['CabinetFile']['is_folder']) {
 				// フォルダは treeをupdate
 				//if(isset($data['CabinetFileTree']['id']) === false){
 				//	$data['CabinetFileTree']['id'] = null;
@@ -413,12 +422,12 @@ class CabinetFile extends CabinetsAppModel {
  */
 	public function deleteFileByKey($key) {
 		$this->begin();
-		try{
+		try {
 			$deleteFile = $this->findByKey($key);
 
-			if( $deleteFile['CabinetFile']['is_folder']){
+			if ($deleteFile['CabinetFile']['is_folder']) {
 				return $this->_deleteFolder($deleteFile);
-			}else{
+			} else {
 				return $this->_deleteFile($deleteFile);
 			}
 			$this->commit();
@@ -428,7 +437,7 @@ class CabinetFile extends CabinetsAppModel {
 		}
 	}
 
-	protected function _deleteFile($cabinetFile){
+	protected function _deleteFile($cabinetFile) {
 		//コメントの削除
 		$this->deleteCommentsByContentKey($cabinetFile['CabinetFile']['key']);
 
@@ -439,7 +448,7 @@ class CabinetFile extends CabinetsAppModel {
 			$conditions = [
 				'cabinet_file_key' => $cabinetFile['CabinetFile']['key'],
 			];
-			if(!$this->CabinetFileTree->deleteAll($conditions, true, true)){
+			if (!$this->CabinetFileTree->deleteAll($conditions, true, true)) {
 				throw new InternalErrorException(__d('net_commons', 'Internal Server Error'));
 			}
 			return true;
@@ -448,26 +457,38 @@ class CabinetFile extends CabinetsAppModel {
 		}
 	}
 
-	protected function _deleteFolder($cabinetFile){
+	protected function _deleteFolder($cabinetFile) {
 		$key = $cabinetFile['CabinetFile']['key'];
 
 		// 子ノードを全て取得
-		$children = $this->CabinetFileTree->children($cabinetFile['CabinetFileTree']['id'], false, null, null, null, 1, 0);
-		if($children){
-			foreach ($children as $child){
-				if($child['CabinetFile']['is_folder']){
+		$children = $this->CabinetFileTree->children(
+			$cabinetFile['CabinetFileTree']['id'],
+			false,
+			null,
+			null,
+			null,
+			1,
+			0
+		);
+		if ($children) {
+			foreach ($children as $child) {
+				if ($child['CabinetFile']['is_folder']) {
 					// folder delete
 					$conditions = array('CabinetFile.key' => $child['CabinetFile']['key']);
-					if ( !$this->deleteAll($conditions)) {
-						throw new InternalErrorException(__d('net_commons', 'Internal Server Error'));
+					if (!$this->deleteAll($conditions)) {
+						throw new InternalErrorException(
+							__d('net_commons', 'Internal Server Error')
+						);
 					}
-				}else{
-					if($child['CabinetFile']['is_latest']){
+				} else {
+					if ($child['CabinetFile']['is_latest']) {
 						$conditions = array('CabinetFile.key' => $child['CabinetFile']['key']);
-						if ( !$this->deleteAll($conditions, true, true)) {
-							throw new InternalErrorException(__d('net_commons', 'Internal Server Error'));
+						if (!$this->deleteAll($conditions, true, true)) {
+							throw new InternalErrorException(
+								__d('net_commons', 'Internal Server Error')
+							);
 						}
-					}else{
+					} else {
 						// is_latestでなければ履歴データとしてCabinetFileは残してTreeだけ削除（ツリービヘイビアが勝手にけしてくれる）
 					}
 				}
@@ -480,7 +501,7 @@ class CabinetFile extends CabinetsAppModel {
 			$conditions = [
 				'cabinet_file_key' => $key,
 			];
-			if(!$this->CabinetFileTree->deleteAll($conditions, true, true)){
+			if (!$this->CabinetFileTree->deleteAll($conditions, true, true)) {
 				throw new InternalErrorException(__d('net_commons', 'Internal Server Error'));
 			}
 			$this->commit();
@@ -523,7 +544,7 @@ class CabinetFile extends CabinetsAppModel {
 		];
 		$files = $this->find('all', ['conditions' => $conditions]);
 		$total = 0;
-		foreach($files as $file){
+		foreach ($files as $file) {
 
 			$total += Hash::get($file, 'UploadFile.file.size', 0);
 		}
@@ -548,10 +569,10 @@ class CabinetFile extends CabinetsAppModel {
 		);
 	}
 
-	/**
-	 * @param $cabinet
-	 * @return array
-	 */
+/**
+ * @param $cabinet
+ * @return array
+ */
 	protected function _getRootFolderConditions($cabinet) {
 		$conditions = [
 			'cabinet_key' => $cabinet['Cabinet']['key'],
@@ -603,17 +624,20 @@ class CabinetFile extends CabinetsAppModel {
 			App::uses('UnZip', 'Files.Utility');
 			$unzip = new UnZip($zipPath);
 			$tmpFolder = $unzip->extract();
-			if($tmpFolder === false){
+			if ($tmpFolder === false) {
 				throw new InternalErrorException('UnZip Failed.');
 			}
 			// 再帰ループで登録処理
-			$parentCabinetFolder = $this->find('first', ['conditions' => ['CabinetFileTree.id' => $cabinetFile['CabinetFileTree']['parent_id']]]);
+			$parentCabinetFolder = $this->find(
+				'first',
+				['conditions' => ['CabinetFileTree.id' => $cabinetFile['CabinetFileTree']['parent_id']]]
+			);
 
 			list($folders, $files) = $tmpFolder->read(true, false, true);
-			foreach ($files as $file){
+			foreach ($files as $file) {
 				$this->_addFileFromPath($parentCabinetFolder, $file);
 			}
-			foreach ($folders as $folder){
+			foreach ($folders as $folder) {
 				$this->_addFolderFromPath($parentCabinetFolder, $folder);
 			}
 		} catch (Exception $e) {
@@ -645,11 +669,11 @@ class CabinetFile extends CabinetsAppModel {
 		$thisFolder = new Folder($folderPath);
 		list($folders, $files) = $thisFolder->read(true, false, true);
 		// 配下のファイル登録
-		foreach($files as $childFilePath){
+		foreach ($files as $childFilePath) {
 			$this->_addFileFromPath($savedFolder, $childFilePath);
 		}
 		// 配下のフォルダ登録
-		foreach($folders as $childFolderPath){
+		foreach ($folders as $childFolderPath) {
 			$this->_addFolderFromPath($savedFolder, $childFolderPath);
 		}
 	}
@@ -691,13 +715,13 @@ class CabinetFile extends CabinetsAppModel {
 		return $basenaem;
 	}
 
-	/**
-	 * 拡張子抜きのファイル名と拡張子にわける
-	 *
-	 */
+/**
+ * 拡張子抜きのファイル名と拡張子にわける
+ *
+ */
 	public function splitFileName($fileName) {
 		// .あるか
-		if(strpos($fileName, '.')){
+		if (strpos($fileName, '.')) {
 			// .あり
 			$splitFileName = explode('.', $fileName);
 			$extension = array_pop($splitFileName); // 最後の.以降が拡張子
@@ -706,7 +730,7 @@ class CabinetFile extends CabinetsAppModel {
 				$withOutExtFilename,
 				$extension
 			];
-		} else{
+		} else {
 			// .なし
 			$ret = [
 				$fileName,
@@ -731,7 +755,7 @@ class CabinetFile extends CabinetsAppModel {
 		if ($cabinetFile['CabinetFile']['is_folder']) {
 			// folder
 			$baseFolderName = $cabinetFile['CabinetFile']['filename'];
-			while($this->_existSameFilename($cabinetFile)){
+			while ($this->_existSameFilename($cabinetFile)) {
 				// 重複し続ける限り数字を増やす
 				$index++;
 				$newFilename = sprintf('%s%03d', $baseFolderName, $index);
@@ -739,10 +763,12 @@ class CabinetFile extends CabinetsAppModel {
 			}
 			$this->data['CabinetFile']['filename'] = $cabinetFile['CabinetFile']['filename'];
 		} else {
-			list($baseFileName, $ext) = $this->splitFileName($cabinetFile['CabinetFile']['filename']);
+			list($baseFileName, $ext) = $this->splitFileName(
+				$cabinetFile['CabinetFile']['filename']
+			);
 			$extString = is_null($ext) ? '' : '.' . $ext;
 
-			while($this->_existSameFilename($cabinetFile)){
+			while ($this->_existSameFilename($cabinetFile)) {
 				// 重複し続ける限り数字を増やす
 				$index++;
 				$newFilename = sprintf('%s%03d', $baseFileName, $index);

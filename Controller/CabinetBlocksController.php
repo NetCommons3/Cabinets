@@ -89,7 +89,7 @@ class CabinetBlocksController extends CabinetsAppController {
 		);
 
 		$cabinets = $this->Paginator->paginate('Cabinet');
-		if (! $cabinets) {
+		if (!$cabinets) {
 			$this->view = 'Blocks.Blocks/not_found';
 			return;
 		}
@@ -105,9 +105,11 @@ class CabinetBlocksController extends CabinetsAppController {
 		//	debug($result);
 		//
 		//}
-		foreach ($cabinets as &$cabinet){
+		foreach ($cabinets as &$cabinet) {
 			$rootFolder = $this->CabinetFile->getRootFolder($cabinet);
-			$cabinet['Cabinet']['total_size'] = $this->CabinetFile->getTotalSizeByFolder($rootFolder);
+			$cabinet['Cabinet']['total_size'] = $this->CabinetFile->getTotalSizeByFolder(
+				$rootFolder
+			);
 		}
 
 		$this->set('cabinets', $cabinets);
@@ -152,7 +154,7 @@ class CabinetBlocksController extends CabinetsAppController {
 
 		} else {
 			//表示処理(初期データセット)
-			if (! $cabinet = $this->Cabinet->getCabinet()) {
+			if (!$cabinet = $this->Cabinet->getCabinet()) {
 				return $this->throwBadRequest();
 			}
 			$this->request->data = Hash::merge($this->request->data, $cabinet);

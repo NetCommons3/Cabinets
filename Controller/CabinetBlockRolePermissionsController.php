@@ -84,13 +84,18 @@ class CabinetBlockRolePermissionsController extends CabinetsAppController {
  * @return void
  */
 	public function edit() {
-		if (! $cabinet = $this->Cabinet->getCabinet()) {
+		if (!$cabinet = $this->Cabinet->getCabinet()) {
 			$this->setAction('throwBadRequest');
 			return false;
 		}
 
 		$permissions = $this->Workflow->getBlockRolePermissions(
-			array('content_creatable', 'content_publishable', 'content_comment_creatable', 'content_comment_publishable')
+			array(
+				'content_creatable',
+				'content_publishable',
+				'content_comment_creatable',
+				'content_comment_publishable'
+			)
 		);
 		$this->set('roles', $permissions['Roles']);
 

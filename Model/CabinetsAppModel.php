@@ -17,7 +17,7 @@ class CabinetsAppModel extends AppModel {
 /**
  * プラリマリキーを除いた新規レコード配列を返す
  * ex) array('ModelName' => array('filedName' => default, ...));
- * 
+ *
  * @return array
  */
 	public function getNew() {

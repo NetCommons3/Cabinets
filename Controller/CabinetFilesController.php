@@ -20,9 +20,9 @@ App::uses('TemporaryFolder', 'Files.Utility');
  */
 class CabinetFilesController extends CabinetsAppController {
 
-	/**
-	 * @var array use models
-	 */
+/**
+ * @var array use models
+ */
 	public $uses = array(
 		'Cabinets.CabinetFile',
 		'Cabinets.CabinetFileTree',
@@ -30,10 +30,10 @@ class CabinetFilesController extends CabinetsAppController {
 		'Categories.Category',
 	);
 
-	/**
-	 * @var array helpers
-	 * @var array helpers
-	 */
+/**
+ * @var array helpers
+ * @var array helpers
+ */
 	public $helpers = array(
 		'NetCommons.Token',
 		'NetCommons.BackTo',
@@ -41,11 +41,11 @@ class CabinetFilesController extends CabinetsAppController {
 		'Users.DisplayUser'
 	);
 
-	/**
-	 * Components
-	 *
-	 * @var array
-	 */
+/**
+ * Components
+ *
+ * @var array
+ */
 	public $components = array(
 		'Paginator',
 		//'NetCommons.NetCommonsWorkflow',
@@ -75,9 +75,9 @@ class CabinetFilesController extends CabinetsAppController {
 		],
 	);
 
-	/**
-	 * @var array 絞り込みフィルタ保持値
-	 */
+/**
+ * @var array 絞り込みフィルタ保持値
+ */
 	protected $_filter = array(
 		'categoryId' => 0,
 		'status' => 0,
@@ -86,11 +86,11 @@ class CabinetFilesController extends CabinetsAppController {
 
 	protected $_cabinet;
 
-	/**
-	 * beforeFilter
-	 *
-	 * @return void
-	 */
+/**
+ * beforeFilter
+ *
+ * @return void
+ */
 	public function beforeFilter() {
 		// ゲストアクセスOKのアクションを設定
 		$this->Auth->allow(
@@ -111,11 +111,11 @@ class CabinetFilesController extends CabinetsAppController {
 		$this->set('cabinet', $this->_cabinet);
 	}
 
-	/**
-	 * index
-	 *
-	 * @return void
-	 */
+/**
+ * index
+ *
+ * @return void
+ */
 	public function index() {
 		if (!Current::read('Block.id')) {
 			$this->autoRender = false;
@@ -236,11 +236,11 @@ class CabinetFilesController extends CabinetsAppController {
 	}
 
 
-	/**
-	 * 権限の取得
-	 *
-	 * @return array
-	 */
+/**
+ * 権限の取得
+ *
+ * @return array
+ */
 	protected function _getPermission() {
 		$permissionNames = array(
 			'content_readable',
@@ -255,12 +255,12 @@ class CabinetFilesController extends CabinetsAppController {
 		return $permission;
 	}
 
-	/**
-	 * 一覧
-	 *
-	 * @param array $extraConditions 追加conditions
-	 * @return void
-	 */
+/**
+ * 一覧
+ *
+ * @param array $extraConditions 追加conditions
+ * @return void
+ */
 	protected function _list($extraConditions = array()) {
 
 		//$this->_setYearMonthOptions();
@@ -290,12 +290,12 @@ class CabinetFilesController extends CabinetsAppController {
 		$this->render('index');
 	}
 
-	/**
-	 * view method
-	 *
-	 * @throws NotFoundException
-	 * @return void
-	 */
+/**
+ * view method
+ *
+ * @throws NotFoundException
+ * @return void
+ */
 	public function view() {
 		// TODO ファイルでなければエラー
 		$folderKey = isset($this->request->params['pass'][1]) ? $this->request->params['pass'][1] : null;
@@ -358,7 +358,7 @@ class CabinetFilesController extends CabinetsAppController {
 			$this->_prepareDownload($tmpFolder->path, $cabinetFolder);
 		} catch (Exception $e) {
 			$this->set('error', $e->getMessage());
-			
+
 			return;
 		}
 		$zipDownloader = new ZipDownloader();
@@ -395,7 +395,12 @@ class CabinetFilesController extends CabinetsAppController {
 				$this->_prepareDownload($path . DS . $file['CabinetFile']['filename'], $file);
 			} else {
 				if (isset($file['AuthorizationKey'])) {
-					throw new Exception(__d('cabinets', 'Folder that contains the files that are password is set can not be downloaded ZIP.'));
+					throw new Exception(
+						__d(
+							'cabinets',
+							'Folder that contains the files that are password is set can not be downloaded ZIP.'
+						)
+					);
 				}
 				// ダウンロードカウントアップ
 				$this->CabinetFile->downloadCountUp($file, 'file');

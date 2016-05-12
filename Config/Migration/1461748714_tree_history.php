@@ -1,4 +1,5 @@
 <?php
+
 class TreeHistory extends CakeMigration {
 
 /**
@@ -17,10 +18,22 @@ class TreeHistory extends CakeMigration {
 		'up' => array(
 			'create_field' => array(
 				'cabinet_file_trees' => array(
-					'cabinet_file_id' => array('type' => 'integer', 'null' => false, 'default' => null, 'unsigned' => false, 'after' => 'cabinet_file_key'),
+					'cabinet_file_id' => array(
+						'type' => 'integer',
+						'null' => false,
+						'default' => null,
+						'unsigned' => false,
+						'after' => 'cabinet_file_key'
+					),
 				),
 				'cabinet_files' => array(
-					'parent_id' => array('type' => 'integer', 'null' => true, 'default' => null, 'unsigned' => false, 'after' => 'cabinet_id'),
+					'parent_id' => array(
+						'type' => 'integer',
+						'null' => true,
+						'default' => null,
+						'unsigned' => false,
+						'after' => 'cabinet_id'
+					),
 				),
 			),
 		),

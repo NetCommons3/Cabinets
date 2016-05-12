@@ -95,44 +95,53 @@ class Cabinet extends CabinetsAppModel {
  * @see Model::save()
  */
 	public function beforeValidate($options = array()) {
-		$this->validate = Hash::merge($this->validate, array(
-			//'block_id' => array(
-			//	'numeric' => array(
-			//		'rule' => array('numeric'),
-			//		'message' => __d('net_commons', 'Invalid request.'),
-			//		//'allowEmpty' => false,
-			//		//'required' => true,
-			//	)
-			//),
-			'key' => array(
-				'notBlank' => array(
-					'rule' => array('notBlank'),
-					'message' => __d('net_commons', 'Invalid request.'),
-					'allowEmpty' => false,
-					'required' => true,
-					'on' => 'update', // Limit validation to 'create' or 'update' operations
+		$this->validate = Hash::merge(
+			$this->validate,
+			array(
+				//'block_id' => array(
+				//	'numeric' => array(
+				//		'rule' => array('numeric'),
+				//		'message' => __d('net_commons', 'Invalid request.'),
+				//		//'allowEmpty' => false,
+				//		//'required' => true,
+				//	)
+				//),
+				'key' => array(
+					'notBlank' => array(
+						'rule' => array('notBlank'),
+						'message' => __d('net_commons', 'Invalid request.'),
+						'allowEmpty' => false,
+						'required' => true,
+						'on' => 'update', // Limit validation to 'create' or 'update' operations
+					),
 				),
-			),
 
-			//status to set in PublishableBehavior.
+				//status to set in PublishableBehavior.
 
-			'name' => array(
-				'notBlank' => array(
-					'rule' => array('notBlank'),
-					'message' => sprintf(__d('net_commons', 'Please input %s.'), __d('cabinets', 'Cabinet name')),
-					'required' => true
+				'name' => array(
+					'notBlank' => array(
+						'rule' => array('notBlank'),
+						'message' => sprintf(
+							__d('net_commons', 'Please input %s.'),
+							__d('cabinets', 'Cabinet name')
+						),
+						'required' => true
+					),
 				),
-			),
-		));
+			)
+		);
 
-		if (! parent::beforeValidate($options)) {
+		if (!parent::beforeValidate($options)) {
 			return false;
 		}
 
 		if (isset($this->data['CabinetSetting'])) {
 			$this->CabinetSetting->set($this->data['CabinetSetting']);
-			if (! $this->CabinetSetting->validates()) {
-				$this->validationErrors = Hash::merge($this->validationErrors, $this->CabinetSetting->validationErrors);
+			if (!$this->CabinetSetting->validates()) {
+				$this->validationErrors = Hash::merge(
+					$this->validationErrors,
+					$this->CabinetSetting->validationErrors
+				);
 				return false;
 			}
 		}
@@ -159,16 +168,16 @@ class Cabinet extends CabinetsAppModel {
 	public function afterSave($created, $options = array()) {
 		//CabinetSetting登録
 		if (isset($this->CabinetSetting->data['CabinetSetting'])) {
-			if (! Hash::get($this->CabinetSetting->data, 'CabinetSetting.cabinet_key', false)) {
+			if (!Hash::get($this->CabinetSetting->data, 'CabinetSetting.cabinet_key', false)) {
 				$this->CabinetSetting->data['CabinetSetting']['cabinet_key'] = $this->data[$this->alias]['key'];
 			}
-			if (! $this->CabinetSetting->save(null, false)) {
+			if (!$this->CabinetSetting->save(null, false)) {
 				throw new InternalErrorException(__d('net_commons', 'Internal Server Error'));
 			}
 		}
 
 		// ルートフォルダがまだなければルートフォルダをつくる
-		if (! $this->CabinetFile->syncRootFolder($this->data)){
+		if (!$this->CabinetFile->syncRootFolder($this->data)) {
 			throw new InternalErrorException(__d('net_commons', 'Internal Server Error'));
 		}
 
@@ -190,15 +199,17 @@ class Cabinet extends CabinetsAppModel {
 	public function createCabinet() {
 		$this->CabinetSetting = ClassRegistry::init('Cabinets.CabinetSetting');
 
-		$cabinet = $this->createAll(array(
-			'Cabinet' => array(
-				'name' => __d('cabinets', 'New cabinet %s', date('YmdHis')),
-			),
-			'Block' => array(
-				'room_id' => Current::read('Room.id'),
-				'language_id' => Current::read('Language.id'),
-			),
-		));
+		$cabinet = $this->createAll(
+			array(
+				'Cabinet' => array(
+					'name' => __d('cabinets', 'New cabinet %s', date('YmdHis')),
+				),
+				'Block' => array(
+					'room_id' => Current::read('Room.id'),
+					'language_id' => Current::read('Language.id'),
+				),
+			)
+		);
 		$cabinet = Hash::merge($cabinet, $this->CabinetSetting->create());
 
 		return $cabinet;
@@ -210,34 +221,37 @@ class Cabinet extends CabinetsAppModel {
  * @return array
  */
 	public function getCabinet() {
-		$cabinet = $this->find('all', array(
-			'recursive' => -1,
-			'fields' => array(
-				$this->alias . '.*',
-				$this->Block->alias . '.*',
-				$this->CabinetSetting->alias . '.*',
-			),
-			'joins' => array(
-				array(
-					'table' => $this->Block->table,
-					'alias' => $this->Block->alias,
-					'type' => 'INNER',
-					'conditions' => array(
-						$this->alias . '.block_id' . ' = ' . $this->Block->alias . ' .id',
+		$cabinet = $this->find(
+			'all',
+			array(
+				'recursive' => -1,
+				'fields' => array(
+					$this->alias . '.*',
+					$this->Block->alias . '.*',
+					$this->CabinetSetting->alias . '.*',
+				),
+				'joins' => array(
+					array(
+						'table' => $this->Block->table,
+						'alias' => $this->Block->alias,
+						'type' => 'INNER',
+						'conditions' => array(
+							$this->alias . '.block_id' . ' = ' . $this->Block->alias . ' .id',
+						),
+					),
+					array(
+						'table' => $this->CabinetSetting->table,
+						'alias' => $this->CabinetSetting->alias,
+						'type' => 'INNER',
+						'conditions' => array(
+							$this->alias . '.key' . ' = ' . $this->CabinetSetting->alias . ' .cabinet_key',
+						),
 					),
 				),
-				array(
-					'table' => $this->CabinetSetting->table,
-					'alias' => $this->CabinetSetting->alias,
-					'type' => 'INNER',
-					'conditions' => array(
-						$this->alias . '.key' . ' = ' . $this->CabinetSetting->alias . ' .cabinet_key',
-					),
-				),
-			),
-			'conditions' => $this->getBlockConditionById(),
-		));
-		if (! $cabinet) {
+				'conditions' => $this->getBlockConditionById(),
+			)
+		);
+		if (!$cabinet) {
 			return $cabinet;
 		}
 		return $cabinet[0];
@@ -251,25 +265,27 @@ class Cabinet extends CabinetsAppModel {
  * @throws InternalErrorException
  */
 	public function saveCabinet($data) {
-		$this->loadModels([
-			'Cabinet' => 'Cabinets.Cabinet',
-			'CabinetSetting' => 'Cabinets.CabinetSetting',
-			//'CabinetFrameSetting' => 'Cabinets.CabinetFrameSetting',
-			'CabinetFile' => 'Cabinets.CabinetFile'
-		]);
+		$this->loadModels(
+			[
+				'Cabinet' => 'Cabinets.Cabinet',
+				'CabinetSetting' => 'Cabinets.CabinetSetting',
+				//'CabinetFrameSetting' => 'Cabinets.CabinetFrameSetting',
+				'CabinetFile' => 'Cabinets.CabinetFile'
+			]
+		);
 
 		//トランザクションBegin
 		$this->begin();
 
 		//バリデーション
 		$this->set($data);
-		if (! $this->validates()) {
+		if (!$this->validates()) {
 			return false;
 		}
 
 		try {
 			//登録処理
-			if (! $this->save(null, false)) {
+			if (!$this->save(null, false)) {
 				throw new InternalErrorException(__d('net_commons', 'Internal Server Error'));
 			}
 			//トランザクションCommit
@@ -291,12 +307,14 @@ class Cabinet extends CabinetsAppModel {
  * @throws InternalErrorException
  */
 	public function deleteCabinet($data) {
-		$this->loadModels([
-			'Cabinet' => 'Cabinets.Cabinet',
-			'CabinetSetting' => 'Cabinets.CabinetSetting',
-			'CabinetFile' => 'Cabinets.CabinetFile',
-			'CabinetFileTree' => 'Cabinets.CabinetFileTree',
-		]);
+		$this->loadModels(
+			[
+				'Cabinet' => 'Cabinets.Cabinet',
+				'CabinetSetting' => 'Cabinets.CabinetSetting',
+				'CabinetFile' => 'Cabinets.CabinetFile',
+				'CabinetFileTree' => 'Cabinets.CabinetFileTree',
+			]
+		);
 
 		//トランザクションBegin
 		$this->begin();
@@ -304,25 +322,47 @@ class Cabinet extends CabinetsAppModel {
 		$conditions = array(
 			$this->alias . '.key' => $data['Cabinet']['key']
 		);
-		$cabinets = $this->find('list', array(
-			'recursive' => -1,
-			'conditions' => $conditions,
-		));
+		$cabinets = $this->find(
+			'list',
+			array(
+				'recursive' => -1,
+				'conditions' => $conditions,
+			)
+		);
 		$cabinetIds = array_keys($cabinets);
 
 		try {
-			if (! $this->deleteAll(array($this->alias . '.key' => $data['Cabinet']['key']), false, false)) {
+			if (!$this->deleteAll(
+				array($this->alias . '.key' => $data['Cabinet']['key']),
+				false,
+				false
+			)
+			) {
 				throw new InternalErrorException(__d('net_commons', 'Internal Server Error'));
 			}
 
-			if (! $this->CabinetSetting->deleteAll(array($this->CabinetSetting->alias . '.cabinet_key' => $data['Cabinet']['key']), false, false)) {
+			if (!$this->CabinetSetting->deleteAll(
+				array($this->CabinetSetting->alias . '.cabinet_key' => $data['Cabinet']['key']),
+				false,
+				false
+			)
+			) {
 				throw new InternalErrorException(__d('net_commons', 'Internal Server Error'));
 			}
 			// アップロードファイルの削除をしたいのでコールバック有効にする
-			if (! $this->CabinetFile->deleteAll(array($this->CabinetFile->alias . '.cabinet_id' => $cabinetIds), true, true)) {
+			if (!$this->CabinetFile->deleteAll(
+				array($this->CabinetFile->alias . '.cabinet_id' => $cabinetIds),
+				true,
+				true
+			)
+			) {
 				throw new InternalErrorException(__d('net_commons', 'Internal Server Error'));
 			}
-			if (! $this->CabinetFileTree->deleteAll(array($this->CabinetFileTree->alias . '.cabinet_key' => $data['Cabinet']['key']), false)) {
+			if (!$this->CabinetFileTree->deleteAll(
+				array($this->CabinetFileTree->alias . '.cabinet_key' => $data['Cabinet']['key']),
+				false
+			)
+			) {
 				throw new InternalErrorException(__d('net_commons', 'Internal Server Error'));
 			}
 

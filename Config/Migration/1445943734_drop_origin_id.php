@@ -33,7 +33,14 @@ class DropOriginId extends CakeMigration {
 		'down' => array(
 			'create_field' => array(
 				'cabinet_files' => array(
-					'origin_id' => array('type' => 'string', 'null' => false, 'default' => null, 'collate' => 'utf8_general_ci', 'comment' => 'file key | エントリーキー | Hash値 | ', 'charset' => 'utf8'),
+					'origin_id' => array(
+						'type' => 'string',
+						'null' => false,
+						'default' => null,
+						'collate' => 'utf8_general_ci',
+						'comment' => 'file key | エントリーキー | Hash値 | ',
+						'charset' => 'utf8'
+					),
 				),
 			),
 		),

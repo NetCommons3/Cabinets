@@ -20,9 +20,12 @@
 <?php //echo $this->Form->hidden('CabinetFrameSetting.articles_per_page'); ?>
 <?php //echo $this->Form->hidden('CabinetFrameSetting.comments_per_page'); ?>
 
-<?php echo $this->NetCommonsForm->input('Cabinet.name', array(
+<?php echo $this->NetCommonsForm->input(
+	'Cabinet.name',
+	array(
 		'type' => 'text',
 		'label' => __d('cabinets', 'Cabinet name'),
-	)); ?>
+	)
+); ?>
 
 <?php echo $this->element('Blocks.public_type'); ?>

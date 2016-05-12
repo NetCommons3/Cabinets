@@ -1,4 +1,5 @@
 <?php
+
 class CabinetFileTreeParentId extends CakeMigration {
 
 /**
@@ -14,10 +15,8 @@ class CabinetFileTreeParentId extends CakeMigration {
  * @var array $migration
  */
 	public $migration = array(
-		'up' => array(
-		),
-		'down' => array(
-		),
+		'up' => array(),
+		'down' => array(),
 	);
 
 /**

@@ -4,7 +4,7 @@ $currentFile = array_pop($_tmpFolderPath); // 現在のファイルを後ろか�
 $encodedFolderPath = json_encode($_tmpFolderPath);
 ?>
 <span ng-controller="Cabinets.path" ng-init='init(<?php echo h($encodedFolderPath) ?>,
- "<?php echo NetCommonsUrl::backToPageUrl();?>")' ng-cloak>
+ "<?php echo NetCommonsUrl::backToPageUrl(); ?>")' ng-cloak>
 
 <?php
 //// パンクズ
@@ -14,14 +14,14 @@ $encodedFolderPath = json_encode($_tmpFolderPath);
 //	echo h($cabinet['Cabinet']['name']);
 //}
 //?>
-<?php
-?>
-<span ng-repeat="cabinetFile in folderPath"><a href="{{cabinetFile.url}}">{{cabinetFile.CabinetFile.filename}}</a><span>&nbsp;&gt;&nbsp;</span></span>
-<?php
-//foreach($_tmpFolderPath as $folder){
-//	echo ' &gt; ';
-//	echo $this->NetCommonsHtml->link($folder['CabinetFile']['filename'], ['key' => $folder['CabinetFile']['key']]);
-//}
-echo h($currentFile['CabinetFile']['filename']);
-?>
+	<?php
+	?>
+	<span ng-repeat="cabinetFile in folderPath"><a href="{{cabinetFile.url}}">{{cabinetFile.CabinetFile.filename}}</a><span>&nbsp;&gt;&nbsp;</span></span>
+	<?php
+	//foreach($_tmpFolderPath as $folder){
+	//	echo ' &gt; ';
+	//	echo $this->NetCommonsHtml->link($folder['CabinetFile']['filename'], ['key' => $folder['CabinetFile']['key']]);
+	//}
+	echo h($currentFile['CabinetFile']['filename']);
+	?>
 </span>

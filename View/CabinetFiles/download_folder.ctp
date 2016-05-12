@@ -10,7 +10,7 @@ echo $this->Html->css(
 <h1 class="cabinets_cabinetTitle"><?php echo h($cabinet['Cabinet']['name']) ?></h1>
 <div class="panel panel-warning">
 	<div class="panel-heading">
-		<?php echo __d('cabinets', 'Download failed');?>
+		<?php echo __d('cabinets', 'Download failed'); ?>
 	</div>
 	<div class="panel-body">
 		<?php echo $error ?>
@@ -18,12 +18,12 @@ echo $this->Html->css(
 	</div>
 </div>
 <div class="text-center">
-<?php
-$url = NetCommonsUrl::backToPageUrl();
-echo $this->Html->link(
-	__d('cabinets', 'Go to List'),
-	$this->NetCommonsHtml->url($url),
-	['class' => 'btn btn-default']
-);
-?>
+	<?php
+	$url = NetCommonsUrl::backToPageUrl();
+	echo $this->Html->link(
+		__d('cabinets', 'Go to List'),
+		$this->NetCommonsHtml->url($url),
+		['class' => 'btn btn-default']
+	);
+	?>
 </div>

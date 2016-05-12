@@ -1,4 +1,5 @@
 <?php
+
 //beforesaveでやらずにsaveFileでやったほうがいいか？
 class CabinetFileRenameBehavior extends ModelBehavior {
 
@@ -27,9 +28,6 @@ class CabinetFileRenameBehavior extends ModelBehavior {
 		return parent::beforeSave($model, $options);
 
 	}
-
-
-
 
 
 }

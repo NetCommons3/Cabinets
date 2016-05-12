@@ -76,12 +76,11 @@ class CabinetFilesEditController extends CabinetsAppController {
 	}
 
 
-
-	/**
-	 * add method
-	 *
-	 * @return void
-	 */
+/**
+ * add method
+ *
+ * @return void
+ */
 	public function add() {
 		//レイアウトの設定
 		$this->viewClass = 'View';
@@ -94,7 +93,7 @@ class CabinetFilesEditController extends CabinetsAppController {
 
 		if ($this->request->is('post')) {
 
-			if (! Hash::get($this->request->data, 'use_auth_key', false)) {
+			if (!Hash::get($this->request->data, 'use_auth_key', false)) {
 				// 認証キーを使わない設定だったら、認証キーのPOST値を握りつぶす
 				unset($this->request->data['AuthorizationKey']);
 			}
@@ -119,7 +118,9 @@ class CabinetFilesEditController extends CabinetsAppController {
 			$this->request->data['CabinetFile']['filename'] = $this->request->data['CabinetFile']['file']['name'];
 			if (($result = $this->CabinetFile->saveFile($this->request->data))) {
 
-				$parentFolder = $this->CabinetFileTree->findById($this->request->data['CabinetFileTree']['parent_id']);
+				$parentFolder = $this->CabinetFileTree->findById(
+					$this->request->data['CabinetFileTree']['parent_id']
+				);
 				$url = NetCommonsUrl::actionUrl(
 					array(
 						'controller' => 'cabinet_files',
@@ -137,13 +138,17 @@ class CabinetFilesEditController extends CabinetsAppController {
 
 		} else {
 			$this->request->data = $cabinetFile;
-			$this->request->data['CabinetFileTree']['parent_id'] = Hash::get($this->request->named, 'parent_id', null);
+			$this->request->data['CabinetFileTree']['parent_id'] = Hash::get(
+				$this->request->named,
+				'parent_id',
+				null
+			);
 		}
 
 		$parentId = $this->request->data['CabinetFileTree']['parent_id'];
-		if($parentId > 0){
+		if ($parentId > 0) {
 			$folderPath = $this->CabinetFileTree->getPath($parentId, null, 0);
-		}else{
+		} else {
 			$folderPath = [];
 		}
 
@@ -157,13 +162,13 @@ class CabinetFilesEditController extends CabinetsAppController {
 		//$this->render('form');
 	}
 
-	/**
-	 * edit method
-	 *
-	 * @throws NotFoundException
-	 * @throws ForbiddenException
-	 * @return void
-	 */
+/**
+ * edit method
+ *
+ * @throws NotFoundException
+ * @throws ForbiddenException
+ * @return void
+ */
 	public function edit() {
 		$this->set('isEdit', true);
 		//$key = $this->request->params['named']['key'];
@@ -195,12 +200,17 @@ class CabinetFilesEditController extends CabinetsAppController {
 			// ファイル名変更
 			if ($this->request->data['CabinetFile']['file']['error'] == UPLOAD_ERR_NO_FILE) {
 				// 新たなアップロードがなければ元の拡張子をつける。
-				list($withOutExtFileName, $ext) = $this->CabinetFile->splitFileName($cabinetFile['CabinetFile']['filename']);
+				list($withOutExtFileName, $ext) = $this->CabinetFile->splitFileName(
+					$cabinetFile['CabinetFile']['filename']
+				);
 			} else {
 				// 新たなアップロードがあれば新たなファイルの拡張子をつける
-				$ext = pathinfo($this->request->data['CabinetFile']['file']['name'], PATHINFO_EXTENSION);
+				$ext = pathinfo(
+					$this->request->data['CabinetFile']['file']['name'],
+					PATHINFO_EXTENSION
+				);
 			}
-			if( $ext !== null){
+			if ($ext !== null) {
 				$this->request->data['CabinetFile']['filename'] .= '.' . $ext;
 			}
 
@@ -213,7 +223,7 @@ class CabinetFilesEditController extends CabinetsAppController {
 
 			$data = Hash::merge($cabinetFile, $this->request->data);
 
-			if (! Hash::get($this->request->data, 'CabinetFile.use_auth_key', false)) {
+			if (!Hash::get($this->request->data, 'CabinetFile.use_auth_key', false)) {
 				// 認証キーを使わない設定だったら、認証キーのPOST値を握りつぶす
 				unset($data['AuthorizationKey']);
 			}
@@ -221,7 +231,9 @@ class CabinetFilesEditController extends CabinetsAppController {
 			unset($data['CabinetFile']['id']); // 常に新規保存
 
 			if ($this->CabinetFile->saveFile($data)) {
-				$parentFolder = $this->CabinetFileTree->findById($this->request->data['CabinetFileTree']['parent_id']);
+				$parentFolder = $this->CabinetFileTree->findById(
+					$this->request->data['CabinetFileTree']['parent_id']
+				);
 				$url = NetCommonsUrl::actionUrl(
 					array(
 						'controller' => 'cabinet_files',
@@ -241,7 +253,9 @@ class CabinetFilesEditController extends CabinetsAppController {
 
 			$this->request->data = $cabinetFile;
 			// 拡張子はとりのぞいておく
-			list($withOutExtFileName, $ext) = $this->CabinetFile->splitFileName($cabinetFile['CabinetFile']['filename']);
+			list($withOutExtFileName, $ext) = $this->CabinetFile->splitFileName(
+				$cabinetFile['CabinetFile']['filename']
+			);
 			$this->request->data['CabinetFile']['filename'] = $withOutExtFileName;
 			if ($this->CabinetFile->canEditWorkflowContent($cabinetFile) === false) {
 				throw new ForbiddenException(__d('net_commons', 'Permission denied'));
@@ -255,11 +269,11 @@ class CabinetFilesEditController extends CabinetsAppController {
 		$this->render('form');
 	}
 
-	/**
-	 * add method
-	 *
-	 * @return void
-	 */
+/**
+ * add method
+ *
+ * @return void
+ */
 	public function add_folder() {
 		$this->set('isEdit', false);
 
@@ -290,7 +304,8 @@ class CabinetFilesEditController extends CabinetsAppController {
 						'action' => 'folder_detail',
 						'block_id' => Current::read('Block.id'),
 						'frame_id' => Current::read('Frame.id'),
-						'key' => $result['CabinetFile']['key'])
+						'key' => $result['CabinetFile']['key']
+					)
 				);
 				return $this->redirect($url);
 			}
@@ -299,33 +314,37 @@ class CabinetFilesEditController extends CabinetsAppController {
 
 		} else {
 			$this->request->data = $cabinetFile;
-			$this->request->data['CabinetFileTree']['parent_id'] = Hash::get($this->request->named, 'parent_id', null);
+			$this->request->data['CabinetFileTree']['parent_id'] = Hash::get(
+				$this->request->named,
+				'parent_id',
+				null
+			);
 		}
 
 		$parentId = $this->request->data['CabinetFileTree']['parent_id'];
-		if($parentId > 0){
+		if ($parentId > 0) {
 			$folderPath = $this->CabinetFileTree->getPath($parentId, null, 0);
-		}else{
+		} else {
 			$folderPath = [];
 		}
 
 		$folderPath[] = [
-				'CabinetFile' => [
-					'filename' => __d('cabinets', 'Add Folder')
-				]
-			];
+			'CabinetFile' => [
+				'filename' => __d('cabinets', 'Add Folder')
+			]
+		];
 		$this->set('folderPath', $folderPath);
 
 		$this->render('folder_form');
 	}
 
-	/**
-	 * edit method
-	 *
-	 * @throws NotFoundException
-	 * @throws ForbiddenException
-	 * @return void
-	 */
+/**
+ * edit method
+ *
+ * @throws NotFoundException
+ * @throws ForbiddenException
+ * @return void
+ */
 	public function edit_folder() {
 
 
@@ -339,9 +358,9 @@ class CabinetFilesEditController extends CabinetsAppController {
 			//  404 NotFound
 			throw new NotFoundException();
 		}
-		 if ($cabinetFile['CabinetFile']['is_folder'] == false) {
-			 throw new InternalErrorException();
-		 }
+		if ($cabinetFile['CabinetFile']['is_folder'] == false) {
+			throw new InternalErrorException();
+		}
 
 		$treeId = $cabinetFile['CabinetFileTree']['id'];
 		$folderPath = $this->CabinetFileTree->getPath($treeId, null, 0);
@@ -416,13 +435,12 @@ class CabinetFilesEditController extends CabinetsAppController {
 		$this->layout = 'NetCommons.modal';
 
 
-
 		// 全フォルダツリーを得る
 		$conditions = [
 			'is_folder' => 1,
 			'cabinet_key' => $this->_cabinet['Cabinet']['key'],
-			];
-		if($cabinetFile['CabinetFile']['is_folder']){
+		];
+		if ($cabinetFile['CabinetFile']['is_folder']) {
 			$conditions['NOT'] = array(
 				'AND' => array(
 					'CabinetFileTree.lft >=' => $cabinetFile['CabinetFileTree']['lft'],
@@ -431,16 +449,19 @@ class CabinetFilesEditController extends CabinetsAppController {
 			);
 		}
 
-		$folders = $this->CabinetFileTree->find('threaded', ['conditions' => $conditions, 'recursive' => 0, 'order' => 'CabinetFile.filename ASC']);
+		$folders = $this->CabinetFileTree->find(
+			'threaded',
+			['conditions' => $conditions, 'recursive' => 0, 'order' => 'CabinetFile.filename ASC']
+		);
 		$this->set('folders', $folders);
 
 
 		// カレントフォルダのツリーパスを得る
-		if($currentTreeId > 0){
+		if ($currentTreeId > 0) {
 			$folderPath = $this->CabinetFileTree->getPath($currentTreeId, null, 0);
 			$this->set('folderPath', $folderPath);
 			$nestCount = count($folderPath);
-			if($nestCount > 1){
+			if ($nestCount > 1) {
 				// 親フォルダあり
 				$url = NetCommonsUrl::actionUrl(
 					[
@@ -450,12 +471,12 @@ class CabinetFilesEditController extends CabinetsAppController {
 					]
 				);
 
-			}else{
+			} else {
 				// 親はキャビネット
 				$url = NetCommonsUrl::backToIndexUrl();
 			}
 			$this->set('parentUrl', $url);
-		}else{
+		} else {
 			// ルート
 			$this->set('folderPath', array());
 			$this->set('parentUrl', false);
@@ -478,20 +499,26 @@ class CabinetFilesEditController extends CabinetsAppController {
 			if ($result) {
 				//正常の場合
 				//if($cabinetFile['CabinetFile']['is_folder']) {
-					// reloadするのでSession::flash
-					//$this->Flash->set(__d('cabinets', '移動しました'), );
-					//$this->Session->setFlash('移動しました');
+				// reloadするのでSession::flash
+				//$this->Flash->set(__d('cabinets', '移動しました'), );
+				//$this->Session->setFlash('移動しました');
 
 				//}else{
-					$this->NetCommons->setFlashNotification(__d('cabinets', 'Moved.'), array(
+				$this->NetCommons->setFlashNotification(
+					__d('cabinets', 'Moved.'),
+					array(
 						'class' => 'success',
 						'ajax' => !$cabinetFile['CabinetFile']['is_folder']
-					));
+					)
+				);
 				//}
 			} else {
-				$this->NetCommons->setFlashNotification(__d('cabinets', 'Move failed'), array(
-					'class' => 'danger',
-				));
+				$this->NetCommons->setFlashNotification(
+					__d('cabinets', 'Move failed'),
+					array(
+						'class' => 'danger',
+					)
+				);
 				//$this->NetCommons->handleValidationError($this->RolesRoomsUser->validationErrors);
 			}
 
@@ -510,7 +537,7 @@ class CabinetFilesEditController extends CabinetsAppController {
 		$this->set('_serialize', ['folderPath']);
 	}
 
-	/**
+/**
  * delete method
  *
  * @throws ForbiddenException
@@ -538,14 +565,21 @@ class CabinetFilesEditController extends CabinetsAppController {
 		}
 		return $this->redirect(
 			NetCommonsUrl::actionUrl(
-				array('controller' => 'cabinet_files', 'action' => 'index', 'frame_id' => Current::read('Frame.id'), 'block_id' => Current::read('Block.id'))));
+				array(
+					'controller' => 'cabinet_files',
+					'action' => 'index',
+					'frame_id' => Current::read('Frame.id'),
+					'block_id' => Current::read('Block.id')
+				)
+			)
+		);
 	}
 
-	/**
-	 * unzip action
-	 *
-	 * @return void
-	 */
+/**
+ * unzip action
+ *
+ * @return void
+ */
 	public function unzip() {
 		$key = $this->request->params['pass'][1];
 
@@ -558,15 +592,19 @@ class CabinetFilesEditController extends CabinetsAppController {
 
 		$cabinetFile = $this->CabinetFile->find('first', $options);
 
-		if($cabinetFile && $cabinetFile['UploadFile']['file']['extension'] == 'zip'){
+		if ($cabinetFile && $cabinetFile['UploadFile']['file']['extension'] == 'zip') {
 			$this->CabinetFile->unzip($cabinetFile);
 			$parentCabinetFolder = $this->CabinetFile->getParent($cabinetFile);
-			$this->redirect(NetCommonsUrl::actionUrl([
-				'controller' => 'cabinet_files',
-				'action' => 'index',
-				'key' => $parentCabinetFolder['CabinetFile']['key'],
-				'block_id' => Current::read('Block.id'),
-			]));
+			$this->redirect(
+				NetCommonsUrl::actionUrl(
+					[
+						'controller' => 'cabinet_files',
+						'action' => 'index',
+						'key' => $parentCabinetFolder['CabinetFile']['key'],
+						'block_id' => Current::read('Block.id'),
+					]
+				)
+			);
 		} else {
 			return $this->throwBadRequest();
 		}

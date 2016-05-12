@@ -86,14 +86,16 @@ class CabinetSaveCabinetTest extends NetCommonsSaveTest {
 		$CabinetFile = ClassRegistry::init('Cabinets.CabinetFile');
 		// rootフォルダができる
 		$cabinetKey = $newCabinet['Cabinet']['key'];
-		$rootFolder = $CabinetFile->find('first',
+		$rootFolder = $CabinetFile->find(
+			'first',
 			[
 				'conditions' => [
 					'cabinet_key' => $cabinetKey,
 					'parent_id' => null,
 				],
 				'recursive' => 0,
-			]);
+			]
+		);
 		$this->assertNotEmpty($rootFolder);
 
 		// 同名でルートフォルダは作成される
@@ -111,14 +113,16 @@ class CabinetSaveCabinetTest extends NetCommonsSaveTest {
 		$CabinetFile = ClassRegistry::init('Cabinets.CabinetFile');
 		// rootフォルダができる
 		$cabinetKey = $data['Cabinet']['key'];
-		$rootFolder = $CabinetFile->find('first',
+		$rootFolder = $CabinetFile->find(
+			'first',
 			[
 				'conditions' => [
 					'cabinet_key' => $cabinetKey,
 					'parent_id' => null,
 				],
 				'recursive' => 0,
-			]);
+			]
+		);
 		$this->assertNotEmpty($rootFolder);
 
 		// 同名でルートフォルダは作成される

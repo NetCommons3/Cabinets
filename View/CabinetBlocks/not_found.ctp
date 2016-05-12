@@ -15,7 +15,9 @@
 
 	<div class="tab-content">
 		<div class="text-right">
-			<a class="btn btn-success" href="<?php echo $this->Html->url('/cabinets/cabinet_blocks/add/' . Current::read('Frame.id'));?>">
+			<a class="btn btn-success" href="<?php echo $this->Html->url(
+				'/cabinets/cabinet_blocks/add/' . Current::read('Frame.id')
+			); ?>">
 				<span class="glyphicon glyphicon-plus"> </span>
 			</a>
 		</div>

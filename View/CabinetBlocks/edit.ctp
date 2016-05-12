@@ -16,23 +16,31 @@
 	<div class="tab-content">
 		<?php echo $this->BlockTabs->block(BlockTabsHelper::BLOCK_TAB_SETTING); ?>
 
-		<?php echo $this->element('Blocks.edit_form', array(
-			'model' => 'Cabinet',
-			'callback' => 'Cabinets.CabinetBlocks/edit_form',
-			'cancelUrl' => NetCommonsUrl::backToIndexUrl('default_setting_action'),
-		)); ?>
+		<?php echo $this->element(
+			'Blocks.edit_form',
+			array(
+				'model' => 'Cabinet',
+				'callback' => 'Cabinets.CabinetBlocks/edit_form',
+				'cancelUrl' => NetCommonsUrl::backToIndexUrl('default_setting_action'),
+			)
+		); ?>
 
 		<?php if ($this->request->params['action'] === 'edit') : ?>
-			<?php echo $this->element('Blocks.delete_form', array(
-				'model' => 'CabinetBlock',
-				'action' => NetCommonsUrl::actionUrl(array(
-					'controller' => $this->params['controller'],
-					'action' => 'delete',
-					'block_id' => Current::read('Block.id'),
-					'frame_id' => Current::read('Frame.id')
-				)),
-				'callback' => 'Cabinets.CabinetBlocks/delete_form'
-			)); ?>
+			<?php echo $this->element(
+				'Blocks.delete_form',
+				array(
+					'model' => 'CabinetBlock',
+					'action' => NetCommonsUrl::actionUrl(
+						array(
+							'controller' => $this->params['controller'],
+							'action' => 'delete',
+							'block_id' => Current::read('Block.id'),
+							'frame_id' => Current::read('Frame.id')
+						)
+					),
+					'callback' => 'Cabinets.CabinetBlocks/delete_form'
+				)
+			); ?>
 		<?php endif; ?>
 	</div>
 </article>

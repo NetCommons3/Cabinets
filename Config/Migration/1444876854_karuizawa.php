@@ -28,7 +28,14 @@ class Karuizawa extends CakeMigration {
 		'up' => array(
 			'create_field' => array(
 				'cabinet_frame_settings' => array(
-					'articles_per_page' => array('type' => 'integer', 'null' => false, 'default' => '10', 'unsigned' => false, 'comment' => 'display number | 表示件数 |  | ', 'after' => 'frame_key'),
+					'articles_per_page' => array(
+						'type' => 'integer',
+						'null' => false,
+						'default' => '10',
+						'unsigned' => false,
+						'comment' => 'display number | 表示件数 |  | ',
+						'after' => 'frame_key'
+					),
 				),
 			),
 			'drop_field' => array(
@@ -41,7 +48,13 @@ class Karuizawa extends CakeMigration {
 			),
 			'create_field' => array(
 				'cabinet_frame_settings' => array(
-					'posts_per_page' => array('type' => 'integer', 'null' => false, 'default' => '10', 'unsigned' => false, 'comment' => 'display number | 表示件数 |  | '),
+					'posts_per_page' => array(
+						'type' => 'integer',
+						'null' => false,
+						'default' => '10',
+						'unsigned' => false,
+						'comment' => 'display number | 表示件数 |  | '
+					),
 				),
 			),
 		),
