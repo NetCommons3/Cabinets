@@ -49,6 +49,12 @@ class CabinetFileTree extends CabinetsAppModel {
 		),
 	);
 
+/**
+ * beforeFind
+ *
+ * @param array $query クエリ
+ * @return bool;
+ */
 	public function beforeFind($query) {
 		// workflow連動でアソシエーションさせる！
 		$associationConditions = [
@@ -71,6 +77,6 @@ class CabinetFileTree extends CabinetsAppModel {
 				]
 			]
 		);
-
+		return parent::beforeFind($query);
 	}
 }

@@ -65,7 +65,6 @@ class CabinetSaveCabinetTest extends NetCommonsSaveTest {
 		Current::$current['Permission']['content_publishable']['value'] = true;
 	}
 
-
 /**
  * Method name
  *
@@ -73,6 +72,11 @@ class CabinetSaveCabinetTest extends NetCommonsSaveTest {
  */
 	protected $_methodName = 'saveCabinet';
 
+/**
+ * test makeRootFolder
+ *
+ * @return void
+ */
 	public function testMakeRootFolder() {
 		// キャビネットを新規登録するとルートフォルダができる
 		$data['Cabinet'] = (new CabinetFixture())->records[0];
@@ -102,8 +106,13 @@ class CabinetSaveCabinetTest extends NetCommonsSaveTest {
 		$this->assertEquals($rootFolder['CabinetFile']['filename'], $newCabinet['Cabinet']['name']);
 	}
 
+/**
+ * test syncRootFolder
+ *
+ * @return void
+ */
 	public function testSyncRootFolder() {
-// キャビネットを新規登録するとルートフォルダができる
+		// キャビネットを新規登録するとルートフォルダができる
 		$data['Cabinet'] = (new CabinetFixture())->records[0];
 		$data['Cabinet']['name'] = 'Edit Cabinet Name';
 
@@ -150,7 +159,6 @@ class CabinetSaveCabinetTest extends NetCommonsSaveTest {
 		$results[1] = Hash::insert($results[1], '0.Cabinet.key', null);
 		$results[1] = Hash::remove($results[1], '0.Cabinet.created_user');
 		$results[1] = Hash::remove($results[1], '0.Cabinet.created');
-
 
 		return $results;
 	}

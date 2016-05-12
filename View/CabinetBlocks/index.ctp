@@ -55,7 +55,7 @@
 			</thead>
 			<tbody>
 			<?php foreach ($cabinets as $cabinet) : ?>
-				<tr<?php echo($this->data['Frame']['block_id'] === $cabinet['Block']['id'] ? ' class="active"' : ''); ?>>
+				<tr<?php echo ($this->data['Frame']['block_id'] === $cabinet['Block']['id']) ? ' class="active"' : ''; ?>>
 					<td>
 						<?php echo $this->BlockForm->displayFrame(
 							'Frame.block_id',

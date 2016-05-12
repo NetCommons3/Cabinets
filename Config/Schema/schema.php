@@ -1,16 +1,37 @@
 <?php
+/**
+ * CabinetsSchema
+ */
 
+/**
+ * Class CabinetsSchema
+ */
 class CabinetsSchema extends CakeSchema {
 
 	public $connection = 'master';
 
+/**
+ * before
+ *
+ * @param array $event event
+ * @return bool
+ */
 	public function before($event = array()) {
 		return true;
 	}
 
+/**
+ * after
+ *
+ * @param array $event event
+ * @return void
+ */
 	public function after($event = array()) {
 	}
 
+/**
+ * @var array cabinet_file_trees
+ */
 	public $cabinet_file_trees = array(
 		'id' => array(
 			'type' => 'integer',
@@ -99,6 +120,9 @@ class CabinetsSchema extends CakeSchema {
 		)
 	);
 
+/**
+ * @var array cabinet_files
+ */
 	public $cabinet_files = array(
 		'id' => array(
 			'type' => 'integer',
@@ -196,6 +220,9 @@ class CabinetsSchema extends CakeSchema {
 		)
 	);
 
+/**
+ * @var array cabinet_settings
+ */
 	public $cabinet_settings = array(
 		'id' => array(
 			'type' => 'integer',
@@ -255,6 +282,9 @@ class CabinetsSchema extends CakeSchema {
 		)
 	);
 
+/**
+ * @var array cabinets
+ */
 	public $cabinets = array(
 		'id' => array(
 			'type' => 'integer',

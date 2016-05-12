@@ -28,4 +28,4 @@
 	)
 ); ?>
 
-<?php echo $this->element('Blocks.public_type'); ?>
+<?php echo $this->element('Blocks.public_type');

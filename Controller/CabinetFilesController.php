@@ -122,7 +122,6 @@ class CabinetFilesController extends CabinetsAppController {
 			return;
 		}
 
-
 		$this->CabinetFileTree->recover('parent');
 
 		// currentFolderを取得
@@ -203,11 +202,13 @@ class CabinetFilesController extends CabinetsAppController {
 		$this->set('parentUrl', $url);
 
 		$this->set('listTitle', $this->_cabinetTitle);
-
-		return;
-
 	}
 
+/**
+ * フォルダ詳細
+ *
+ * @return void
+ */
 	public function folder_detail() {
 		// TODO folderじゃなかったらエラー
 		$folderKey = Hash::get($this->request->params, 'pass.1', null);
@@ -229,12 +230,17 @@ class CabinetFilesController extends CabinetsAppController {
 		$this->_setFolderPath($cabinetFile);
 	}
 
+/**
+ * フォルダパスをViewにセット
+ *
+ * @param array $cabinetFile CabinetFileデータ
+ * @return void
+ */
 	protected function _setFolderPath($cabinetFile) {
 		$treeId = $cabinetFile['CabinetFileTree']['id'];
 		$folderPath = $this->CabinetFileTree->getPath($treeId, null, 0);
 		$this->set('folderPath', $folderPath);
 	}
-
 
 /**
  * 権限の取得
@@ -262,9 +268,6 @@ class CabinetFilesController extends CabinetsAppController {
  * @return void
  */
 	protected function _list($extraConditions = array()) {
-
-		//$this->_setYearMonthOptions();
-
 		$permission = $this->_getPermission();
 
 		$conditions = $this->CabinetFile->getConditions(
@@ -313,6 +316,12 @@ class CabinetFilesController extends CabinetsAppController {
 		$this->CabinetFile->saveTopicUserStatus($cabinetFile);
 	}
 
+/**
+ * ファイルダウンロード
+ *
+ * @throws NotFoundException
+ * @return mixed
+ */
 	public function download() {
 		// ここから元コンテンツを取得する処理
 		$folderKey = isset($this->request->params['pass'][1]) ? $this->request->params['pass'][1] : null;
@@ -343,6 +352,11 @@ class CabinetFilesController extends CabinetsAppController {
 		}
 	}
 
+/**
+ * フォルダのZIPダウンロード
+ *
+ * @return CakeResponse|string|void
+ */
 	public function download_folder() {
 		// フォルダを取得
 		$folderKey = isset($this->request->params['pass'][1]) ? $this->request->params['pass'][1] : null;
@@ -376,6 +390,14 @@ class CabinetFilesController extends CabinetsAppController {
 		return $zipDownloader->download($cabinetFolder['CabinetFile']['filename'] . '.zip');
 	}
 
+/**
+ * フォルダのZIPダウンロード前処理
+ *
+ * @param string $path ダウンロード処理用テンポラリフォルダのカレントパス
+ * @param array $cabinetFolder CabinetFileデータ 処理するフォルダ
+ * @throws Exception
+ * @return void
+ */
 	protected function _prepareDownload($path, $cabinetFolder) {
 		// フォルダのファイル取得
 		$files = $this->CabinetFile->find(
@@ -412,64 +434,5 @@ class CabinetFilesController extends CabinetsAppController {
 			}
 		}
 	}
-
-	public function thumb() {
-		// ここから元コンテンツを取得する処理
-		$folderKey = isset($this->request->params['pass'][1]) ? $this->request->params['pass'][1] : null;
-		$conditions = [
-			'CabinetFile.key' => $folderKey,
-			'CabinetFile.cabinet_id' => $this->_cabinet['Cabinet']['id']
-		];
-		$conditions = $this->CabinetFile->getWorkflowConditions($conditions);
-		$cabinetFile = $this->CabinetFile->find('first', ['conditions' => $conditions]);
-		//$this->set('cabinetFile', $cabinetFile);
-		// ここまで元コンテンツを取得する処理
-
-		// ダウンロード実行
-		if ($cabinetFile) {
-			return $this->Download->doDownload(
-				$cabinetFile['CabinetFile']['id'],
-				['field' => 'file', 'size' => 'thumb']
-			);
-		} else {
-			// 表示できないファイルへのアクセスなら404
-			throw new NotFoundException(__('Invalid cabinet file'));
-		}
-	}
-
-	public function download_pdf() {
-		// ここから元コンテンツを取得する処理
-		$this->_prepare();
-		$key = $this->params['pass'][1];
-
-		$conditions = $this->CabinetFile->getConditions(
-			Current::read('Block.id'),
-			$this->Auth->user('id'),
-			$this->_getPermission(),
-			$this->_getCurrentDateTime()
-		);
-
-		$conditions['CabinetFile.key'] = $key;
-		$options = array(
-			'conditions' => $conditions,
-			'recursive' => 1,
-		);
-		$cabinetFile = $this->CabinetFile->find('first', $options);
-		// ここまで元コンテンツを取得する処理
-
-		$this->AuthorizationKey->guard('popup', 'CabinetFile', $cabinetFile);
-
-		// ダウンロード実行
-		if ($cabinetFile) {
-			return $this->Download->doDownload(
-				$cabinetFile['CabinetFile']['id'],
-				['filed' => 'pdf']
-			);
-		} else {
-			// 表示できないファイルへのアクセスなら404
-			throw new NotFoundException(__('Invalid cabinet file'));
-		}
-	}
-
 
 }

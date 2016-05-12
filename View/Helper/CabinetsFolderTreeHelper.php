@@ -17,29 +17,61 @@ class CabinetsFolderTreeHelper extends AppHelper {
  */
 	public $helpers = array('NetCommons.Date', 'Html', 'NetCommonsHtml');
 
+/**
+ * @var array currentFolderTree
+ */
 	protected $_currentFolderTree = array();
+
+/**
+ * @var int 現在位置のツリーID
+ */
 	protected $_currentTreeId = 0;
 
+/**
+ * @var bool selectTree
+ */
 	protected $_selectTree = false;
 
+/**
+ * ファイル一覧左側に表示するフォルダツリーの出力
+ *
+ * @param array $folders フォルダツリーデータ
+ * @param int $currentTreeId 現在位置のツリーID
+ * @return void
+ */
 	public function render($folders, $currentTreeId) {
 		$this->_currentTreeId = $currentTreeId;
 		$this->_render($folders);
 	}
 
+/**
+ * フォルダ選択時のフォルダツリー出力
+ *
+ * @param array $folders フォルダツリーデータ
+ * @param int $currentTreeId 現在位置のツリーID
+ * @return void
+ */
 	public function renderSelectFolderTree($folders, $currentTreeId) {
 		$this->_selectTree = true;
 		$this->_currentTreeId = $currentTreeId;
 		$this->_render($folders);
 	}
 
-	public function _render($folders, $nest = -1, $parentFolderId = 0) {
+/**
+ * フォルダツリー出力（再帰呼び出しされる）
+ *
+ * @param array $folders フォルダツリーデータ
+ * @param int $nest フォルダのネストレベル
+ * @param int $parentFolderId 親フォルダのツリーID
+ * @return void
+ */
+	protected function _render($folders, $nest = -1, $parentFolderId = 0) {
 		foreach ($folders as $folder) {
 			$treeId = $folder['CabinetFileTree']['id'];
 			$isActiveFolder = ($treeId == $this->_currentTreeId);
 			$tree = '';
 			for ($i = 0; $i < $nest; $i++) {
-				$tree .= $this->Html->tag('span', '', ['class' => 'cabinets-nest']);;
+				$tree .= $this->Html->tag('span', '', ['class' => 'cabinets-nest']);
 			}
 			// currentフォルダか
 			if ($folder['CabinetFileTree']['id'] == $this->_currentTreeId) {
@@ -61,7 +93,6 @@ class CabinetsFolderTreeHelper extends AppHelper {
 
 				$folderIcon = '<span class="glyphicon " aria-hidden="true" ng-class="{\'glyphicon-folder-open\': folder[' . $treeId . '], \'glyphicon-folder-close\': ! folder[' . $treeId . ']}"></span>';
 
-
 			}
 			$options = [
 				'escape' => false,
@@ -70,7 +101,6 @@ class CabinetsFolderTreeHelper extends AppHelper {
 			if ($parentFolderId > 0) {
 				$options['ng-show'] = 'folder[' . $parentFolderId . ']';
 			}
-
 
 			//  actveだったらリンクしない
 			if ($isActiveFolder) {

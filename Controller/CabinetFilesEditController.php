@@ -75,7 +75,6 @@ class CabinetFilesEditController extends CabinetsAppController {
 		$this->set('cabinet', $this->_cabinet);
 	}
 
-
 /**
  * add method
  *
@@ -165,8 +164,7 @@ class CabinetFilesEditController extends CabinetsAppController {
 /**
  * edit method
  *
- * @throws NotFoundException
- * @throws ForbiddenException
+ * @throws NotFoundException|ForbiddenException
  * @return void
  */
 	public function edit() {
@@ -341,13 +339,10 @@ class CabinetFilesEditController extends CabinetsAppController {
 /**
  * edit method
  *
- * @throws NotFoundException
- * @throws ForbiddenException
+ * @throws NotFoundException|ForbiddenException|InternalErrorException
  * @return void
  */
 	public function edit_folder() {
-
-
 		$this->set('isEdit', true);
 		//$key = $this->request->params['named']['key'];
 		$key = $this->request->params['pass'][1];
@@ -415,7 +410,11 @@ class CabinetFilesEditController extends CabinetsAppController {
 		$this->render('folder_form');
 	}
 
-
+/**
+ * フォルダ選択画面
+ *
+ * @return void
+ */
 	public function select_folder() {
 		//$currentTreeId = Hash::get($this->request->named, 'parent_tree_id', null);
 		$key = isset($this->request->params['pass'][1]) ? $this->request->params['pass'][1] : null;
@@ -433,7 +432,6 @@ class CabinetFilesEditController extends CabinetsAppController {
 		//レイアウトの設定
 		$this->viewClass = 'View';
 		$this->layout = 'NetCommons.modal';
-
 
 		// 全フォルダツリーを得る
 		$conditions = [
@@ -454,7 +452,6 @@ class CabinetFilesEditController extends CabinetsAppController {
 			['conditions' => $conditions, 'recursive' => 0, 'order' => 'CabinetFile.filename ASC']
 		);
 		$this->set('folders', $folders);
-
 
 		// カレントフォルダのツリーパスを得る
 		if ($currentTreeId > 0) {
@@ -483,6 +480,11 @@ class CabinetFilesEditController extends CabinetsAppController {
 		}
 	}
 
+/**
+ * ファイル・フォルダ移動
+ *
+ * @return void
+ */
 	public function move() {
 		if ($this->request->is(array('post', 'put'))) {
 			$key = $this->params['pass'][1];
@@ -492,7 +494,6 @@ class CabinetFilesEditController extends CabinetsAppController {
 			$parentId = Hash::get($this->request->named, 'parent_id', null);
 
 			$cabinetFile['CabinetFileTree']['parent_id'] = $parentId;
-
 
 			$result = $this->CabinetFileTree->save($cabinetFile);
 
@@ -524,9 +525,13 @@ class CabinetFilesEditController extends CabinetsAppController {
 
 			//$this->set('_serialize', ['message']);
 		}
-
 	}
 
+/**
+ * フォルダパスをJsonで返す
+ *
+ * @return void
+ */
 	public function get_folder_path() {
 		$treeId = Hash::get($this->request->named, 'tree_id', null);
 		$folderPath = $this->CabinetFileTree->getPath($treeId, null, 0);
@@ -608,8 +613,6 @@ class CabinetFilesEditController extends CabinetsAppController {
 		} else {
 			return $this->throwBadRequest();
 		}
-
 	}
-
 }
 

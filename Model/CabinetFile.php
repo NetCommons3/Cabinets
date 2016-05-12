@@ -102,7 +102,6 @@ class CabinetFile extends CabinetsAppModel {
 				'message' => 'pdf only'
 			],
 
-
 			'filename' => array(
 				'notBlank' => [
 					'rule' => array('notBlank'),
@@ -140,6 +139,12 @@ class CabinetFile extends CabinetsAppModel {
 		return $validate;
 	}
 
+/**
+ * ルートフォルダを得る
+ *
+ * @param array $cabinet Cabinetデータ
+ * @return array|null
+ */
 	public function getRootFolder($cabinet) {
 		return $this->find('first', ['conditions' => $this->_getRootFolderConditions($cabinet)]);
 	}
@@ -205,7 +210,7 @@ class CabinetFile extends CabinetsAppModel {
 /**
  * Cabinetのルートフォルダが存在するか
  *
- * @param $cabinet
+ * @param array $cabinet Cabinetデータ
  * @return bool true:存在する false:存在しない
  */
 	public function rootFolderExist($cabinet) {
@@ -349,13 +354,11 @@ class CabinetFile extends CabinetsAppModel {
 	}
 
 /**
- * ファイルの保存。タグも保存する
+ * save ファイル
  *
- * @param int $blockId ブロックID
- * @param int $frameId frame ID
- * @param array $data 登録データ
- * @return bool
- * @throws InternalErrorException
+ * @param array $data CabinetFileデータ
+ * @return bool|mixed
+ * @throws Exception
  */
 	public function saveFile($data) {
 		$this->begin();
@@ -401,7 +404,6 @@ class CabinetFile extends CabinetsAppModel {
 			$treeData = $this->CabinetFileTree->save($data);
 			$savedData['CabinetFileTree'] = $treeData['CabinetFileTree'];
 
-
 			$this->commit();
 			return $savedData;
 
@@ -416,9 +418,10 @@ class CabinetFile extends CabinetsAppModel {
 /**
  * ファイル削除
  *
- * @param int $key オリジンID
- * @throws InternalErrorException
+ * @param string $key CabinetFile.key
  * @return bool
+ * @throws Exception
+ * @throws null
  */
 	public function deleteFileByKey($key) {
 		$this->begin();
@@ -437,6 +440,13 @@ class CabinetFile extends CabinetsAppModel {
 		}
 	}
 
+/**
+ * ファイル削除処理
+ *
+ * @param array $cabinetFile CabinetFile データ ファイル
+ * @throws InternalErrorException
+ * @return bool
+ */
 	protected function _deleteFile($cabinetFile) {
 		//コメントの削除
 		$this->deleteCommentsByContentKey($cabinetFile['CabinetFile']['key']);
@@ -457,6 +467,13 @@ class CabinetFile extends CabinetsAppModel {
 		}
 	}
 
+/**
+ * フォルダ削除処理
+ *
+ * @param array $cabinetFile CabinetFileデータ フォルダ
+ * @throws InternalErrorException
+ * @return bool
+ */
 	protected function _deleteFolder($cabinetFile) {
 		$key = $cabinetFile['CabinetFile']['key'];
 
@@ -509,7 +526,6 @@ class CabinetFile extends CabinetsAppModel {
 		} else {
 			throw new InternalErrorException(__d('net_commons', 'Internal Server Error'));
 		}
-
 	}
 
 /**
@@ -527,7 +543,12 @@ class CabinetFile extends CabinetsAppModel {
 		return ($count == 0);
 	}
 
-
+/**
+ * フォルダの合計サイズを得る
+ *
+ * @param array $folder CabinetFileデータ
+ * @return int 合計サイズ
+ */
 	public function getTotalSizeByFolder($folder) {
 		// ベタパターン
 		// 配下全てのファイルを取得する
@@ -570,8 +591,10 @@ class CabinetFile extends CabinetsAppModel {
 	}
 
 /**
- * @param $cabinet
- * @return array
+ * ルートフォルダ（＝キャビネット）をFindするためのconditionsを返す
+ *
+ * @param array $cabinet Cabinetデータ
+ * @return array conditions
  */
 	protected function _getRootFolderConditions($cabinet) {
 		$conditions = [
@@ -612,6 +635,13 @@ class CabinetFile extends CabinetsAppModel {
 		return ($count > 0);
 	}
 
+/**
+ * キャビネットファイルのUnzip
+ *
+ * @param array $cabinetFile CabinetFileデータ
+ * @return bool
+ * @throws InternalErrorException
+ */
 	public function unzip($cabinetFile) {
 		$this->begin();
 
@@ -647,6 +677,14 @@ class CabinetFile extends CabinetsAppModel {
 		return true;
 	}
 
+/**
+ * フォルダパスにある実フォルダをキャビネットに登録する
+ *
+ * @param array $parentCabinetFolder 登録する親フォルダ
+ * @param string $folderPath 実フォルダのパス
+ * @throws InternalErrorException
+ * @return void
+ */
 	protected function _addFolderFromPath($parentCabinetFolder, $folderPath) {
 		$newFolder = [
 			'CabinetFile' => [
@@ -678,6 +716,14 @@ class CabinetFile extends CabinetsAppModel {
 		}
 	}
 
+/**
+ * ファイルパスにある実ファイルをキャビネットに登録する
+ *
+ * @param array $parentCabinetFolder 登録する親フォルダ
+ * @param string $filePath 実ファイルのパス
+ * @throws InternalErrorException
+ * @return void
+ */
 	protected function _addFileFromPath($parentCabinetFolder, $filePath) {
 		$newFile = [
 			'CabinetFile' => [
@@ -699,7 +745,6 @@ class CabinetFile extends CabinetsAppModel {
 		$this->attachFile($savedFile, 'file', $filePath);
 	}
 
-
 /**
  * php builtinのbasenameがlocale依存なので自前で
  *
@@ -718,6 +763,8 @@ class CabinetFile extends CabinetsAppModel {
 /**
  * 拡張子抜きのファイル名と拡張子にわける
  *
+ * @param string $fileName ファイル名
+ * @return array [ファイル名,拡張子]
  */
 	public function splitFileName($fileName) {
 		// .あるか
@@ -740,6 +787,12 @@ class CabinetFile extends CabinetsAppModel {
 		return $ret;
 	}
 
+/**
+ * 同一フォルダに同じ名前のファイル・フォルダがあるか
+ *
+ * @param array $cabinetFile CabinetFile データ
+ * @return bool
+ */
 	protected function _existSameFilename($cabinetFile) {
 		$conditions = [
 			'CabinetFile.key !=' => $cabinetFile['CabinetFile']['key'],
@@ -750,6 +803,14 @@ class CabinetFile extends CabinetsAppModel {
 		return ($count > 0);
 	}
 
+/**
+ * 自動リネーム
+ *
+ * 同一フォルダ内で名前が衝突したら自動でリネームする
+ *
+ * @param array $cabinetFile CabinetFile データ
+ * @return void
+ */
 	protected function _autoRename($cabinetFile) {
 		$index = 0;
 		if ($cabinetFile['CabinetFile']['is_folder']) {

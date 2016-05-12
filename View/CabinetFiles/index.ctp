@@ -211,7 +211,7 @@
 									 data-toggle="popover"
 									 data-placement="bottom"
 								>
-									<?php echo(h($cabinetFile['CabinetFile']['description'])); ?>
+									<?php echo h($cabinetFile['CabinetFile']['description']); ?>
 								</div>
 
 
@@ -330,7 +330,7 @@
 									 data-toggle="popover"
 									 data-placement="bottom"
 								>
-									<?php echo(h($cabinetFile['CabinetFile']['description'])); ?>
+									<?php echo h($cabinetFile['CabinetFile']['description']); ?>
 								</div>
 
 
