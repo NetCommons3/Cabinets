@@ -65,7 +65,7 @@ class CabinetFile extends CabinetsAppModel {
 		),
 		'Mails.MailQueue' => array(		// 自動でメールキューの登録, 削除。ワークフロー利用時はWorkflow.Workflowより下に記述する
 			'embedTags' => array(
-				'X-SUBJECT' => 'CabinetFile.title',
+				'X-SUBJECT' => 'CabinetFile.filename',
 				'X-BODY' => 'CabinetFile.description',
 			),
 		),
