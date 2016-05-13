@@ -98,13 +98,8 @@ class CabinetFile extends CabinetsAppModel {
 		),
 	);
 
-/**
- * バリデーションルールを返す
- *
- * @return array
- */
-	protected function _getValidateSpecification() {
-		$validate = array(
+	public function beforeValidate($options = array()) {
+		$this->validate = array(
 			'filename' => array(
 				'notBlank' => [
 					'rule' => array('notBlank'),
@@ -139,7 +134,20 @@ class CabinetFile extends CabinetsAppModel {
 				),
 			),
 		);
-		return $validate;
+
+		if (!$this->data['CabinetFile']['is_folder']) {
+			// ファイルならファイルのバリデートを追加する
+			$uploadAllowExtension = explode(',', SiteSettingUtil::read('Upload.allow_extension'));
+			$uploadAllowExtension = array_map('trim', $uploadAllowExtension);
+
+			$this->validate['file'] = [
+				// システム設定の値をとってくる。trimすること
+				'rule' => ['isValidExtension', $uploadAllowExtension, false],
+				'message' => __d('files', 'It is upload disabled file format')
+			];
+		}
+
+		return parent::beforeValidate($options);
 	}
 
 /**
