@@ -73,6 +73,7 @@ class CabinetBlockRolePermissionsController extends CabinetsAppController {
 			),
 			'blockTabs' => array(
 				'block_settings' => array('url' => array('controller' => 'cabinet_blocks')),
+				'mail_settings',
 				'role_permissions' => array('url' => array('controller' => 'cabinet_block_role_permissions')),
 			),
 		),

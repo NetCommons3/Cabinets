@@ -63,6 +63,13 @@ class CabinetFile extends CabinetsAppModel {
 				'path' => '/:plugin_key/cabinet_files/view/:block_id/:content_key',
 			),
 		),
+		'Mails.MailQueue' => array(		// 自動でメールキューの登録, 削除。ワークフロー利用時はWorkflow.Workflowより下に記述する
+			'embedTags' => array(
+				'X-SUBJECT' => 'CabinetFile.title',
+				'X-BODY' => 'CabinetFile.description',
+			),
+		),
+
 	);
 
 /**

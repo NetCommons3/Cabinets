@@ -139,3 +139,5 @@ msgstr ""
 msgid "Cabinet"
 msgstr ""
 
+msgid "MailSetting.mail_fixed_phrase_body.popover"
+msgstr "{X-SITE_NAME} : サイト名<br />{X-PLUGIN_NAME} : プラグイン名<br />{X-ROOM} : ルーム名<br />{X-BLOCK_NAME} : キャビネット名<br />{X-SUBJECT} : ファイル名<br />{X-USER} : 投稿者<br />{X-TO_DATE} : 投稿日時<br />{X-TAGS} : タグ<br />{X-BODY} : 投稿内容<br />{X-URL} : 投稿内容のURL"
