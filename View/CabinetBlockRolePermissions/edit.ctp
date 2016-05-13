@@ -16,11 +16,14 @@
 	<div class="tab-content">
 		<?php echo $this->BlockTabs->block(BlockTabsHelper::BLOCK_TAB_PERMISSION); ?>
 
-		<?php echo $this->element('Blocks.edit_form', array(
-			'model' => 'CabinetBlockRolePermission',
-			//'action' => 'edit' . '/' . $this->data['Frame']['id'] . '/' . $this->data['Block']['id'],
-			'callback' => 'Cabinets.CabinetBlockRolePermissions/edit_form',
-			'cancelUrl' => NetCommonsUrl::backToIndexUrl('default_setting_action'),
-		)); ?>
+		<?php echo $this->element(
+			'Blocks.edit_form',
+			array(
+				'model' => 'CabinetBlockRolePermission',
+				//'action' => 'edit' . '/' . $this->data['Frame']['id'] . '/' . $this->data['Block']['id'],
+				'callback' => 'Cabinets.CabinetBlockRolePermissions/edit_form',
+				'cancelUrl' => NetCommonsUrl::backToIndexUrl('default_setting_action'),
+			)
+		); ?>
 	</div>
 </div>

@@ -16,6 +16,9 @@ App::uses('CabinetsAppController', 'Cabinets.Controller');
  *
  * @author Shohei Nakajima <nakajimashouhei@gmail.com>
  * @package NetCommons\Cabinets\Controller
+ *
+ * @property Cabinet $Cabinet
+ * @property CabinetFile $CabinetFile
  */
 class CabinetBlocksController extends CabinetsAppController {
 
@@ -34,6 +37,7 @@ class CabinetBlocksController extends CabinetsAppController {
 	public $uses = array(
 		//'Cabinets.CabinetFrameSetting',
 		'Blocks.Block',
+		'Cabinets.CabinetFile',
 	);
 
 /**
@@ -42,17 +46,6 @@ class CabinetBlocksController extends CabinetsAppController {
  * @var array
  */
 	public $components = array(
-
-		//'Blocks.BlockTabs' => array(
-		//	'mainTabs' => array(
-		//		'block_index' => array('url' => array('controller' => 'cabinet_blocks')),
-		//		//'frame_settings' => array('url' => array('controller' => 'cabinet_frame_settings')),
-		//	),
-		//	'blockTabs' => array(
-		//		'block_settings' => array('url' => array('controller' => 'cabinet_blocks')),
-		//		'role_permissions' => array('url' => array('controller' => 'cabinet_block_role_permissions')),
-		//	),
-		//),
 		'NetCommons.Permission' => array(
 			//アクセスの権限
 			'allow' => array(
@@ -60,7 +53,6 @@ class CabinetBlocksController extends CabinetsAppController {
 			),
 		),
 		'Paginator',
-		'Categories.CategoryEdit',
 
 	);
 
@@ -78,25 +70,11 @@ class CabinetBlocksController extends CabinetsAppController {
 			),
 			'blockTabs' => array(
 				'block_settings' => array('url' => array('controller' => 'cabinet_blocks')),
+				'mail_settings',
 				'role_permissions' => array('url' => array('controller' => 'cabinet_block_role_permissions')),
 			),
 		),
-		'Likes.Like',
 	);
-
-/**
- * beforeFilter
- *
- * @return void
- */
-	public function beforeFilter() {
-		parent::beforeFilter();
-
-		//CategoryEditComponentの削除
-		if ($this->params['action'] === 'index') {
-			$this->Components->unload('Categories.CategoryEdit');
-		}
-	}
 
 /**
  * index
@@ -112,7 +90,7 @@ class CabinetBlocksController extends CabinetsAppController {
 		);
 
 		$cabinets = $this->Paginator->paginate('Cabinet');
-		if (! $cabinets) {
+		if (!$cabinets) {
 			$this->view = 'Blocks.Blocks/not_found';
 			return;
 		}
@@ -128,6 +106,12 @@ class CabinetBlocksController extends CabinetsAppController {
 		//	debug($result);
 		//
 		//}
+		foreach ($cabinets as &$cabinet) {
+			$rootFolder = $this->CabinetFile->getRootFolder($cabinet);
+			$cabinet['Cabinet']['total_size'] = $this->CabinetFile->getTotalSizeByFolder(
+				$rootFolder
+			);
+		}
 
 		$this->set('cabinets', $cabinets);
 		$this->request->data['Frame'] = Current::read('Frame');
@@ -141,7 +125,7 @@ class CabinetBlocksController extends CabinetsAppController {
 	public function add() {
 		$this->view = 'edit';
 
-		if ($this->request->isPost()) {
+		if ($this->request->is('post')) {
 			//登録処理
 			if ($this->Cabinet->saveCabinet($this->data)) {
 				$this->redirect(NetCommonsUrl::backToIndexUrl('default_setting_action'));
@@ -162,7 +146,7 @@ class CabinetBlocksController extends CabinetsAppController {
  * @return void
  */
 	public function edit() {
-		if ($this->request->isPut()) {
+		if ($this->request->is('put')) {
 			//登録処理
 			if ($this->Cabinet->saveCabinet($this->data)) {
 				$this->redirect(NetCommonsUrl::backToIndexUrl('default_setting_action'));
@@ -171,9 +155,8 @@ class CabinetBlocksController extends CabinetsAppController {
 
 		} else {
 			//表示処理(初期データセット)
-			if (! $cabinet = $this->Cabinet->getCabinet()) {
-				$this->setAction('throwBadRequest');
-				return false;
+			if (!$cabinet = $this->Cabinet->getCabinet()) {
+				return $this->throwBadRequest();
 			}
 			$this->request->data = Hash::merge($this->request->data, $cabinet);
 			//$this->request->data = Hash::merge($this->request->data, $this->CabinetFrameSetting->getCabinetFrameSetting(true));
@@ -187,12 +170,13 @@ class CabinetBlocksController extends CabinetsAppController {
  * @return void
  */
 	public function delete() {
-		if ($this->request->isDelete()) {
+		if ($this->request->is('delete')) {
 			if ($this->Cabinet->deleteCabinet($this->data)) {
-				$this->redirect(NetCommonsUrl::backToIndexUrl('default_setting_action'));
+				return $this->redirect(NetCommonsUrl::backToIndexUrl('default_setting_action'));
 			}
 		}
 
-		$this->setAction('throwBadRequest');
+		return $this->throwBadRequest();
 	}
+
 }

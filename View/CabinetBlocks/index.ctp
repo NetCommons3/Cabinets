@@ -18,9 +18,14 @@
 			<?php echo $this->Button->addLink(); ?>
 		</div>
 
-		<?php echo $this->Form->create('', array(
-			'url' => NetCommonsUrl::actionUrl(array('plugin' => 'frames', 'controller' => 'frames', 'action' => 'edit'))
-		)); ?>
+		<?php echo $this->Form->create(
+			'',
+			array(
+				'url' => NetCommonsUrl::actionUrl(
+					array('plugin' => 'frames', 'controller' => 'frames', 'action' => 'edit')
+				)
+			)
+		); ?>
 
 		<?php echo $this->Form->hidden('Frame.id'); ?>
 
@@ -29,27 +34,44 @@
 			<tr>
 				<th></th>
 				<th>
-					<?php echo $this->Paginator->sort('Cabinet.name', __d('cabinets', 'Cabinet name')); ?>
+					<?php echo $this->Paginator->sort(
+						'Cabinet.name',
+						__d('cabinets', 'Cabinet name')
+					); ?>
 				</th>
 				<th class="text-right">
-					<?php echo $this->Paginator->sort('Cabinet.total_size', __d('cabinets', 'Size')); ?>
+					<?php echo $this->Paginator->sort(
+						'Cabinet.total_size',
+						__d('cabinets', 'Size')
+					); ?>
 				</th>
 				<th>
-					<?php echo $this->Paginator->sort('Block.modified', __d('net_commons', 'Updated date')); ?>
+					<?php echo $this->Paginator->sort(
+						'Block.modified',
+						__d('net_commons', 'Updated date')
+					); ?>
 				</th>
 			</tr>
 			</thead>
 			<tbody>
 			<?php foreach ($cabinets as $cabinet) : ?>
-				<tr<?php echo ($this->data['Frame']['block_id'] === $cabinet['Block']['id'] ? ' class="active"' : ''); ?>>
+				<tr<?php echo ($this->data['Frame']['block_id'] === $cabinet['Block']['id']) ? ' class="active"' : ''; ?>>
 					<td>
-						<?php echo $this->BlockForm->displayFrame('Frame.block_id', $cabinet['Block']['id']); ?>
+						<?php echo $this->BlockForm->displayFrame(
+							'Frame.block_id',
+							$cabinet['Block']['id']
+						); ?>
 					</td>
 					<td>
-						<?php echo $this->NetCommonsHtml->editLink($cabinet['Cabinet']['name'], array('block_id' => $cabinet['Block']['id'])); ?>
+						<?php echo $this->NetCommonsHtml->editLink(
+							$cabinet['Cabinet']['name'],
+							array('block_id' => $cabinet['Block']['id'])
+						); ?>
 					</td>
 					<td class="text-right">
-						<?php echo $this->Number->toReadableSize($cabinet['Cabinet']['total_size']); ?>
+						<?php echo $this->Number->toReadableSize(
+							$cabinet['Cabinet']['total_size']
+						); ?>
 					</td>
 					<td>
 						<?php echo $this->Date->dateFormat($cabinet['Block']['modified']); ?>

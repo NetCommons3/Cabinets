@@ -48,7 +48,9 @@ class CabinetSetting extends CabinetsAppModel {
 			'cabinet_key' => $cabinetKey
 		);
 
-		$cabinetSetting = $this->find('first', array(
+		$cabinetSetting = $this->find(
+			'first',
+			array(
 				'recursive' => -1,
 				'conditions' => $conditions,
 			)
@@ -65,22 +67,24 @@ class CabinetSetting extends CabinetsAppModel {
  * @throws InternalErrorException
  */
 	public function saveCabinetSetting($data) {
-		$this->loadModels([
-			'CabinetSetting' => 'Cabinets.CabinetSetting',
-		]);
+		$this->loadModels(
+			[
+				'CabinetSetting' => 'Cabinets.CabinetSetting',
+			]
+		);
 
 		//トランザクションBegin
 		$this->begin();
 
 		//バリデーション
 		$this->set($data);
-		if (! $this->validates()) {
+		if (!$this->validates()) {
 			$this->rollback();
 			return false;
 		}
 
 		try {
-			if (! $this->save(null, false)) {
+			if (!$this->save(null, false)) {
 				throw new InternalErrorException(__d('net_commons', 'Internal Server Error'));
 			}
 

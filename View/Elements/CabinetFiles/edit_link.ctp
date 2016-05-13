@@ -16,7 +16,8 @@
 ?>
 <?php if ($this->Workflow->canEdit('CabinetFile', $cabinetFile)) : ?>
 	<div class="text-right">
-		<?php echo $this->Button->editLink('',
+		<?php echo $this->Button->editLink(
+			'',
 			array(
 				'controller' => 'cabinet_files_edit',
 				'key' => $cabinetFile['CabinetFile']['key']

@@ -1,4 +1,5 @@
 <?php
+
 class DeleteNotUsedFields extends CakeMigration {
 
 /**
@@ -21,18 +22,41 @@ class DeleteNotUsedFields extends CakeMigration {
 			),
 			'create_field' => array(
 				'cabinets' => array(
-					'total_size' => array('type' => 'float', 'null' => true, 'default' => null, 'unsigned' => false, 'after' => 'modified'),
+					'total_size' => array(
+						'type' => 'float',
+						'null' => true,
+						'default' => null,
+						'unsigned' => false,
+						'after' => 'modified'
+					),
 				),
 			),
 		),
 		'down' => array(
 			'create_field' => array(
 				'cabinet_files' => array(
-					'plus_vote_number' => array('type' => 'integer', 'null' => false, 'default' => '0', 'unsigned' => false, 'comment' => 'plus vote number | プラス投票数 |  | '),
-					'minus_vote_number' => array('type' => 'integer', 'null' => false, 'default' => '0', 'unsigned' => false, 'comment' => 'minus vote number | マイナス投票数 |  | '),
+					'plus_vote_number' => array(
+						'type' => 'integer',
+						'null' => false,
+						'default' => '0',
+						'unsigned' => false,
+						'comment' => 'plus vote number | プラス投票数 |  | '
+					),
+					'minus_vote_number' => array(
+						'type' => 'integer',
+						'null' => false,
+						'default' => '0',
+						'unsigned' => false,
+						'comment' => 'minus vote number | マイナス投票数 |  | '
+					),
 				),
 				'cabinets' => array(
-					'size' => array('type' => 'integer', 'null' => false, 'default' => '0', 'unsigned' => false),
+					'size' => array(
+						'type' => 'integer',
+						'null' => false,
+						'default' => '0',
+						'unsigned' => false
+					),
 				),
 			),
 			'drop_field' => array(

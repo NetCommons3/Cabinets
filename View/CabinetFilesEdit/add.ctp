@@ -16,6 +16,10 @@ echo $this->Html->script(
 	)
 );
 ?>
+<?php $this->start('title_for_modal'); ?>
+<?php echo $cabinet['Cabinet']['name'] ?>
+<?php $this->end(); ?>
+
 <div ng-controller="Cabinets" ng-init="init(
 	 <?php echo Current::read('Block.id') ?>,
 	 <?php echo Current::read('Frame.id') ?>
@@ -23,10 +27,12 @@ echo $this->Html->script(
 	<div class="cabinetFiles form" ng-controller="CabinetFile.edit" ng-init="init(
 	 <?php echo Hash::get($this->request->data, 'CabinetFileTree.parent_id', 0); ?>
 	 )"
-		 id="cabinetFileForm_<?php echo Current::read('Frame.id')?>"
+		 id="cabinetFileForm_<?php echo Current::read('Frame.id') ?>"
 	>
 		<article>
-			<h1><?php echo $cabinet['Cabinet']['name'] ?></h1>
+			<div>
+				<?php echo $this->element('file_path'); ?>
+			</div>
 			<div class="panel panel-default">
 
 				<?php echo $this->NetCommonsForm->create(
@@ -50,47 +56,37 @@ echo $this->Html->script(
 
 					<fieldset>
 
-						<?php  echo $this->NetCommonsForm->uploadFile('file', ['label' => __d('cabinets', 'ファイル'), 'remove' => false])?>
+						<?php echo $this->NetCommonsForm->uploadFile(
+							'file',
+							['label' => __d('cabinets', 'File'), 'remove' => false]
+						) ?>
 
 						<div class="form-group">
-						<input type="checkbox" ng-model="use_auth_key"/><?php echo __d('cabinets', 'ダウンロードパスワードを設定する');?>
-						<div ng-show="use_auth_key">
-							<?php echo $this->element('AuthorizationKeys.edit_form', ['options' => [
-								'label' => __d('cabinets', 'パスワード')],
-							]) ?>
+							<input type="checkbox" ng-model="use_auth_key" name="data[use_auth_key]"
+								   value="1"/><?php echo __d(
+								'cabinets',
+								'Set download password.'
+							); ?>
+							<div ng-show="use_auth_key">
+								<?php echo $this->element(
+									'AuthorizationKeys.edit_form',
+									[
+										'options' => [
+											'label' => __d('cabinets', 'Password')
+										],
+									]
+								) ?>
+							</div>
 						</div>
-						</div>
-						<?php echo $this->NetCommonsForm->hidden('CabinetFileTree.parent_id');?>
+						<?php echo $this->NetCommonsForm->hidden('CabinetFileTree.parent_id'); ?>
 
 					</fieldset>
 				</div>
 
 
-					<?php echo $this->Workflow->buttons('CabinetFile.status'); ?>
+				<?php echo $this->Workflow->buttons('CabinetFile.status'); ?>
 
 				<?php echo $this->NetCommonsForm->end() ?>
-				<?php if ($isEdit && $isDeletable) : ?>
-					<div  class="panel-footer" style="text-align: right;">
-						<?php echo $this->NetCommonsForm->create('CabinetFile',
-							array(
-								'type' => 'delete',
-								'url' => $this->NetCommonsHtml->url(
-									array('controller' => 'cabinet_files_edit', 'action' => 'delete', 'frame_id' => Current::read('Frame.id')))
-							)
-						) ?>
-						<?php echo $this->NetCommonsForm->input('key', array('type' => 'hidden')); ?>
-
-						<span class="nc-tooltip" tooltip="<?php echo __d('net_commons', 'Delete'); ?>">
-						<button class="btn btn-danger" onClick="return confirm('<?php echo __d('net_commons', 'Deleting the %s. Are you sure to proceed?', __d('cabinets', 'CabinetFile')) ?>')"><span class="glyphicon glyphicon-trash"> </span></button>
-
-
-					</span>
-
-
-						<?php echo $this->NetCommonsForm->end() ?>
-					</div>
-				<?php endif ?>
-
 			</div>
 		</article>
 

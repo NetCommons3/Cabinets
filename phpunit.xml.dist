@@ -9,7 +9,7 @@
                 <directory suffix=".php">app/Plugin/Cabinets/Config/Schema</directory>
                 <directory suffix=".php">app/Plugin/Cabinets/Test/Case</directory>
                 <directory suffix=".php">app/Plugin/Cabinets/Test/Fixture</directory>
-             </exclude>
+            </exclude>
         </whitelist>
     </filter>
     <logging>

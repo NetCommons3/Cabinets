@@ -1,23 +1,13 @@
 <?php
-/**
- * Karuizawa
- *
- * @author   Ryuji AMANO <ryuji@ryus.co.jp>
- * @link http://www.netcommons.org NetCommons Project
- * @license http://www.netcommons.org/license.txt NetCommons License
- */
 
-/**
- * Class Karuizawa
- */
-class Karuizawa extends CakeMigration {
+class TreeHistory extends CakeMigration {
 
 /**
  * Migration description
  *
  * @var string
  */
-	public $description = 'karuizawa';
+	public $description = 'tree_history';
 
 /**
  * Actions to be performed
@@ -27,33 +17,31 @@ class Karuizawa extends CakeMigration {
 	public $migration = array(
 		'up' => array(
 			'create_field' => array(
-				'cabinet_frame_settings' => array(
-					'articles_per_page' => array(
+				'cabinet_files' => array(
+					'cabinet_file_tree_parent_id' => array(
 						'type' => 'integer',
-						'null' => false,
-						'default' => '10',
+						'null' => true,
+						'default' => null,
 						'unsigned' => false,
-						'comment' => 'display number | 表示件数 |  | ',
-						'after' => 'frame_key'
+						'after' => 'cabinet_id'
 					),
 				),
 			),
 			'drop_field' => array(
-				'cabinet_frame_settings' => array('posts_per_page'),
+				'cabinet_files' => array('parent_id'),
 			),
 		),
 		'down' => array(
 			'drop_field' => array(
-				'cabinet_frame_settings' => array('articles_per_page'),
+				'cabinet_files' => array('cabinet_file_tree_parent_id'),
 			),
 			'create_field' => array(
-				'cabinet_frame_settings' => array(
-					'posts_per_page' => array(
+				'cabinet_files' => array(
+					'parent_id' => array(
 						'type' => 'integer',
-						'null' => false,
-						'default' => '10',
-						'unsigned' => false,
-						'comment' => 'display number | 表示件数 |  | '
+						'null' => true,
+						'default' => null,
+						'unsigned' => false
 					),
 				),
 			),

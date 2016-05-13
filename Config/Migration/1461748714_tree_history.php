@@ -1,23 +1,13 @@
 <?php
-/**
- * DropOriginId
- *
- * @author   Ryuji AMANO <ryuji@ryus.co.jp>
- * @link http://www.netcommons.org NetCommons Project
- * @license http://www.netcommons.org/license.txt NetCommons License
- */
 
-/**
- * Class DropOriginId
- */
-class DropOriginId extends CakeMigration {
+class TreeHistory extends CakeMigration {
 
 /**
  * Migration description
  *
  * @var string
  */
-	public $description = 'drop_origin_id';
+	public $description = 'tree_history';
 
 /**
  * Actions to be performed
@@ -26,22 +16,31 @@ class DropOriginId extends CakeMigration {
  */
 	public $migration = array(
 		'up' => array(
-			'drop_field' => array(
-				'cabinet_files' => array('origin_id'),
+			'create_field' => array(
+				'cabinet_file_trees' => array(
+					'cabinet_file_id' => array(
+						'type' => 'integer',
+						'null' => false,
+						'default' => null,
+						'unsigned' => false,
+						'after' => 'cabinet_file_key'
+					),
+				),
+				'cabinet_files' => array(
+					'parent_id' => array(
+						'type' => 'integer',
+						'null' => true,
+						'default' => null,
+						'unsigned' => false,
+						'after' => 'cabinet_id'
+					),
+				),
 			),
 		),
 		'down' => array(
-			'create_field' => array(
-				'cabinet_files' => array(
-					'origin_id' => array(
-						'type' => 'string',
-						'null' => false,
-						'default' => null,
-						'collate' => 'utf8_general_ci',
-						'comment' => 'file key | エントリーキー | Hash値 | ',
-						'charset' => 'utf8'
-					),
-				),
+			'drop_field' => array(
+				'cabinet_file_trees' => array('cabinet_file_id'),
+				'cabinet_files' => array('parent_id'),
 			),
 		),
 	);

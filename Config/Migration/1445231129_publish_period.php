@@ -28,9 +28,26 @@ class PublishPeriod extends CakeMigration {
 		'up' => array(
 			'create_field' => array(
 				'cabinet_files' => array(
-					'public_type' => array('type' => 'integer', 'null' => false, 'default' => '1', 'length' => 4, 'unsigned' => false, 'after' => 'body2'),
-					'publish_start' => array('type' => 'datetime', 'null' => true, 'default' => null, 'after' => 'public_type'),
-					'publish_end' => array('type' => 'datetime', 'null' => true, 'default' => null, 'after' => 'publish_start'),
+					'public_type' => array(
+						'type' => 'integer',
+						'null' => false,
+						'default' => '1',
+						'length' => 4,
+						'unsigned' => false,
+						'after' => 'body2'
+					),
+					'publish_start' => array(
+						'type' => 'datetime',
+						'null' => true,
+						'default' => null,
+						'after' => 'public_type'
+					),
+					'publish_end' => array(
+						'type' => 'datetime',
+						'null' => true,
+						'default' => null,
+						'after' => 'publish_start'
+					),
 				),
 			),
 			'drop_field' => array(
@@ -43,7 +60,11 @@ class PublishPeriod extends CakeMigration {
 			),
 			'create_field' => array(
 				'cabinet_files' => array(
-					'published_datetime' => array('type' => 'datetime', 'null' => false, 'default' => null),
+					'published_datetime' => array(
+						'type' => 'datetime',
+						'null' => false,
+						'default' => null
+					),
 				),
 			),
 		),

@@ -38,7 +38,10 @@ class CabinetFilePermissionComponent extends Component {
 			// 編集権限あり　＝＞OK
 		} elseif ($this->_controller->viewVars['contentCreatable']) {
 			// 作成権限あり→自分のファイルならOK
-			if ($cabinetFile['CabinetFile']['created_user'] !== $this->_controller->Auth->user('id')) {
+			if ($cabinetFile['CabinetFile']['created_user'] !== $this->_controller->Auth->user(
+					'id'
+				)
+			) {
 				return false;
 			}
 		} else {

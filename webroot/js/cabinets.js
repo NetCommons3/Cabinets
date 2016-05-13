@@ -8,7 +8,7 @@
 //    }
 //);
 NetCommonsApp.factory(
-    'CabinetsShareValue', function(){
+    'CabinetsShareValue', function() {
       return {
         frameId: null,
         blockId: null,
@@ -39,30 +39,30 @@ NetCommonsApp.controller('CabinetFile.index',
     ['$scope', '$filter', 'NetCommonsModal', 'CabinetsShareValue', '$http', function($scope, $filter, NetCommonsModal, CabinetsShareValue, $http) {
       $scope.moved = {};
       $scope.init = function(parentId) {
-       $scope.parent_id = parentId;
+        $scope.parent_id = parentId;
       }
 
       $scope.moveFile = function(cabinetFileKey, isFolder) {
-        console.log($scope.parentId);
         var modal = NetCommonsModal.show(
             $scope, 'CabinetFile.edit.selectFolder',
-            $scope.baseUrl + '/cabinets/cabinet_files_edit/select_folder/' + CabinetsShareValue.blockId + '/parent_tree_id:'+$scope.parent_id+'?frame_id=' + CabinetsShareValue.frameId
+            // $scope.baseUrl + '/cabinets/cabinet_files_edit/select_folder/' + CabinetsShareValue.blockId + '/parent_tree_id:'+$scope.parent_id+'?frame_id=' + CabinetsShareValue.frameId
+            $scope.baseUrl + '/cabinets/cabinet_files_edit/select_folder/' + CabinetsShareValue.blockId + '/' + cabinetFileKey + '?frame_id=' + CabinetsShareValue.frameId
         );
-        modal.result.then(function(parentId){
-          if($scope.parent_id != parentId){
+        modal.result.then(function(parentId) {
+          if ($scope.parent_id != parentId) {
             // 移動を裏で呼び出す
-            var url = $scope.baseUrl + '/cabinets/cabinet_files_edit/move/' + CabinetsShareValue.blockId + '/' + cabinetFileKey + '/parent_id:'+parentId+'?frame_id=' + CabinetsShareValue.frameId
+            var url = $scope.baseUrl + '/cabinets/cabinet_files_edit/move/' + CabinetsShareValue.blockId + '/' + cabinetFileKey + '/parent_id:' + parentId + '?frame_id=' + CabinetsShareValue.frameId
 
             $http({
               url: url,
               method: 'POST'
             })
-                .success(function (data, status, headers, config) {
+                .success(function(data, status, headers, config) {
 
-                  if(isFolder){
+                  if (isFolder) {
                     // TODO フォルダを動かしたらリロード
                     location.reload();
-                  }else{
+                  } else {
                     $scope.flashMessage(data.name, data.class, data.interval);
 
                     // 違うフォルダへ移動なので、今のフォルダ内ファイル一覧から非表示にする
@@ -85,7 +85,7 @@ NetCommonsApp.controller('CabinetFile.index',
                   // })
                   // $scope.folderPath = result;
                 })
-                .error(function (data, status, headers, config) {
+                .error(function(data, status, headers, config) {
                   // エラー処理
                   $scope.flashMessage(data.name, 'danger', 0);
                 });
@@ -104,61 +104,50 @@ NetCommonsApp.controller('CabinetFile.addFile',
 
       $scope.addFile = function() {
         var url = $scope.baseUrl + '/cabinets/cabinet_files_edit/add/' + CabinetsShareValue.blockId;
-        if($scope.parent_id > 0){
-          url = url + '/parent_id:'+$scope.parent_id;
+        if ($scope.parent_id > 0) {
+          url = url + '/parent_id:' + $scope.parent_id;
         }
         url = url + '?frame_id=' + CabinetsShareValue.frameId;
-        console.log(url);
         var modal = NetCommonsModal.show(
             $scope,
-            'CabinetFile.edit.selectFolder',
+            'CabinetFile.addFileModal',
             url
         );
-        //modal.result.then(function(parentId){
-        //  console.log(parentId);
-        //  $scope.parent_id = parentId;
-        //
-        //  // 親ツリーIDが変更されたので、パス情報を取得しなおす。
-        //  //  Ajax json形式でパス情報を取得する
-        //
-        //  var url = $scope.baseUrl + '/cabinets/cabinet_files_edit/get_folder_path/' + CabinetsShareValue.blockId + '/tree_id:'+$scope.parent_id+'?frame_id=' + CabinetsShareValue.frameId
-        //
-        //  $http({
-        //    url: url,
-        //    method: 'GET'
-        //  })
-        //      .success(function (data, status, headers, config) {
-        //        var result = [];
-        //        angular.forEach(data['folderPath'], function(value, key){
-        //          value['url'] = $scope.baseUrl + '/cabinets/cabinet_files/index/' + $scope.blockId + '/'+ value.CabinetFile.key +'?frame_id=' + $scope.frameId
-        //
-        //          result[key] = value;
-        //        })
-        //        $scope.folderPath = result;
-        //      })
-        //      .error(function (data, status, headers, config) {
-        //        // TODO エラー処理
-        //        ;
-        //      });
-        //})
       };
-
     }]
 );
+
+/**
+ * AddFile Modal
+ */
+NetCommonsApp.controller('CabinetFile.addFileModal',
+    ['$scope', '$uibModalInstance', 'CabinetsShareValue', function($scope, $uibModalInstance, CabinetsShareValue) {
+
+      /**
+       * dialog cancel
+       *
+       * @return {void}
+       */
+      $scope.cancel = function() {
+        $uibModalInstance.dismiss('cancel');
+      };
+    }]
+);
+
 
 NetCommonsApp.controller('Cabinets.FolderTree',
     ['$scope', 'CabinetsShareValue', function($scope, CabinetsShareValue) {
       $scope.folder = [];
 
-      $scope.init = function(currentFolderPath){
+      $scope.init = function(currentFolderPath) {
         console.log(currentFolderPath);
-        angular.forEach(currentFolderPath, function(value, key){
+        angular.forEach(currentFolderPath, function(value, key) {
           $scope.folder[value] = true;
         })
       };
 
-      $scope.toggle = function(folderId){
-        $scope.folder[folderId] = ! $scope.folder[folderId];
+      $scope.toggle = function(folderId) {
+        $scope.folder[folderId] = !$scope.folder[folderId];
       }
     }]
 );
@@ -166,10 +155,16 @@ NetCommonsApp.controller('Cabinets.FolderTree',
 NetCommonsApp.controller('Cabinets.path',
     ['$scope', function($scope) {
 
-      $scope.init = function(folderPath){
+      $scope.init = function(folderPath, pageUrl) {
 
-        angular.forEach(folderPath, function(value, key){
-          value['url'] = $scope.baseUrl + '/cabinets/cabinet_files/index/' + $scope.blockId + '/'+ value.CabinetFile.key +'?frame_id=' + $scope.frameId
+        // TODO 一つ目だけPageUrlにする
+        angular.forEach(folderPath, function(value, key) {
+          if (key == 0) {
+            value['url'] = pageUrl;
+          } else {
+            value['url'] = $scope.baseUrl + '/cabinets/cabinet_files/index/' + $scope.blockId + '/' + value.CabinetFile.key + '?frame_id=' + $scope.frameId
+
+          }
 
           $scope.folderPath[key] = value;
         })
@@ -182,39 +177,40 @@ NetCommonsApp.controller('Cabinets.path',
  */
 NetCommonsApp.controller('CabinetFile.edit',
     ['$scope', '$filter', 'NetCommonsModal', 'CabinetsShareValue', '$http', function($scope, $filter, NetCommonsModal, CabinetsShareValue, $http) {
-      $scope.init = function(parentId) {
+      $scope.init = function(parentId, fileKey) {
         $scope.parent_id = parentId;
         CabinetsShareValue.parent_id = parentId;
+        CabinetsShareValue.fileKey = fileKey;
       }
 
       $scope.showFolderTree = function() {
         var modal = NetCommonsModal.show(
             $scope, 'CabinetFile.edit.selectFolder',
-            $scope.baseUrl + '/cabinets/cabinet_files_edit/select_folder/' + CabinetsShareValue.blockId + '/parent_tree_id:'+CabinetsShareValue.parent_id+'?frame_id=' + CabinetsShareValue.frameId
+            $scope.baseUrl + '/cabinets/cabinet_files_edit/select_folder/' + CabinetsShareValue.blockId + '/' + CabinetsShareValue.fileKey + '?frame_id=' + CabinetsShareValue.frameId
         );
-        modal.result.then(function(parentId){
+        modal.result.then(function(parentId) {
           console.log(parentId);
           $scope.parent_id = parentId;
 
           // 親ツリーIDが変更されたので、パス情報を取得しなおす。
           //  Ajax json形式でパス情報を取得する
 
-          var url = $scope.baseUrl + '/cabinets/cabinet_files_edit/get_folder_path/' + CabinetsShareValue.blockId + '/tree_id:'+$scope.parent_id+'?frame_id=' + CabinetsShareValue.frameId
+          var url = $scope.baseUrl + '/cabinets/cabinet_files_edit/get_folder_path/' + CabinetsShareValue.blockId + '/tree_id:' + $scope.parent_id + '?frame_id=' + CabinetsShareValue.frameId
 
           $http({
             url: url,
             method: 'GET'
           })
-            .success(function (data, status, headers, config) {
-              var result = [];
-              angular.forEach(data['folderPath'], function(value, key){
-                value['url'] = $scope.baseUrl + '/cabinets/cabinet_files/index/' + $scope.blockId + '/'+ value.CabinetFile.key +'?frame_id=' + $scope.frameId
+              .success(function(data, status, headers, config) {
+                var result = [];
+                angular.forEach(data['folderPath'], function(value, key) {
+                  value['url'] = $scope.baseUrl + '/cabinets/cabinet_files/index/' + $scope.blockId + '/' + value.CabinetFile.key + '?frame_id=' + $scope.frameId
 
-                result[key] = value;
-              })
+                  result[key] = value;
+                })
                 $scope.folderPath = result;
               })
-              .error(function (data, status, headers, config) {
+              .error(function(data, status, headers, config) {
                 // TODO エラー処理
                 ;
               });
@@ -225,7 +221,7 @@ NetCommonsApp.controller('CabinetFile.edit',
 );
 
 /**
- * User modal controller
+ * selectFolder
  */
 NetCommonsApp.controller('CabinetFile.edit.selectFolder',
     ['$scope', '$uibModalInstance', 'CabinetsShareValue', function($scope, $uibModalInstance, CabinetsShareValue) {

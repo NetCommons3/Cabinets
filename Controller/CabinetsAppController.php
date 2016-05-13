@@ -114,7 +114,7 @@ class CabinetsAppController extends AppController {
 
 /**
  * namedパラメータ取得
- * 
+ *
  * @param string $name namedパラメータ名
  * @param null $default パラメータが存在しなかったときのデフォルト値
  * @return int|string
@@ -189,7 +189,11 @@ class CabinetsAppController extends AppController {
  * @return bool True on success, False on failure
  */
 	public function initCabinet($contains = []) {
-		if (! $cabinet = $this->Cabinet->getCabinet(Current::read('Block.id'), Current::read('Room.id'))) {
+		if (!$cabinet = $this->Cabinet->getCabinet(
+			Current::read('Block.id'),
+			Current::read('Room.id')
+		)
+		) {
 			$this->throwBadRequest();
 			return false;
 		}
@@ -197,7 +201,10 @@ class CabinetsAppController extends AppController {
 		$this->_cabinetTitle = $cabinet['cabinet']['name'];
 		$this->set($cabinet);
 
-		if (! $cabinetSetting = $this->CabinetSetting->getCabinetSetting($cabinet['cabinet']['key'])) {
+		if (!$cabinetSetting = $this->CabinetSetting->getCabinetSetting(
+			$cabinet['cabinet']['key']
+		)
+		) {
 			$cabinetSetting = $this->CabinetSetting->create(
 				array('id' => null)
 			);
