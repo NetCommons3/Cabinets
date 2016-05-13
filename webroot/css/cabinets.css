@@ -96,11 +96,6 @@ dl.cabinets__detail dd {
 
 /* この下つかってないかも */
 
-.cabinets_cabinetTitle {
-    margin-top: 0px;
-    margin-bottom: 20px;
-}
-
 .cabinets_navigation_header {
     font-size: small;
     margin-bottom: 10px;
