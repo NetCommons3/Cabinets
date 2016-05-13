@@ -39,6 +39,7 @@ class CabinetFile extends CabinetsAppModel {
 		'Workflow.WorkflowComment',
 		//'Categories.Category',
 		//'Cabinets.CabinetFileRename',
+		'Cabinets.CabinetFolder',
 		'Files.Attachment' => [
 			//'foo_photo' => [
 			//		'thumbnailSizes' => array(
@@ -104,11 +105,6 @@ class CabinetFile extends CabinetsAppModel {
  */
 	protected function _getValidateSpecification() {
 		$validate = array(
-			'pdf' => [
-				'rule' => array('isValidExtension', array('pdf'), false),
-				'message' => 'pdf only'
-			],
-
 			'filename' => array(
 				'notBlank' => [
 					'rule' => array('notBlank'),
@@ -144,220 +140,6 @@ class CabinetFile extends CabinetsAppModel {
 			),
 		);
 		return $validate;
-	}
-
-/**
- * ルートフォルダを得る
- *
- * @param array $cabinet Cabinetデータ
- * @return array|null
- */
-	public function getRootFolder($cabinet) {
-		return $this->find('first', ['conditions' => $this->_getRootFolderConditions($cabinet)]);
-	}
-
-/**
- * キャビネットのルートフォルダとキャビネットの同期
- * ルートフォルダがなければ作成する
- *
- * @param array $cabinet Cabinet model data
- * @return bool
- * @throws Exception
- */
-	public function syncRootFolder($cabinet) {
-		if ($this->rootFolderExist($cabinet)) {
-			// ファイル名同期
-			$options = [
-				'conditions' => $this->_getRootFolderConditions($cabinet)
-			];
-			$rootFolder = $this->find('first', $options);
-			$rootFolder['CabinetFile']['filename'] = $cabinet['Cabinet']['name'];
-			return ($this->save($rootFolder)) ? true : false;
-		} else {
-			return $this->makeRootFolder($cabinet);
-		}
-	}
-
-/**
- * Cabinetのルートフォルダを作成する
- *
- * @param array $cabinet Cabinetモデルデータ
- * @return bool
- */
-	public function makeRootFolder($cabinet) {
-		if ($this->rootFolderExist($cabinet)) {
-			return true;
-		}
-		//
-		$this->create();
-		$rootFolder = [
-			'CabinetFile' => [
-				'cabinet_id' => $cabinet['Cabinet']['id'],
-				'status' => WorkflowComponent::STATUS_PUBLISHED,
-				'filename' => $cabinet['Cabinet']['name'],
-				'is_folder' => 1,
-			]
-		];
-
-		if ($rootFolder = $this->save($rootFolder)) {
-			$tree = [
-				'CabinetFileTree' => [
-					'cabinet_key' => $cabinet['Cabinet']['key'],
-					'cabinet_file_key' => $rootFolder['CabinetFile']['key'],
-					'cabinet_file_id' => $rootFolder['CabinetFile']['id'],
-				]
-			];
-			$result = $this->CabinetFileTree->save($tree);
-			return ($result) ? true : false;
-		} else {
-			return false;
-		}
-	}
-
-/**
- * Cabinetのルートフォルダが存在するか
- *
- * @param array $cabinet Cabinetデータ
- * @return bool true:存在する false:存在しない
- */
-	public function rootFolderExist($cabinet) {
-		// ルートフォルダが既に存在するかを探す
-		$conditions = $this->_getRootFolderConditions($cabinet);
-		$count = $this->find('count', ['conditions' => $conditions]);
-		return ($count > 0);
-	}
-
-/**
- * 空の新規データを返す
- *
- * @return array
- */
-	public function getNew() {
-		$new = parent::getNew();
-		$netCommonsTime = new NetCommonsTime();
-		$new['CabinetFile']['publish_start'] = $netCommonsTime->getNowDatetime();
-		return $new;
-	}
-
-/**
- * UserIdと権限から参照可能なFileを取得するCondition配列を返す
- *
- * @param int $blockId ブロックId
- * @param int $userId アクセスユーザID
- * @param array $permissions 権限
- * @param datetime $currentDateTime 現在日時
- * @return array condition
- */
-	public function getConditions($blockId, $userId, $permissions, $currentDateTime) {
-		// contentReadable falseなら何も見えない
-		if ($permissions['content_readable'] === false) {
-			$conditions = array('CabinetFile.id' => 0); // ありえない条件でヒット0にしてる
-			return $conditions;
-		}
-
-		// デフォルト絞り込み条件
-		$conditions = array(
-			'CabinetFile.block_id' => $blockId
-		);
-
-		$conditions = $this->getWorkflowConditions($conditions);
-
-		//if ($permissions['content_editable']) {
-		////if ($this->canEditW/orkflowContent()) {
-		//	// 編集権限
-		//	$conditions['CabinetFile.is_latest'] = 1;
-		//	return $conditions;
-		//}
-		//
-		//if ($permissions['content_creatable']) {
-		////if ($this->canCreateWorkflowContent()) {
-		//	// 作成権限
-		//	$conditions['OR'] = array(
-		//		array_merge(
-		//			$this->_getPublishedConditions($currentDateTime),
-		//			array('CabinetFile.created_user !=' => $userId)
-		//		),
-		//		array('CabinetFile.created_user' => $userId,
-		//				'CabinetFile.is_latest' => 1)
-		//	);
-		//	return $conditions;
-		//}
-		//
-		//if ($permissions['content_readable']) {
-		////if ($this->canReadWorkflowContent()) {
-		//	 //公開中コンテンツだけ
-		//	$conditions = array_merge(
-		//		$conditions,
-		//		$this->_getPublishedConditions($currentDateTime));
-		//	return $conditions;
-		//}
-
-		return $conditions;
-	}
-
-/**
- * 年月毎のファイル数を返す
- *
- * @param int $blockId ブロックID
- * @param int $userId ユーザID
- * @param array $permissions 権限
- * @param datetime $currentDateTime 現在日時
- * @return array
- */
-	public function getYearMonthCount($blockId, $userId, $permissions, $currentDateTime) {
-		$conditions = $this->getConditions($blockId, $userId, $permissions, $currentDateTime);
-		// 年月でグループ化してカウント→取得できなかった年月をゼロセット
-		$this->virtualFields['year_month'] = 0; // バーチャルフィールドを追加
-		$this->virtualFields['count'] = 0; // バーチャルフィールドを追加
-		$result = $this->find(
-			'all',
-			array(
-				'fields' => array(
-					'DATE_FORMAT(CabinetFile.publish_start, \'%Y-%m\') AS CabinetFile__year_month',
-					'count(*) AS CabinetFile__count'
-				),
-				'conditions' => $conditions,
-				'group' => array('CabinetFile__year_month'),
-				//GROUP BY YEAR(record_date), MONTH(record_date)
-			)
-		);
-		// 使ったバーチャルFieldを削除
-		unset($this->virtualFields['year_month']);
-		unset($this->virtualFields['count']);
-
-		$ret = array();
-		// $retをゼロ埋め
-		//　一番古いファイルを取得
-		$oldestFile = $this->find(
-			'first',
-			array(
-				'conditions' => $conditions,
-				'order' => 'publish_start ASC',
-			)
-		);
-
-		// 一番古いファイルの年月から現在までを先にゼロ埋め
-		if (isset($oldestFile['CabinetFile'])) {
-			$currentYearMonthDay = date(
-				'Y-m-01',
-				strtotime($oldestFile['CabinetFile']['publish_start'])
-			);
-		} else {
-			// ファイルがなかったら今月だけ
-			$currentYearMonthDay = date('Y-m-01', strtotime($currentDateTime));
-		}
-		while ($currentYearMonthDay <= $currentDateTime) {
-			$ret[substr($currentYearMonthDay, 0, 7)] = 0;
-			$currentYearMonthDay = date('Y-m-01', strtotime($currentYearMonthDay . ' +1 month'));
-		}
-		// ファイルがある年月はファイル数を上書きしておく
-		foreach ($result as $yearMonth) {
-			$ret[$yearMonth['CabinetFile']['year_month']] = $yearMonth['CabinetFile']['count'];
-		}
-
-		//年月降順に並び替える
-		krsort($ret);
-		return $ret;
 	}
 
 /**
@@ -460,7 +242,7 @@ class CabinetFile extends CabinetsAppModel {
 
 		$conditions = array('CabinetFile.key' => $cabinetFile['CabinetFile']['key']);
 
-		if ($result = $this->deleteAll($conditions, true, true)) {
+		if ($this->deleteAll($conditions, true, true)) {
 			// CabinetFileTreeも削除
 			$conditions = [
 				'cabinet_file_key' => $cabinetFile['CabinetFile']['key'],
@@ -519,7 +301,7 @@ class CabinetFile extends CabinetsAppModel {
 			}
 		}
 		$conditions = array('CabinetFile.key' => $key);
-		if ($result = $this->deleteAll($conditions, true, true)) {
+		if ($this->deleteAll($conditions, true, true)) {
 
 			// CabinetFileTreeも削除 Treeビヘイビアにより子ノードのTreeデータは自動的に削除される
 			$conditions = [
@@ -551,40 +333,6 @@ class CabinetFile extends CabinetsAppModel {
 	}
 
 /**
- * フォルダの合計サイズを得る
- *
- * @param array $folder CabinetFileデータ
- * @return int 合計サイズ
- */
-	public function getTotalSizeByFolder($folder) {
-		// ベタパターン
-		// 配下全てのファイルを取得する
-		//$this->CabinetFileTree->setup(]);
-		$cabinetKey = $folder['Cabinet']['key'];
-		//$this->CabinetFileTree->Behaviors->unload('Tree');
-		//$this->CabinetFileTree->Behaviors->load('Tree', ['scope' => ['CabinetFileTree.cabinet_key' => $cabinetKey]]);
-		//$files = $this->CabinetFileTree->children($folder['CabinetFileTree']['id']);
-		$conditions = [
-			'CabinetFileTree.cabinet_key' => $cabinetKey,
-			'CabinetFileTree.lft >' => $folder['CabinetFileTree']['lft'],
-			'CabinetFileTree.rght <' => $folder['CabinetFileTree']['rght'],
-			'CabinetFile.is_folder' => false,
-		];
-		$files = $this->find('all', ['conditions' => $conditions]);
-		$total = 0;
-		foreach ($files as $file) {
-
-			$total += Hash::get($file, 'UploadFile.file.size', 0);
-		}
-		return $total;
-		//$list = $this->CabinetFileTree->generateTreeList($conditions, 'cabinet_file_key');
-
-		// 全てのファイルのサイズを集計する。
-
-		// sumパターンはUploadFileの構造をしらないと厳しい… がんばってsumするより合計サイズをキャッシュした方がいいかも
-	}
-
-/**
  * 公開データ取得のconditionsを返す
  *
  * @param datetime $currentDateTime 現在の日時
@@ -595,51 +343,6 @@ class CabinetFile extends CabinetsAppModel {
 			$this->name . '.is_active' => 1,
 			'CabinetFile.publish_start <=' => $currentDateTime,
 		);
-	}
-
-/**
- * ルートフォルダ（＝キャビネット）をFindするためのconditionsを返す
- *
- * @param array $cabinet Cabinetデータ
- * @return array conditions
- */
-	protected function _getRootFolderConditions($cabinet) {
-		$conditions = [
-			'cabinet_key' => $cabinet['Cabinet']['key'],
-			'parent_id' => null,
-		];
-		return $conditions;
-	}
-
-/**
- * 親フォルダデータを返す
- *
- * @param array $cabinetFile cabinetFile data
- * @return array cabinetFile data
- */
-	public function getParent($cabinetFile) {
-		$conditions = [
-			'CabinetFileTree.id' => $cabinetFile['CabinetFileTree']['parent_id'],
-		];
-
-		$parentCabinetFolder = $this->find('first', ['conditions' => $conditions]);
-		return $parentCabinetFolder;
-	}
-
-/**
- * 子ノードがあるか
- *
- * @param array $cabinetFile cabinetFile(folder)data
- * @return bool true:あり
- */
-	public function hasChildren($cabinetFile) {
-		// 自分自身が親IDとして登録されてるデータがあれば子ノードあり
-		$conditions = [
-			'CabinetFileTree.parent_id' => $cabinetFile['CabinetFileTree']['id'],
-		];
-		$conditions = $this->getWorkflowConditions($conditions);
-		$count = $this->find('count', ['conditions' => $conditions]);
-		return ($count > 0);
 	}
 
 /**

@@ -102,9 +102,6 @@ class CabinetFilesController extends CabinetsAppController {
 			'download',
 			'download_pdf'
 		);
-		//$this->Categories->initCategories();
-		//$this->AuthorizationKey->contentId =23; // TODO hardcord
-		//$this->AuthorizationKey->model ='CabinetFile'; // TODO hardcord
 		parent::beforeFilter();
 		$blockId = Current::read('Block.id');
 		$this->_cabinet = $this->Cabinet->findByBlockId($blockId);
@@ -259,38 +256,6 @@ class CabinetFilesController extends CabinetsAppController {
 			$permission[$key] = Current::permission($key);
 		}
 		return $permission;
-	}
-
-/**
- * 一覧
- *
- * @param array $extraConditions 追加conditions
- * @return void
- */
-	protected function _list($extraConditions = array()) {
-		$permission = $this->_getPermission();
-
-		$conditions = $this->CabinetFile->getConditions(
-			Current::read('Block.id'),
-			$this->Auth->user('id'),
-			$permission,
-			$this->_getCurrentDateTime()
-		);
-		if ($extraConditions) {
-			$conditions = Hash::merge($conditions, $extraConditions);
-		}
-		$this->Paginator->settings = array_merge(
-			$this->Paginator->settings,
-			array(
-				'conditions' => $conditions,
-				'limit' => $this->_frameSetting['CabinetFrameSetting']['articles_per_page'],
-				'order' => 'filename ASC',
-			)
-		);
-		$this->CabinetFile->recursive = 0;
-		$this->set('cabinetFiles', $this->Paginator->paginate());
-
-		$this->render('index');
 	}
 
 /**

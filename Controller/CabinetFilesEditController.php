@@ -115,7 +115,7 @@ class CabinetFilesEditController extends CabinetsAppController {
 
 			// タイトルをファイル名にする
 			$this->request->data['CabinetFile']['filename'] = $this->request->data['CabinetFile']['file']['name'];
-			if (($result = $this->CabinetFile->saveFile($this->request->data))) {
+			if (($this->CabinetFile->saveFile($this->request->data))) {
 
 				$parentFolder = $this->CabinetFileTree->findById(
 					$this->request->data['CabinetFileTree']['parent_id']
@@ -164,7 +164,9 @@ class CabinetFilesEditController extends CabinetsAppController {
 /**
  * edit method
  *
- * @throws NotFoundException|ForbiddenException
+ * @throws NotFoundException
+ * @throws ForbiddenException
+ * @throws NotFoundException
  * @return void
  */
 	public function edit() {

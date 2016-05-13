@@ -63,11 +63,10 @@
 			<?php if (Current::permission('content_creatable')) : ?>
 				<div class="pull-right" style="margin-left: 10px;">
 					<?php
-					if (count($folderPath) > 0) {
-						// フォルダ
-						$parentId = $folderPath[count($folderPath) - 1]['CabinetFileTree']['id'];
-					} else {
+					if (count($folderPath) <= 0) {
 						$parentId = null;
+					} else {
+						$parentId = $folderPath[count($folderPath) - 1]['CabinetFileTree']['id'];
 					}
 
 					$addUrl = $this->NetCommonsHtml->url(
@@ -135,10 +134,11 @@
 		</div>
 
 		<div class="col-md-9 inline">
-			<table class="table cabinets__index__file-list" ng-controller="CabinetFile.index"
-				   ng-init="init(<?php echo
-				   $currentTreeId ?>)">
-				<thead>
+			<table
+				class="table cabinets__index__file-list" ng-controller="CabinetFile.index"
+				ng-init="init(<?php echo
+				$currentTreeId ?>)">
+			<thead>
 				<tr>
 					<th class="cabinets__index__name">名前</th>
 					<th class="cabinets__index__size hidden-sm hidden-xs"><?php echo __d(
@@ -332,7 +332,6 @@
 								>
 									<?php echo h($cabinetFile['CabinetFile']['description']); ?>
 								</div>
-
 
 							</td>
 							<td class="hidden-sm hidden-xs"><?php echo $this->Number->toReadableSize(

@@ -57,11 +57,11 @@ class CabinetFileTree extends CabinetsAppModel {
  */
 	public function beforeFind($query) {
 		// workflow連動でアソシエーションさせる！
-		$associationConditions = [
+		$association = [
 			//'CabinetFileTree.cabinet_file_key = CabinetFile.key'
 			'CabinetFileTree.cabinet_file_id = CabinetFile.id'
 		];
-		$cabinetFileCondition = $this->CabinetFile->getWorkflowConditions($associationConditions);
+		$cabinetFileCondition = $this->CabinetFile->getWorkflowConditions($association);
 
 		$this->bindModel(
 			[
