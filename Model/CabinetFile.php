@@ -98,8 +98,14 @@ class CabinetFile extends CabinetsAppModel {
 		),
 	);
 
+/**
+ * beforeValidate
+ *
+ * @param array $options Options
+ * @return bool
+ */
 	public function beforeValidate($options = array()) {
-		$this->validate = array(
+		$validate = array(
 			'filename' => array(
 				'notBlank' => [
 					'rule' => array('notBlank'),
@@ -135,12 +141,14 @@ class CabinetFile extends CabinetsAppModel {
 			),
 		);
 
+		$this->validate = Hash::merge($this->validate, $validate);
+
 		if (!$this->data['CabinetFile']['is_folder']) {
 			// ファイルならファイルのバリデートを追加する
 			$uploadAllowExtension = explode(',', SiteSettingUtil::read('Upload.allow_extension'));
 			$uploadAllowExtension = array_map('trim', $uploadAllowExtension);
 
-			$this->validate['file'] = [
+			$this->validate['file']['extension'] = [
 				// システム設定の値をとってくる。trimすること
 				'rule' => ['isValidExtension', $uploadAllowExtension, false],
 				'message' => __d('files', 'It is upload disabled file format')
@@ -205,10 +213,7 @@ class CabinetFile extends CabinetsAppModel {
 			return $savedData;
 
 		} catch (Exception $e) {
-			$this->rollback();
-			//エラー出力
-			CakeLog::error($e);
-			throw $e;
+			$this->rollback($e);
 		}
 	}
 
@@ -375,6 +380,9 @@ class CabinetFile extends CabinetsAppModel {
 			if ($tmpFolder === false) {
 				throw new InternalErrorException('UnZip Failed.');
 			}
+			// TODO unzipされたファイル拡張子のバリデーション
+			// TODO unzipされたファイルのファイルサイズバリデーション
+
 			// 再帰ループで登録処理
 			$parentCabinetFolder = $this->find(
 				'first',
@@ -517,6 +525,7 @@ class CabinetFile extends CabinetsAppModel {
 			'CabinetFileTree.parent_id' => $cabinetFile['CabinetFileTree']['parent_id'],
 			'CabinetFile.filename' => $cabinetFile['CabinetFile']['filename'],
 		];
+		$conditions = $this->getWorkflowConditions($conditions);
 		$count = $this->find('count', ['conditions' => $conditions]);
 		return ($count > 0);
 	}
@@ -526,10 +535,10 @@ class CabinetFile extends CabinetsAppModel {
  *
  * 同一フォルダ内で名前が衝突したら自動でリネームする
  *
- * @param array $cabinetFile CabinetFile データ
+ * @param array &$cabinetFile CabinetFile データ
  * @return void
  */
-	protected function _autoRename($cabinetFile) {
+	protected function _autoRename(& $cabinetFile) {
 		$index = 0;
 		if ($cabinetFile['CabinetFile']['is_folder']) {
 			// folder

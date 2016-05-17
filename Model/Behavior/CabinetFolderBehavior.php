@@ -66,7 +66,7 @@ class CabinetFolderBehavior extends ModelBehavior {
  * @throws Exception
  */
 	public function syncRootFolder(Model $model, $cabinet) {
-		if ($this->rootFolderExist($cabinet)) {
+		if ($this->rootFolderExist($model, $cabinet)) {
 			// ファイル名同期
 			$options = [
 				'conditions' => $this->_getRootFolderConditions($cabinet)
@@ -87,7 +87,7 @@ class CabinetFolderBehavior extends ModelBehavior {
  * @return bool
  */
 	public function makeRootFolder(Model $model, $cabinet) {
-		if ($this->rootFolderExist($cabinet)) {
+		if ($this->rootFolderExist($model, $cabinet)) {
 			return true;
 		}
 		//
