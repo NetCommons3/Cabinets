@@ -60,7 +60,7 @@ class CabinetFile extends CabinetsAppModel {
 				'path' => '/:plugin_key/cabinet_files/view/:block_id/:content_key',
 			),
 		),
-		'Mails.MailQueue' => array(        // 自動でメールキューの登録, 削除。ワークフロー利用時はWorkflow.Workflowより下に記述する
+		'Mails.MailQueue' => array( // 自動でメールキューの登録, 削除。ワークフロー利用時はWorkflow.Workflowより下に記述する
 			'embedTags' => array(
 				'X-SUBJECT' => 'CabinetFile.filename',
 				'X-BODY' => 'CabinetFile.description',
@@ -575,13 +575,13 @@ class CabinetFile extends CabinetsAppModel {
 		}
 	}
 
-	/**
-	 * CabinetFileデータをファイルパスから作成する
-	 *
-	 * @param array $parentCabinetFolder 親フォルダデータ
-	 * @param string $filePath ファイルパス
-	 * @return array フォームからポストされる形のCabinetFileデータ
-	 */
+/**
+ * CabinetFileデータをファイルパスから作成する
+ *
+ * @param array $parentCabinetFolder 親フォルダデータ
+ * @param string $filePath ファイルパス
+ * @return array フォームからポストされる形のCabinetFileデータ
+ */
 	protected function _makeCabinetFileDataFromPath($parentCabinetFolder, $filePath) {
 		//MIMEタイプの取得
 		$finfo = new finfo(FILEINFO_MIME_TYPE);
