@@ -166,7 +166,7 @@ class CabinetFilesEditController extends CabinetsAppController {
  *
  * @throws NotFoundException
  * @throws ForbiddenException
- * @throws NotFoundException
+ * @throws InternalErrorException
  * @return void
  */
 	public function edit() {
@@ -602,7 +602,17 @@ class CabinetFilesEditController extends CabinetsAppController {
 		$cabinetFile = $this->CabinetFile->find('first', $options);
 
 		if ($cabinetFile && $cabinetFile['UploadFile']['file']['extension'] == 'zip') {
-			$this->CabinetFile->unzip($cabinetFile);
+			if (!$this->CabinetFile->unzip($cabinetFile)) {
+				// Validate error
+				$message = implode("<br />", $this->CabinetFile->validationErrors);
+				$this->NetCommons->setFlashNotification(
+					$message,
+					[
+						'class' => 'danger',
+						//'interval' => NetCommonsComponent::ALERT_VALIDATE_ERROR_INTERVAL,
+					]
+				);
+			}
 			$parentCabinetFolder = $this->CabinetFile->getParent($cabinetFile);
 			$this->redirect(
 				NetCommonsUrl::actionUrl(

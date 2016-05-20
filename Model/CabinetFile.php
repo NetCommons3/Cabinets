@@ -2,17 +2,13 @@
 /**
  * CabinetFile Model
  *
- * @property CabinetCategory $CabinetCategory
- * @property CabinetFileTagLink $CabinetFileTagLink
- *
- * @author   Jun Nishikawa <topaz2@m0n0m0n0.com>
+ * @author Ryuji AMANO <ryuji@ryus.co.jp>
  * @link     http://www.netcommons.org NetCommons Project
  * @license  http://www.netcommons.org/license.txt NetCommons License
  */
 
 App::uses('CabinetsAppModel', 'Cabinets.Model');
 App::uses('NetCommonsTime', 'NetCommons.Utility');
-//App::uses('AttachmentBehavior', 'Files.Model/Behavior');
 
 /**
  * Summary for CabinetFile Model
@@ -64,7 +60,7 @@ class CabinetFile extends CabinetsAppModel {
 				'path' => '/:plugin_key/cabinet_files/view/:block_id/:content_key',
 			),
 		),
-		'Mails.MailQueue' => array(		// 自動でメールキューの登録, 削除。ワークフロー利用時はWorkflow.Workflowより下に記述する
+		'Mails.MailQueue' => array(        // 自動でメールキューの登録, 削除。ワークフロー利用時はWorkflow.Workflowより下に記述する
 			'embedTags' => array(
 				'X-SUBJECT' => 'CabinetFile.filename',
 				'X-BODY' => 'CabinetFile.description',
@@ -142,18 +138,6 @@ class CabinetFile extends CabinetsAppModel {
 		);
 
 		$this->validate = Hash::merge($this->validate, $validate);
-
-		if (!$this->data['CabinetFile']['is_folder']) {
-			// ファイルならファイルのバリデートを追加する
-			$uploadAllowExtension = explode(',', SiteSettingUtil::read('Upload.allow_extension'));
-			$uploadAllowExtension = array_map('trim', $uploadAllowExtension);
-
-			$this->validate['file']['extension'] = [
-				// システム設定の値をとってくる。trimすること
-				'rule' => ['isValidExtension', $uploadAllowExtension, false],
-				'message' => __d('files', 'It is upload disabled file format')
-			];
-		}
 
 		return parent::beforeValidate($options);
 	}
@@ -380,15 +364,52 @@ class CabinetFile extends CabinetsAppModel {
 			if ($tmpFolder === false) {
 				throw new InternalErrorException('UnZip Failed.');
 			}
-			// TODO unzipされたファイル拡張子のバリデーション
-			// TODO unzipされたファイルのファイルサイズバリデーション
 
-			// 再帰ループで登録処理
 			$parentCabinetFolder = $this->find(
 				'first',
 				['conditions' => ['CabinetFileTree.id' => $cabinetFile['CabinetFileTree']['parent_id']]]
 			);
 
+			// unzipされたファイル拡張子のバリデーション
+			// unzipされたファイルのファイルサイズバリデーション
+			$files = $tmpFolder->findRecursive();
+			$unzipTotalSize = 0;
+			foreach ($files as $file) {
+				//
+				$unzipTotalSize += filesize($file);
+
+				// ここでは拡張子だけチェックする
+				$extension = pathinfo($file, PATHINFO_EXTENSION);
+				if (!$this->isAllowUploadFileExtension($extension)) {
+					// NG
+					$this->validationErrors = [
+						__d('cabinets', 'Unzip failed. Contains does not allow file format.')
+					];
+					return false;
+				}
+			}
+			// ルームファイルサイズ制限
+			//$maxRoomDiskSize = Current::read('Space.room_disk_size');
+			//if ($maxRoomDiskSize !== null) {
+			//	// nullだったらディスクサイズ制限なし。null以外ならディスクサイズ制限あり
+			//	// 解凍後の合計
+			//	// 現在のルームファイルサイズ
+			//	$uploadFile = ClassRegistry::init('Files.UploadFile');
+			//	$roomId = Current::read('Room.id');
+			//	$roomFileSize = $uploadFile->getTotalSizeByRoomId($roomId);
+			//	if (($roomFileSize + $unzipTotalSize) > $maxRoomDiskSize) {
+			//
+			//		$this->validationErrors[] = __d(
+			//			'cabinets',
+			//			'Failed to expand. The total size exceeds the limit.<br />The total size limit is %s (%s left).',
+			//			CakeNumber::toReadableSize($roomFileSize + $unzipTotalSize),
+			//			CakeNumber::toReadableSize($maxRoomDiskSize)
+			//		);
+			//		return false;
+			//	}
+			//}
+
+			// 再帰ループで登録処理
 			list($folders, $files) = $tmpFolder->read(true, false, true);
 			foreach ($files as $file) {
 				$this->_addFileFromPath($parentCabinetFolder, $file);
@@ -397,7 +418,7 @@ class CabinetFile extends CabinetsAppModel {
 				$this->_addFolderFromPath($parentCabinetFolder, $folder);
 			}
 		} catch (Exception $e) {
-			$this->rollback($e);
+			return $this->rollback($e);
 		}
 		$this->commit();
 		return true;
@@ -451,24 +472,12 @@ class CabinetFile extends CabinetsAppModel {
  * @return void
  */
 	protected function _addFileFromPath($parentCabinetFolder, $filePath) {
-		$newFile = [
-			'CabinetFile' => [
-				'cabinet_id' => $parentCabinetFolder['CabinetFile']['cabinet_id'],
-				'is_folder' => false,
-				'filename' => $this->basename($filePath),
-				'status' => WorkflowComponent::STATUS_PUBLISHED,
-			],
-			'CabinetFileTree' => [
-				'parent_id' => $parentCabinetFolder['CabinetFileTree']['id'],
-				'cabinet_key' => $parentCabinetFolder['CabinetFileTree']['cabinet_key'],
-			],
-		];
-		$newFile = $this->create($newFile);
+		$newFile = $this->_makeCabinetFileDataFromPath($parentCabinetFolder, $filePath);
 
-		if (!$savedFile = $this->saveFile($newFile)) {
+		if (!$this->saveFile($newFile)) {
 			throw new InternalErrorException('Save Failed');
 		}
-		$this->attachFile($savedFile, 'file', $filePath);
+		//$this->attachFile($savedFile, 'file', $filePath);
 	}
 
 /**
@@ -566,4 +575,38 @@ class CabinetFile extends CabinetsAppModel {
 		}
 	}
 
+	/**
+	 * CabinetFileデータをファイルパスから作成する
+	 *
+	 * @param array $parentCabinetFolder 親フォルダデータ
+	 * @param string $filePath ファイルパス
+	 * @return array フォームからポストされる形のCabinetFileデータ
+	 */
+	protected function _makeCabinetFileDataFromPath($parentCabinetFolder, $filePath) {
+		//MIMEタイプの取得
+		$finfo = new finfo(FILEINFO_MIME_TYPE);
+		$mimeType = $finfo->file($filePath);
+
+		$newFile = [
+			'CabinetFile' => [
+				'cabinet_id' => $parentCabinetFolder['CabinetFile']['cabinet_id'],
+				'is_folder' => false,
+				'filename' => $this->basename($filePath),
+				'status' => WorkflowComponent::STATUS_PUBLISHED,
+				'file' => [
+					'name' => $this->basename($filePath),
+					'type' => $mimeType,
+					'tmp_name' => $filePath,
+					'error' => 0,
+					'size' => filesize($filePath),
+				],
+			],
+			'CabinetFileTree' => [
+				'parent_id' => $parentCabinetFolder['CabinetFileTree']['id'],
+				'cabinet_key' => $parentCabinetFolder['CabinetFileTree']['cabinet_key'],
+			],
+		];
+		$newFile = $this->create($newFile);
+		return $newFile;
+	}
 }
