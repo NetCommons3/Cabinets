@@ -118,7 +118,6 @@ class CabinetFilesController extends CabinetsAppController {
 			$this->autoRender = false;
 			return;
 		}
-
 		$this->CabinetFileTree->recover('parent');
 
 		// currentFolderを取得
