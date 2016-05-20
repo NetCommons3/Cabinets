@@ -389,25 +389,24 @@ class CabinetFile extends CabinetsAppModel {
 				}
 			}
 			// ルームファイルサイズ制限
-			//$maxRoomDiskSize = Current::read('Space.room_disk_size');
-			//if ($maxRoomDiskSize !== null) {
-			//	// nullだったらディスクサイズ制限なし。null以外ならディスクサイズ制限あり
-			//	// 解凍後の合計
-			//	// 現在のルームファイルサイズ
-			//	$uploadFile = ClassRegistry::init('Files.UploadFile');
-			//	$roomId = Current::read('Room.id');
-			//	$roomFileSize = $uploadFile->getTotalSizeByRoomId($roomId);
-			//	if (($roomFileSize + $unzipTotalSize) > $maxRoomDiskSize) {
-			//
-			//		$this->validationErrors[] = __d(
-			//			'cabinets',
-			//			'Failed to expand. The total size exceeds the limit.<br />The total size limit is %s (%s left).',
-			//			CakeNumber::toReadableSize($roomFileSize + $unzipTotalSize),
-			//			CakeNumber::toReadableSize($maxRoomDiskSize)
-			//		);
-			//		return false;
-			//	}
-			//}
+			$maxRoomDiskSize = Current::read('Space.room_disk_size');
+			if ($maxRoomDiskSize !== null) {
+				// nullだったらディスクサイズ制限なし。null以外ならディスクサイズ制限あり
+				// 解凍後の合計
+				// 現在のルームファイルサイズ
+				$roomId = Current::read('Room.id');
+				$roomFileSize = $this->getTotalSizeByRoomId($roomId);
+				if (($roomFileSize + $unzipTotalSize) > $maxRoomDiskSize) {
+
+					$this->validationErrors[] = __d(
+						'cabinets',
+						'Failed to expand. The total size exceeds the limit.<br />The total size limit is %s (%s left).',
+						CakeNumber::toReadableSize($roomFileSize + $unzipTotalSize),
+						CakeNumber::toReadableSize($maxRoomDiskSize)
+					);
+					return false;
+				}
+			}
 
 			// 再帰ループで登録処理
 			list($folders, $files) = $tmpFolder->read(true, false, true);
