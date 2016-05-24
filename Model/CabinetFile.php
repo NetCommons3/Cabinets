@@ -9,6 +9,7 @@
 
 App::uses('CabinetsAppModel', 'Cabinets.Model');
 App::uses('NetCommonsTime', 'NetCommons.Utility');
+App::uses('Current', 'NetCommons.Utility');
 
 /**
  * Summary for CabinetFile Model
