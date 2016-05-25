@@ -133,9 +133,9 @@
 			<?php echo $this->element('CabinetFiles/folder_tree'); ?>
 		</div>
 
-		<div class="col-md-9 inline">
+		<div class="col-md-9 ">
 			<table
-				class="table cabinets__index__file-list" ng-controller="CabinetFile.index"
+				class="table table-hover cabinets__index__file-list" ng-controller="CabinetFile.index"
 				ng-init="init(<?php echo
 				$currentTreeId ?>)">
 			<thead>
@@ -185,6 +185,14 @@
 
 							}
 							?>
+						</td>
+					</tr>
+				<?php endif ?>
+
+				<?php if (count($cabinetFiles) == 0): ?>
+					<tr>
+						<td colspan="4">
+							<?php echo __d('cabinets', 'No %s found.', __d('cabinets', 'File/Folder')); ?>
 						</td>
 					</tr>
 				<?php endif ?>
@@ -248,7 +256,7 @@
 										aria-labelledby="cabinets__file-<?php echo $cabinetFile['CabinetFile']['id'] ?>">
 										<li>
 											<?php echo $this->NetCommonsHtml->link(
-												__d('cabinets', 'Description'),
+												__d('cabinets', 'View'),
 												[
 													'controller' => 'cabinet_files',
 													'action' => 'folder_detail',
@@ -355,7 +363,7 @@
 										aria-labelledby="cabinets__file-<?php echo $cabinetFile['CabinetFile']['id'] ?>">
 										<li>
 											<?php echo $this->NetCommonsHtml->link(
-												__d('cabinets', 'Description'),
+												__d('cabinets', 'View'),
 												[
 													'controller' => 'cabinet_files',
 													'action' => 'view',
