@@ -156,3 +156,6 @@ msgstr "1件も%sはありません。"
 
 msgid "File/Folder"
 msgstr "ファイル・フォルダ"
+
+msgid "Filename"
+msgstr "名前"

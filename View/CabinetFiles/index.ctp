@@ -140,15 +140,17 @@
 				$currentTreeId ?>)">
 			<thead>
 				<tr>
-					<th class="cabinets__index__name">名前</th>
-					<th class="cabinets__index__size hidden-sm hidden-xs"><?php echo __d(
-							'cabinets',
-							'Size'
-						) ?></th>
-					<th class="cabinets__index__modified" colspan="2"><?php echo __d(
-							'net_commons',
-							'Modified datetime'
-						); ?></th>
+					<th class="cabinets__index__name">
+						<?php echo $this->Paginator->sort('filename', __d('cabinets', 'Filename')
+							, ['direction' => 'desc'])
+						; ?>
+					</th>
+					<th class="cabinets__index__size hidden-sm hidden-xs">
+						<?php echo $this->Paginator->sort('size', __d('cabinets', 'Size')); ?>
+					</th>
+					<th class="cabinets__index__modified" colspan="2">
+						<?php echo $this->Paginator->sort('modified', __d('net_commons','Modified datetime'));?>
+					</th>
 
 				</tr>
 				</thead>

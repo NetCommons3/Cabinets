@@ -16,7 +16,6 @@ App::uses('TemporaryFolder', 'Files.Utility');
  * @property NetCommonsWorkflow $NetCommonsWorkflow
  * @property PaginatorComponent $Paginator
  * @property CabinetFile $CabinetFile
- * @property CabinetCategory $CabinetCategory
  */
 class CabinetFilesController extends CabinetsAppController {
 
@@ -38,7 +37,8 @@ class CabinetFilesController extends CabinetsAppController {
 		'NetCommons.Token',
 		'NetCommons.BackTo',
 		'Workflow.Workflow',
-		'Users.DisplayUser'
+		'Users.DisplayUser',
+		'Paginator'
 	);
 
 /**
@@ -155,16 +155,76 @@ class CabinetFilesController extends CabinetsAppController {
 		];
 		//  workflowコンディションを混ぜ込む
 		$conditions = $this->CabinetFile->getWorkflowConditions($conditions);
-		// TODO ソート順変更
-		// TODO 昇順のときフォルダが先、降順の時フォルダが後
-		$files = $this->CabinetFile->find(
-			'all',
-			['conditions' => $conditions, 'order' => 'is_folder DESC, filename ASC']
-		);
-		foreach ($files as &$file) {
-			$file['CabinetFile']['size'] = $this->CabinetFile->getTotalSizeByFolder($file);
-			$file['CabinetFile']['has_children'] = $this->CabinetFile->hasChildren($file);
+		// ソート順変更
+		// ソートに使えるキーかチェック
+		$allowSortKeys = [
+			'filename',
+			'size',
+			'modified'
+		];
+
+		$sort = Hash::get($this->request->named, 'sort', 'filename');
+		if (! in_array($sort, $allowSortKeys)){
+			return $this->throwBadRequest();
 		}
+		//  asc, descしか入力を許可しない
+		$direction = Hash::get($this->request->named, 'direction', 'asc');
+		if(! in_array($direction, ['asc', 'desc'])) {
+			return $this->throwBadRequest();
+		}
+		// ソート順変更リンクをPaginatorHelperで出力するときに必要な値をセットしておく。
+		$this->request->params['paging'] = [
+			'CabinetFile' => [
+				'options' => [
+					'sort' => $sort,
+					'direction' => $direction
+				],
+				'paramType' => 'named',
+			]
+		];
+		//
+		// 昇順のときフォルダが先、降順の時フォルダが後
+		$folderDirection = ($direction === 'asc') ? 'desc' : 'asc';
+		$order = [
+			'is_folder' => $folderDirection
+		];
+		if ($sort != 'size') {
+			$order['CabinetFile.' . $sort] = $direction;
+		}
+		$results = $this->CabinetFile->find(
+			'all',
+			[
+				'conditions' => $conditions,
+				'order' => $order
+			]
+		);
+
+		$folders = array();
+		$files = array();
+		foreach ($results as &$file) {
+			if($file['CabinetFile']['is_folder']) {
+				$file['CabinetFile']['size'] = $this->CabinetFile->getTotalSizeByFolder($file);
+				$file['CabinetFile']['has_children'] = $this->CabinetFile->hasChildren($file);
+				$folders[] = $file;
+			}else{
+				$file['CabinetFile']['size'] = $file['UploadFile']['file']['size'];
+				$files[] = $file;
+			}
+		}
+
+		if ($sort == 'size') {
+			// sizeでのソートは自前でおこなう@
+			$files = Hash::sort($files, '{n}.CabinetFile.size', $direction, 'numeric');
+			// フォルダ・ファイルは別れるようにする。
+			$folders = Hash::sort($folders, '{n}.CabinetFile.size', $direction, 'numeric');
+		}
+		if($direction == 'asc'){
+			// ascならフォルダ先 Hash::mergeだと上書きされてしまうのであえてarray_merge使用
+			$files = array_merge($folders, $files);
+		}else{
+			$files = array_merge($files, $folders);
+		}
+
 		$this->set('cabinetFiles', $files);
 
 		// カレントフォルダのツリーパスを得る
@@ -187,10 +247,6 @@ class CabinetFilesController extends CabinetsAppController {
 			$url = NetCommonsUrl::backToPageUrl();
 
 		}
-		// TODO urlをafterFindで混ぜ込んだらどう？
-		// folderならindex
-		// ファイルならdownload
-		// ルートフォルダならbackToPageUrl();
 		if ($currentFolder['CabinetFileTree']['parent_id'] == null) {
 			// root folder
 			$url = null;
