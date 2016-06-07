@@ -164,12 +164,12 @@ class CabinetFilesController extends CabinetsAppController {
 		];
 
 		$sort = Hash::get($this->request->named, 'sort', 'filename');
-		if (! in_array($sort, $allowSortKeys)){
+		if (!in_array($sort, $allowSortKeys)) {
 			return $this->throwBadRequest();
 		}
 		//  asc, descしか入力を許可しない
 		$direction = Hash::get($this->request->named, 'direction', 'asc');
-		if(! in_array($direction, ['asc', 'desc'])) {
+		if (!in_array($direction, ['asc', 'desc'])) {
 			return $this->throwBadRequest();
 		}
 		// ソート順変更リンクをPaginatorHelperで出力するときに必要な値をセットしておく。
@@ -202,11 +202,11 @@ class CabinetFilesController extends CabinetsAppController {
 		$folders = array();
 		$files = array();
 		foreach ($results as &$file) {
-			if($file['CabinetFile']['is_folder']) {
+			if ($file['CabinetFile']['is_folder']) {
 				$file['CabinetFile']['size'] = $this->CabinetFile->getTotalSizeByFolder($file);
 				$file['CabinetFile']['has_children'] = $this->CabinetFile->hasChildren($file);
 				$folders[] = $file;
-			}else{
+			} else {
 				$file['CabinetFile']['size'] = $file['UploadFile']['file']['size'];
 				$files[] = $file;
 			}
@@ -218,10 +218,10 @@ class CabinetFilesController extends CabinetsAppController {
 			// フォルダ・ファイルは別れるようにする。
 			$folders = Hash::sort($folders, '{n}.CabinetFile.size', $direction, 'numeric');
 		}
-		if($direction == 'asc'){
+		if ($direction == 'asc') {
 			// ascならフォルダ先 Hash::mergeだと上書きされてしまうのであえてarray_merge使用
 			$files = array_merge($folders, $files);
-		}else{
+		} else {
 			$files = array_merge($files, $folders);
 		}
 
