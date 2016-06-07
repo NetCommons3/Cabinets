@@ -96,7 +96,7 @@
 			<?php endif ?>
 			<?php if (Current::permission('content_creatable')) : ?>
 				<div class="pull-right" ng-controller="CabinetFile.addFile"
-					 ng-init="init(<?php echo $parentId ?>)">
+					ng-init="init(<?php echo $parentId ?>)">
 					<?php
 					$addUrl = $this->NetCommonsHtml->url(
 						array(
@@ -129,27 +129,34 @@
 	<div class="row">
 		<?php // ============ フォルダツリー ============?>
 		<div class="col-md-3 hidden-sm hidden-xs cabinets-folder-tree inline"
-			 ng-controller="Cabinets.FolderTree">
+			ng-controller="Cabinets.FolderTree">
 			<?php echo $this->element('CabinetFiles/folder_tree'); ?>
 		</div>
 
 		<div class="col-md-9 ">
 			<table
-				class="table table-hover cabinets__index__file-list" ng-controller="CabinetFile.index"
+				class="table table-hover cabinets__index__file-list"
+				ng-controller="CabinetFile.index"
 				ng-init="init(<?php echo
 				$currentTreeId ?>)">
-			<thead>
+				<thead>
 				<tr>
 					<th class="cabinets__index__name">
-						<?php echo $this->Paginator->sort('filename', __d('cabinets', 'Filename')
-							, ['direction' => 'desc'])
-						; ?>
+						<?php echo $this->Paginator->sort(
+							'filename',
+							__d('cabinets', 'Filename')
+							,
+							['direction' => 'desc']
+						); ?>
 					</th>
 					<th class="cabinets__index__size hidden-sm hidden-xs">
 						<?php echo $this->Paginator->sort('size', __d('cabinets', 'Size')); ?>
 					</th>
 					<th class="cabinets__index__modified" colspan="2">
-						<?php echo $this->Paginator->sort('modified', __d('net_commons','Modified datetime'));?>
+						<?php echo $this->Paginator->sort(
+							'modified',
+							__d('net_commons', 'Modified datetime')
+						); ?>
 					</th>
 
 				</tr>
@@ -194,7 +201,11 @@
 				<?php if (count($cabinetFiles) == 0): ?>
 					<tr>
 						<td colspan="4">
-							<?php echo __d('cabinets', 'No %s found.', __d('cabinets', 'File/Folder')); ?>
+							<?php echo __d(
+								'cabinets',
+								'No %s found.',
+								__d('cabinets', 'File/Folder')
+							); ?>
 						</td>
 					</tr>
 				<?php endif ?>
@@ -215,11 +226,11 @@
 								);
 								?>
 								<div class="cabinets__index__description text-muted small"
-									 data-content="<?php echo nl2br(
-										 h($cabinetFile['CabinetFile']['description'])
-									 ); ?>"
-									 data-toggle="popover"
-									 data-placement="bottom"
+									data-content="<?php echo nl2br(
+										h($cabinetFile['CabinetFile']['description'])
+									); ?>"
+									data-toggle="popover"
+									data-placement="bottom"
 								>
 									<?php echo h($cabinetFile['CabinetFile']['description']); ?>
 								</div>
@@ -247,11 +258,11 @@
 
 								<div class="dropdown">
 									<button class="btn btn-default dropdown-toggle" type="button"
-											id="cabinets__file-<?php echo $cabinetFile['CabinetFile']['id'] ?>"
-											data-toggle="dropdown" aria-haspopup="true"
-											aria-expanded="true">
+										id="cabinets__file-<?php echo $cabinetFile['CabinetFile']['id'] ?>"
+										data-toggle="dropdown" aria-haspopup="true"
+										aria-expanded="true">
 										<span class="glyphicon glyphicon-option-vertical"
-											  aria-hidden="true"></span>
+											aria-hidden="true"></span>
 										<!--<span class="caret"></span>-->
 									</button>
 									<ul class="dropdown-menu dropdown-menu-right"
@@ -267,7 +278,7 @@
 											); ?>
 										</li>
 										<li><a href="#"
-											   ng-click="moveFile('<?php echo $cabinetFile['CabinetFile']['key'] ?>', true)"><?php echo __d(
+												ng-click="moveFile('<?php echo $cabinetFile['CabinetFile']['key'] ?>', true)"><?php echo __d(
 													'net_commons',
 													'Move'
 												); ?></a></li>
@@ -324,21 +335,22 @@
 								); ?>
 								<?php if (isset($cabinetFile['AuthorizationKey'])): ?>
 									<span class="glyphicon glyphicon-lock" aria-hidden="true"
-										  title="<?php echo __d(
-											  'cabinets',
-											  'Password is required to download.'
-										  ) ?>"></span>
+										title="<?php echo __d(
+											'cabinets',
+											'Password is required to download.'
+										) ?>"></span>
 								<?php endif ?>
 								<span class="badge ">
-							<?php echo $cabinetFile['UploadFile']['file']['download_count'] ?>
-							</span>
+									<?php echo $cabinetFile['UploadFile']['file']
+									['total_download_count'] ?>
+								</span>
 
 								<div class="cabinets__index__description text-muted small"
-									 data-content="<?php echo nl2br(
-										 h($cabinetFile['CabinetFile']['description'])
-									 ); ?>"
-									 data-toggle="popover"
-									 data-placement="bottom"
+									data-content="<?php echo nl2br(
+										h($cabinetFile['CabinetFile']['description'])
+									); ?>"
+									data-toggle="popover"
+									data-placement="bottom"
 								>
 									<?php echo h($cabinetFile['CabinetFile']['description']); ?>
 								</div>
@@ -354,11 +366,11 @@
 							<td>
 								<div class="dropdown">
 									<button class="btn btn-default dropdown-toggle" type="button"
-											id="cabinets__file-<?php echo $cabinetFile['CabinetFile']['id'] ?>"
-											data-toggle="dropdown" aria-haspopup="true"
-											aria-expanded="true">
+										id="cabinets__file-<?php echo $cabinetFile['CabinetFile']['id'] ?>"
+										data-toggle="dropdown" aria-haspopup="true"
+										aria-expanded="true">
 										<span class="glyphicon glyphicon-option-vertical"
-											  aria-hidden="true"></span>
+											aria-hidden="true"></span>
 										<!--<span class="caret"></span>-->
 									</button>
 									<ul class="dropdown-menu dropdown-menu-right"
@@ -374,7 +386,7 @@
 											); ?>
 										</li>
 										<li><a href="#"
-											   ng-click="moveFile('<?php echo $cabinetFile['CabinetFile']['key'] ?>', false)"><?php echo __d(
+												ng-click="moveFile('<?php echo $cabinetFile['CabinetFile']['key'] ?>', false)"><?php echo __d(
 													'net_commons',
 													'Move'
 												); ?></a></li>

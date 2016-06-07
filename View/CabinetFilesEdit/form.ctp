@@ -24,7 +24,7 @@ echo $this->Html->script(
 	 <?php echo Hash::get($this->request->data, 'CabinetFileTree.parent_id', 0); ?>,
 	 '<?php echo Hash::get($this->request->data, 'CabinetFile.key', 0); ?>'
 	 )"
-		 id="cabinetFileForm_<?php echo Current::read('Frame.id') ?>"
+		id="cabinetFileForm_<?php echo Current::read('Frame.id') ?>"
 	>
 		<article>
 			<h1><?php echo $cabinet['Cabinet']['name'] ?></h1>
@@ -122,7 +122,7 @@ echo $this->Html->script(
 								<?php echo $this->element('file_path'); ?>
 
 								<a href="#" class="btn btn-default"
-								   ng-click="showFolderTree()"><span
+									ng-click="showFolderTree()"><span
 										class="glyphicon glyphicon-move"
 										aria-hidden="true"></span><?php echo __d(
 										'net_commons',
@@ -179,7 +179,7 @@ echo $this->Html->script(
 						); ?>
 
 						<span class="nc-tooltip"
-							  tooltip="<?php echo __d('net_commons', 'Delete'); ?>">
+							tooltip="<?php echo __d('net_commons', 'Delete'); ?>">
 						<button class="btn btn-danger" onClick="return confirm('<?php echo __d(
 							'net_commons',
 							'Deleting the %s. Are you sure to proceed?',

@@ -27,7 +27,7 @@ echo $this->Html->script(
 	<div class="cabinetFiles form" ng-controller="CabinetFile.edit" ng-init="init(
 	 <?php echo Hash::get($this->request->data, 'CabinetFileTree.parent_id', 0); ?>
 	 )"
-		 id="cabinetFileForm_<?php echo Current::read('Frame.id') ?>"
+		id="cabinetFileForm_<?php echo Current::read('Frame.id') ?>"
 	>
 		<article>
 			<div>
@@ -63,7 +63,7 @@ echo $this->Html->script(
 
 						<div class="form-group">
 							<input type="checkbox" ng-model="use_auth_key" name="data[use_auth_key]"
-								   value="1"/><?php echo __d(
+								value="1"/><?php echo __d(
 								'cabinets',
 								'Set download password.'
 							); ?>
