@@ -34,7 +34,6 @@ class CabinetFilesController extends CabinetsAppController {
  * @var array helpers
  */
 	public $helpers = array(
-		'NetCommons.Token',
 		'NetCommons.BackTo',
 		'Workflow.Workflow',
 		'Users.DisplayUser',
