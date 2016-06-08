@@ -166,6 +166,11 @@ class Cabinet extends CabinetsAppModel {
  * @see Model::save()
  */
 	public function afterSave($created, $options = array()) {
+		$this->loadModels(
+			[
+				'CabinetFile' => 'Cabinet.CabinetFile',
+			]
+		);
 		//CabinetSetting登録
 		if (isset($this->CabinetSetting->data['CabinetSetting'])) {
 			if (!Hash::get($this->CabinetSetting->data, 'CabinetSetting.cabinet_key', false)) {
@@ -176,17 +181,10 @@ class Cabinet extends CabinetsAppModel {
 			}
 		}
 
-		// ルートフォルダがまだなければルートフォルダをつくる
+		// ルートフォルダがまだなければルートフォルダをつくる。あれば名前の同期
 		if (!$this->CabinetFile->syncRootFolder($this->data)) {
 			throw new InternalErrorException(__d('net_commons', 'Internal Server Error'));
 		}
-
-		//CabinetFrameSetting登録
-		//if (isset($this->CabinetFrameSetting->data['CabinetFrameSetting']) && ! $this->CabinetFrameSetting->data['CabinetFrameSetting']['id']) {
-		//	if (! $this->CabinetFrameSetting->save(null, false)) {
-		//		throw new InternalErrorException(__d('net_commons', 'Internal Server Error'));
-		//	}
-		//}
 
 		parent::afterSave($created, $options);
 	}

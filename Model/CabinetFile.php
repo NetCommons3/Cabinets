@@ -167,7 +167,7 @@ class CabinetFile extends CabinetsAppModel {
 				throw new InternalErrorException(__d('net_commons', 'Internal Server Error'));
 			}
 
-			// TODO afterSaveへ
+			// treeはファイルなら常に新規INSERT フォルダだったらアップデート
 			if ($data['CabinetFile']['is_folder']) {
 				// フォルダは treeをupdate
 				//if(isset($data['CabinetFileTree']['id']) === false){
@@ -179,20 +179,15 @@ class CabinetFile extends CabinetsAppModel {
 			}
 			$data['CabinetFileTree']['cabinet_file_key'] = $savedData[$this->alias]['key'];
 			$data['CabinetFileTree']['cabinet_file_id'] = $savedData[$this->alias]['id'];
-			//$count = $this->CabinetFileTree->find('count',['conditions' => ['cabinet_file_key' => $data[$this->alias]['key']]]);
-			//if($count == 0){
-			//	// 新規保存
-			//	$this->CabinetFileTree->create();
-			//	$data['CabinetFileTree']['cabinet_file_key'] = $savedData[$this->alias]['key'];
-			//}
 
-			// TODO treeはファイルなら常に新規INSERT フォルダだったらアップデート
-
-			// TODO 例外処理
-			// ここは単純マージじゃダメ
 			$this->CabinetFileTree->create();
-			$treeData = $this->CabinetFileTree->save($data);
+			if ($treeData = $this->CabinetFileTree->save($data) === false) {
+				throw new InternalErrorException(__d('net_commons', 'Internal Server Error'));
+			}
 			$savedData['CabinetFileTree'] = $treeData['CabinetFileTree'];
+
+			// Cabinet.total_size同期
+			$this->updateCabinetTotalSize($data['CabinetFile']['cabinet_id']);
 
 			$this->commit();
 			return $savedData;
@@ -216,11 +211,14 @@ class CabinetFile extends CabinetsAppModel {
 			$deleteFile = $this->findByKey($key);
 
 			if ($deleteFile['CabinetFile']['is_folder']) {
-				return $this->_deleteFolder($deleteFile);
+				$this->_deleteFolder($deleteFile);
 			} else {
-				return $this->_deleteFile($deleteFile);
+				$this->_deleteFile($deleteFile);
 			}
+			$this->updateCabinetTotalSize($deleteFile['CabinetFile']['cabinet_id']);
+
 			$this->commit();
+			return;
 		} catch (Exception $e) {
 			$this->rollback($e);
 			throw $e;

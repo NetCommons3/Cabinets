@@ -72,6 +72,10 @@ class CabinetFolderBehavior extends ModelBehavior {
 				'conditions' => $this->_getRootFolderConditions($cabinet)
 			];
 			$rootFolder = $model->find('first', $options);
+			if ($rootFolder['CabinetFile']['filename'] == $cabinet['Cabinet']['name']) {
+				// ファイル名が同じならupdate不要
+				return true;
+			}
 			$rootFolder['CabinetFile']['filename'] = $cabinet['Cabinet']['name'];
 			return ($model->save($rootFolder)) ? true : false;
 		} else {
@@ -170,6 +174,22 @@ class CabinetFolderBehavior extends ModelBehavior {
 			'parent_id' => null,
 		];
 		return $conditions;
+	}
+
+	/**
+	 * @param Model $model
+	 */
+	public function updateCabinetTotalSize(Model $model, $cabinetId) {
+		$cabinet = $model->Cabinet->findById($cabinetId);
+		// トータルサイズ取得
+		$rootFolder = $model->getRootFolder($cabinet);
+		$totalSize = $model->getTotalSizeByFolder(
+			$rootFolder
+		);
+		// キャビネット更新
+		//$model->Cabinet->save($cabinet);
+		$model->Cabinet->id = $cabinetId;
+		$model->Cabinet->saveField('total_size', $totalSize, ['callbacks' => false]);
 	}
 
 }

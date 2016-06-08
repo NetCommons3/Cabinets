@@ -95,24 +95,6 @@ class CabinetBlocksController extends CabinetsAppController {
 			return;
 		}
 
-		//foreach ($cabinets as &$cabinet){
-		//	$uploadFile = ClassRegistry::init('Files.UploadFile');
-		//	$uploadFile->find('all', [
-		//		'field' => ['sum(size) AS total_size'],
-		//		'conditions' => ['block_key' => $cabinet['Block']['key']],
-		//
-		//	])
-		//	$result = $uploadFile->query('SELECT sum(size) AS total FROM upload_files WHERE block_key=' . $cabinet['Block']['key']);
-		//	debug($result);
-		//
-		//}
-		foreach ($cabinets as &$cabinet) {
-			$rootFolder = $this->CabinetFile->getRootFolder($cabinet);
-			$cabinet['Cabinet']['total_size'] = $this->CabinetFile->getTotalSizeByFolder(
-				$rootFolder
-			);
-		}
-
 		$this->set('cabinets', $cabinets);
 		$this->request->data['Frame'] = Current::read('Frame');
 	}
