@@ -162,10 +162,15 @@ class CabinetFile extends CabinetsAppModel {
 				$this->rollback();
 				return false;
 			}
+			if ($data['CabinetFile']['is_folder']) {
+				// Folderは新着にのせたくないのでTopicディセーブル
+				$this->Behaviors->disable('Topics');
+			}
 			if (($savedData = $this->save($data, false)) === false) {
 				//このsaveで失敗するならvalidate以外なので例外なげる
 				throw new InternalErrorException(__d('net_commons', 'Internal Server Error'));
 			}
+			$this->Behaviors->enable('Topics');
 
 			// treeはファイルなら常に新規INSERT フォルダだったらアップデート
 			if ($data['CabinetFile']['is_folder']) {

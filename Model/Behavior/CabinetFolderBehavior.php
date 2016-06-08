@@ -62,6 +62,7 @@ class CabinetFolderBehavior extends ModelBehavior {
  *
  * @param Model $model CabinetFile
  * @param array $cabinet Cabinet model data
+ * @param bool $created 新規キャビネットか
  * @return bool
  * @throws Exception
  */
@@ -95,6 +96,8 @@ class CabinetFolderBehavior extends ModelBehavior {
 			return true;
 		}
 		//
+		// $modelのTopicビヘイビアを停止
+		$model->Behaviors->disable('Topics');
 		$model->create();
 		$rootFolder = [
 			'CabinetFile' => [
@@ -114,10 +117,13 @@ class CabinetFolderBehavior extends ModelBehavior {
 				]
 			];
 			$result = $model->CabinetFileTree->save($tree);
-			return ($result) ? true : false;
+			$result = ($result) ? true : false;
 		} else {
-			return false;
+			$result = false;
 		}
+		// $modelのTopicビヘイビアを復帰
+		$model->Behaviors->enable('Topics');
+		return $result;
 	}
 
 /**
