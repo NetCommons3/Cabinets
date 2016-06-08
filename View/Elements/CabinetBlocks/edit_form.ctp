@@ -25,6 +25,7 @@
 	array(
 		'type' => 'text',
 		'label' => __d('cabinets', 'Cabinet name'),
+		'required' => true,
 	)
 ); ?>
 
