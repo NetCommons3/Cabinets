@@ -29,4 +29,6 @@
 	)
 ); ?>
 
-<?php echo $this->element('Blocks.public_type');
+<?php
+echo $this->element('Blocks.public_type');
+echo $this->element('Blocks.modifed_info', array('displayModified' => true));
