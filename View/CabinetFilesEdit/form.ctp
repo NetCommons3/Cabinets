@@ -86,12 +86,12 @@ echo $this->Html->script(
 
 						<div class="form-group">
 							<?php echo $this->NetCommonsForm->checkbox(
-								'use_auth_key',
+								'Cabinet.use_auth_key',
 								[
 									'ng-model' => 'use_auth_key',
 									'label' => __d('cabinets', 'Set download password.'),
-									'div' => false,
-									'class' => false
+									//'div' => false,
+									//'class' => false
 								]
 							); ?>
 							<!--<input type="checkbox" ng-model="use_auth_key" name="data[use_auth_key]" value="1" />--><?php //echo __d('cabinets', 'Set download password.');?>
