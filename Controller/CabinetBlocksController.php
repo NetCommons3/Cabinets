@@ -74,6 +74,7 @@ class CabinetBlocksController extends CabinetsAppController {
 				'role_permissions' => array('url' => array('controller' => 'cabinet_block_role_permissions')),
 			),
 		),
+		'Blocks.BlockIndex',
 	);
 
 /**

@@ -45,7 +45,7 @@ msgstr ""
 
 #: View/CabinetBlocks/index.ctp:35
 msgid "Size"
-msgstr "サイズ"
+msgstr "ファイル容量"
 
 #: View/CabinetFiles/download_folder.ctp:13
 msgid "Download failed"
