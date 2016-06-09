@@ -13,25 +13,31 @@ echo $this->Html->script(
 	 <?php echo Current::read('Frame.id') ?>
 	 )">
 
-	<?php if ($this->Workflow->canEdit('CabinetFile', $cabinetFile)) : ?>
-		<div class="text-right">
-			<?php echo $this->Button->editLink(
-				'',
-				array(
-					'controller' => 'cabinet_files_edit',
-					'action' => 'edit',
-					'key' => $cabinetFile['CabinetFile']['key']
-				),
-				array(
-					'tooltip' => true,
-				)
-			); ?>
+	<div class="clearfix">
+		<div class="pull-left">
+			<?php echo $this->Workflow->label($cabinetFile['CabinetFile']['status']); ?>
 		</div>
-	<?php endif ?>
+		<?php if ($this->Workflow->canEdit('CabinetFile', $cabinetFile)) : ?>
+			<div class="pull-right">
+				<?php echo $this->Button->editLink(
+					'',
+					array(
+						'controller' => 'cabinet_files_edit',
+						'action' => 'edit',
+						'key' => $cabinetFile['CabinetFile']['key']
+					),
+					array(
+						'tooltip' => true,
+					)
+				); ?>
+			</div>
+		<?php endif ?>
+
+	</div>
 	<dl class="cabinets__detail">
 		<dt><?php echo __d('cabinets', 'File name'); ?></dt>
-		<dd class="form-control nc-data-label"><?php echo $cabinetFile['CabinetFile']['filename']; ?>
-			<?php echo $this->Workflow->label($cabinetFile['CabinetFile']['status']); ?>
+		<dd class="form-control nc-data-label">
+			<?php echo $cabinetFile['CabinetFile']['filename']; ?>
 		</dd>
 
 		<dt><?php echo __d('cabinets', 'Path'); ?></dt>
