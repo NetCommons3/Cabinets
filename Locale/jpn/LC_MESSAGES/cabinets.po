@@ -151,11 +151,11 @@ msgstr "解凍後の合計サイズが大きすぎます。(解凍後の合計 %
 msgid "Unzip failed. Contains does not allow file format."
 msgstr "解凍失敗。許可されないファイルが含まれています。"
 
-msgid "No %s found."
-msgstr "1件も%sはありません。"
-
 msgid "File/Folder"
 msgstr "ファイル・フォルダ"
 
 msgid "Filename"
 msgstr "名前"
+
+msgid "File creatable roles"
+msgstr "ファイルを投稿できる権限"
