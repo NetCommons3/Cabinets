@@ -2,7 +2,9 @@
 <div ng-controller="Cabinets" ng-init="init(
 	 <?php echo Current::read('Block.id') ?>,
 	 <?php echo Current::read('Frame.id') ?>
-	 )">
+	 )"
+	class="nc-content-list"
+>
 
 
 	<?php
@@ -242,7 +244,7 @@
 								) ?></td>
 							<td><?php echo $this->Date->dateFormat(
 									$cabinetFile['CabinetFile']['modified']
-								) ?><?php echo $cabinetFile['TrackableUpdater']['handlename'] ?></td>
+								) ?></td>
 
 							<td>
 								<?php
@@ -361,7 +363,7 @@
 								) ?></td>
 							<td><?php echo $this->Date->dateFormat(
 									$cabinetFile['CabinetFile']['modified']
-								) ?><?php echo $cabinetFile['TrackableUpdater']['handlename'] ?></td>
+								) ?></td>
 
 							<td>
 								<div class="dropdown">
