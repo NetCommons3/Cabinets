@@ -35,7 +35,6 @@ echo $this->Html->script(
 					),
 					array(
 						'tooltip' => true,
-						'iconSize' => 'btn-xs'
 					)
 				);
 			}
