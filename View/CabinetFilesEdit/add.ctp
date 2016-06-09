@@ -62,10 +62,12 @@ echo $this->Html->script(
 						) ?>
 
 						<div class="form-group">
-							<input type="checkbox" ng-model="use_auth_key" name="data[use_auth_key]"
-								value="1"/><?php echo __d(
-								'cabinets',
-								'Set download password.'
+							<?php echo $this->NetCommonsForm->checkbox(
+								'Cabinet.use_auth_key',
+								[
+									'ng-model' => 'use_auth_key',
+									'label' => __d('cabinets', 'Set download password.'),
+								]
 							); ?>
 							<div ng-show="use_auth_key">
 								<?php echo $this->element(

@@ -90,8 +90,6 @@ echo $this->Html->script(
 								[
 									'ng-model' => 'use_auth_key',
 									'label' => __d('cabinets', 'Set download password.'),
-									//'div' => false,
-									//'class' => false
 								]
 							); ?>
 							<!--<input type="checkbox" ng-model="use_auth_key" name="data[use_auth_key]" value="1" />--><?php //echo __d('cabinets', 'Set download password.');?>
@@ -142,7 +140,6 @@ echo $this->Html->script(
 							'description',
 							array(
 								'label' => __d('cabinets', 'Description'),
-								'required' => 'required',
 							)
 						);
 						?>

@@ -89,7 +89,6 @@ echo $this->Html->script(
 							'description',
 							array(
 								'label' => __d('cabinets', 'Description'),
-								'required' => 'required',
 							)
 						);
 						?>
