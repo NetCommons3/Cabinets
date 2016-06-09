@@ -1,15 +1,37 @@
-<?php 
+<?php
+/**
+ * CabinetsSchema
+ */
+
+/**
+ * Class CabinetsSchema
+ */
 class CabinetsSchema extends CakeSchema {
 
 	public $connection = 'master';
 
+/**
+ * before
+ *
+ * @param array $event event
+ * @return bool
+ */
 	public function before($event = array()) {
 		return true;
 	}
 
+/**
+ * after
+ *
+ * @param array $event event
+ * @return void
+ */
 	public function after($event = array()) {
 	}
 
+/**
+ * @var array cabinet_file_trees
+ */
 	public $cabinet_file_trees = array(
 		'id' => array('type' => 'integer', 'null' => false, 'default' => null, 'unsigned' => false, 'key' => 'primary', 'comment' => 'ID | | | '),
 		'cabinet_key' => array('type' => 'string', 'null' => false, 'default' => null, 'collate' => 'utf8_general_ci', 'comment' => 'bbs key | キャビネットキー | Hash値 | ', 'charset' => 'utf8'),
@@ -28,6 +50,9 @@ class CabinetsSchema extends CakeSchema {
 		'tableParameters' => array('charset' => 'utf8', 'collate' => 'utf8_general_ci', 'engine' => 'InnoDB')
 	);
 
+/**
+ * @var array cabinet_files
+ */
 	public $cabinet_files = array(
 		'id' => array('type' => 'integer', 'null' => false, 'default' => null, 'unsigned' => false, 'key' => 'primary', 'comment' => 'ID |  |  | '),
 		'cabinet_id' => array('type' => 'integer', 'null' => false, 'default' => null, 'unsigned' => false),
@@ -50,6 +75,9 @@ class CabinetsSchema extends CakeSchema {
 		'tableParameters' => array('charset' => 'utf8', 'collate' => 'utf8_general_ci', 'engine' => 'InnoDB')
 	);
 
+/**
+ * @var array cabinet_settings
+ */
 	public $cabinet_settings = array(
 		'id' => array('type' => 'integer', 'null' => false, 'default' => null, 'unsigned' => false, 'key' => 'primary', 'comment' => 'ID | | | '),
 		'cabinet_key' => array('type' => 'string', 'null' => false, 'default' => null, 'collate' => 'utf8_general_ci', 'comment' => 'Cabinet key | CABINETキー | Hash値 | ', 'charset' => 'utf8'),
@@ -64,6 +92,9 @@ class CabinetsSchema extends CakeSchema {
 		'tableParameters' => array('charset' => 'utf8', 'collate' => 'utf8_general_ci', 'engine' => 'InnoDB')
 	);
 
+/**
+ * @var array cabinets
+ */
 	public $cabinets = array(
 		'id' => array('type' => 'integer', 'null' => false, 'default' => null, 'unsigned' => false, 'key' => 'primary', 'comment' => 'ID | | | '),
 		'block_id' => array('type' => 'integer', 'null' => false, 'default' => null, 'unsigned' => false),
@@ -73,7 +104,7 @@ class CabinetsSchema extends CakeSchema {
 		'created' => array('type' => 'datetime', 'null' => true, 'default' => null, 'comment' => 'created datetime | 作成日時 | | '),
 		'modified_user' => array('type' => 'integer', 'null' => true, 'default' => '0', 'unsigned' => false, 'comment' => 'modified user | 更新者 | users.id | '),
 		'modified' => array('type' => 'datetime', 'null' => true, 'default' => null, 'comment' => 'modified datetime | 更新日時 | | '),
-		'total_size' => array('type' => 'float', 'null' => true, 'default' => null, 'unsigned' => false),
+		'total_size' => array('type' => 'float', 'null' => false, 'default' => '0', 'unsigned' => false),
 		'indexes' => array(
 			'PRIMARY' => array('column' => 'id', 'unique' => 1)
 		),

@@ -55,7 +55,7 @@ msgstr "ダウンロード失敗"
 #: View/CabinetFiles/folder_detail.ctp:104
 #: View/CabinetFiles/view.ctp:80
 msgid "Go to List"
-msgstr "一覧へ戻る"
+msgstr "ファイル一覧へ"
 
 #: View/CabinetFiles/folder_detail.ctp:46
 #: View/CabinetFilesEdit/folder_form.ctp:58
@@ -79,6 +79,9 @@ msgstr "合計サイズ"
 #: View/CabinetFilesEdit/form.ctp:103
 msgid "Description"
 msgstr "説明"
+
+msgid "View"
+msgstr "詳細"
 
 #: View/CabinetFiles/folder_detail.ctp:111
 #: View/CabinetFiles/view.ctp:87
@@ -147,3 +150,12 @@ msgstr "解凍後の合計サイズが大きすぎます。(解凍後の合計 %
 
 msgid "Unzip failed. Contains does not allow file format."
 msgstr "解凍失敗。許可されないファイルが含まれています。"
+
+msgid "File/Folder"
+msgstr "ファイル・フォルダ"
+
+msgid "Filename"
+msgstr "名前"
+
+msgid "File creatable roles"
+msgstr "ファイルを投稿できる権限"

@@ -20,7 +20,10 @@
 		<?php echo $this->MailForm->editFrom(
 			array(
 				array(
-					'mailBodyPopoverMessage' => __d('cabinets', 'MailSetting.mail_fixed_phrase_body.popover'),
+					'mailBodyPopoverMessage' => __d(
+						'cabinets',
+						'MailSetting.mail_fixed_phrase_body.popover'
+					),
 				),
 			),
 			NetCommonsUrl::backToIndexUrl('default_setting_action')

@@ -74,6 +74,7 @@ class CabinetBlocksController extends CabinetsAppController {
 				'role_permissions' => array('url' => array('controller' => 'cabinet_block_role_permissions')),
 			),
 		),
+		'Blocks.BlockIndex',
 	);
 
 /**
@@ -93,24 +94,6 @@ class CabinetBlocksController extends CabinetsAppController {
 		if (!$cabinets) {
 			$this->view = 'Blocks.Blocks/not_found';
 			return;
-		}
-
-		//foreach ($cabinets as &$cabinet){
-		//	$uploadFile = ClassRegistry::init('Files.UploadFile');
-		//	$uploadFile->find('all', [
-		//		'field' => ['sum(size) AS total_size'],
-		//		'conditions' => ['block_key' => $cabinet['Block']['key']],
-		//
-		//	])
-		//	$result = $uploadFile->query('SELECT sum(size) AS total FROM upload_files WHERE block_key=' . $cabinet['Block']['key']);
-		//	debug($result);
-		//
-		//}
-		foreach ($cabinets as &$cabinet) {
-			$rootFolder = $this->CabinetFile->getRootFolder($cabinet);
-			$cabinet['Cabinet']['total_size'] = $this->CabinetFile->getTotalSizeByFolder(
-				$rootFolder
-			);
 		}
 
 		$this->set('cabinets', $cabinets);

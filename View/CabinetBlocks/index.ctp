@@ -13,78 +13,75 @@
 <article class="block-setting-body">
 	<?php echo $this->BlockTabs->main(BlockTabsHelper::MAIN_TAB_BLOCK_INDEX); ?>
 
+	<?php echo $this->BlockIndex->description(); ?>
+
 	<div class="tab-content">
-		<div class="text-right">
-			<?php echo $this->Button->addLink(); ?>
-		</div>
+		<?php echo $this->BlockIndex->create(); ?>
+		<?php echo $this->BlockIndex->addLink(); ?>
 
-		<?php echo $this->Form->create(
-			'',
-			array(
-				'url' => NetCommonsUrl::actionUrl(
-					array('plugin' => 'frames', 'controller' => 'frames', 'action' => 'edit')
-				)
-			)
-		); ?>
+		<?php echo $this->BlockIndex->startTable(); ?>
+		<thead>
+		<tr>
+			<?php echo $this->BlockIndex->tableHeader(
+				'Frame.block_id'
+			); ?>
+			<?php echo $this->BlockIndex->tableHeader(
+				'Block.name', __d('cabinets', 'Cabinet name'),
+				array('sort' => true)
+			); ?>
+			<?php echo $this->BlockIndex->tableHeader(
+				'Cabinet.total_size', __d('cabinets', 'Size'),
+				array('sort' => true)
+			); ?>
+			<?php echo $this->BlockIndex->tableHeader( // TODO 公開状態まち
+				'Block.public_type', __d('blocks', 'Publishing setting'),
+				array('sort' => true)
+			); ?>
+			<?php echo $this->BlockIndex->tableHeader(
+				'TrackableUpdater.handlename', __d('net_commons', 'Modified user'),
+				array('sort' => true, 'type' => 'handle')
+			); ?>
+			<?php echo $this->BlockIndex->tableHeader(
+				'Block.modified', __d('net_commons', 'Modified datetime'),
+				array('sort' => true, 'type' => 'datetime')
+			); ?>
+		</tr>
+		</thead>
+		<tbody>
+		<?php foreach ($cabinets as $cabinet) : ?>
+			<?php echo $this->BlockIndex->startTableRow($cabinet['Block']['id']); ?>
+			<?php echo $this->BlockIndex->tableData(
+				'Frame.block_id', $cabinet['Block']['id']
+			); ?>
+			<?php echo $this->BlockIndex->tableData(
+				'Block.name', $cabinet['Block']['name'],
+				array('editUrl' => array('block_id' => $cabinet['Block']['id']))
+			); ?>
+			<?php echo $this->BlockIndex->tableData(
+				'Cabinet.total_size',
+				$this->Number->toReadableSize($cabinet['Cabinet']['total_size'])
+			); ?>
+			<?php echo $this->BlockIndex->tableData( // TODO
+				'Block.public_type', $cabinet['Block']['public_type']
+			); ?>
+			<?php echo $this->BlockIndex->tableData(
+				'TrackableUpdater', $cabinet,
+				array('type' => 'handle')
+			); ?>
+			<?php echo $this->BlockIndex->tableData(
+				'Block.modified', $cabinet['Block']['modified'],
+				array('type' => 'datetime')
+			); ?>
+			<?php echo $this->BlockIndex->endTableRow(); ?>
+		<?php endforeach; ?>
+		</tbody>
+		<?php echo $this->BlockIndex->endTable(); ?>
 
-		<?php echo $this->Form->hidden('Frame.id'); ?>
-
-		<table class="table table-hover">
-			<thead>
-			<tr>
-				<th></th>
-				<th>
-					<?php echo $this->Paginator->sort(
-						'Cabinet.name',
-						__d('cabinets', 'Cabinet name')
-					); ?>
-				</th>
-				<th class="text-right">
-					<?php echo $this->Paginator->sort(
-						'Cabinet.total_size',
-						__d('cabinets', 'Size')
-					); ?>
-				</th>
-				<th>
-					<?php echo $this->Paginator->sort(
-						'Block.modified',
-						__d('net_commons', 'Updated date')
-					); ?>
-				</th>
-			</tr>
-			</thead>
-			<tbody>
-			<?php foreach ($cabinets as $cabinet) : ?>
-				<tr<?php echo ($this->data['Frame']['block_id'] === $cabinet['Block']['id']) ? ' class="active"' : ''; ?>>
-					<td>
-						<?php echo $this->BlockForm->displayFrame(
-							'Frame.block_id',
-							$cabinet['Block']['id']
-						); ?>
-					</td>
-					<td>
-						<?php echo $this->NetCommonsHtml->editLink(
-							$cabinet['Cabinet']['name'],
-							array('block_id' => $cabinet['Block']['id'])
-						); ?>
-					</td>
-					<td class="text-right">
-						<?php echo $this->Number->toReadableSize(
-							$cabinet['Cabinet']['total_size']
-						); ?>
-					</td>
-					<td>
-						<?php echo $this->Date->dateFormat($cabinet['Block']['modified']); ?>
-					</td>
-					<!--</td>-->
-				</tr>
-			<?php endforeach; ?>
-			</tbody>
-		</table>
-		<?php echo $this->Form->end(); ?>
+		<?php echo $this->BlockIndex->end(); ?>
 
 		<?php echo $this->element('NetCommons.paginator'); ?>
 	</div>
+
 </article>
 
 

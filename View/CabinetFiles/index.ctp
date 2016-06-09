@@ -2,7 +2,9 @@
 <div ng-controller="Cabinets" ng-init="init(
 	 <?php echo Current::read('Block.id') ?>,
 	 <?php echo Current::read('Frame.id') ?>
-	 )">
+	 )"
+	class="nc-content-list"
+>
 
 
 	<?php
@@ -96,7 +98,7 @@
 			<?php endif ?>
 			<?php if (Current::permission('content_creatable')) : ?>
 				<div class="pull-right" ng-controller="CabinetFile.addFile"
-					 ng-init="init(<?php echo $parentId ?>)">
+					ng-init="init(<?php echo $parentId ?>)">
 					<?php
 					$addUrl = $this->NetCommonsHtml->url(
 						array(
@@ -129,26 +131,37 @@
 	<div class="row">
 		<?php // ============ フォルダツリー ============?>
 		<div class="col-md-3 hidden-sm hidden-xs cabinets-folder-tree inline"
-			 ng-controller="Cabinets.FolderTree">
+			ng-controller="Cabinets.FolderTree">
 			<?php echo $this->element('CabinetFiles/folder_tree'); ?>
 		</div>
 
-		<div class="col-md-9 inline">
+		<div class="col-md-9 ">
 			<table
-				class="table cabinets__index__file-list" ng-controller="CabinetFile.index"
+				class="table table-hover cabinets__index__file-list"
+				style="table-layout: fixed"
+				ng-controller="CabinetFile.index"
 				ng-init="init(<?php echo
 				$currentTreeId ?>)">
-			<thead>
+				<thead>
 				<tr>
-					<th class="cabinets__index__name">名前</th>
-					<th class="cabinets__index__size hidden-sm hidden-xs"><?php echo __d(
-							'cabinets',
-							'Size'
-						) ?></th>
-					<th class="cabinets__index__modified" colspan="2"><?php echo __d(
-							'net_commons',
-							'Modified datetime'
-						); ?></th>
+					<th class="cabinets__index__name">
+						<?php echo $this->Paginator->sort(
+							'filename',
+							__d('cabinets', 'Filename')
+							,
+							['direction' => 'desc']
+						); ?>
+					</th>
+					<th class="cabinets__index__size hidden-sm hidden-xs">
+						<?php echo $this->Paginator->sort('size', __d('cabinets', 'Size')); ?>
+					</th>
+					<th class="cabinets__index__modified">
+						<?php echo $this->Paginator->sort(
+							'modified',
+							__d('net_commons', 'Modified datetime')
+						); ?>
+					</th>
+					<th class="cabinets__index__button"></th>
 
 				</tr>
 				</thead>
@@ -169,7 +182,8 @@
 							?>
 						</td>
 						<td class="hidden-sm hidden-xs"></td>
-						<td colspan="2" style="text-align: right">
+						<!--<td></td>-->
+						<td colspan="2" style="text-align: right; ">
 							<?php
 							if (count($cabinetFiles) > 0) {
 								echo $this->Html->link(
@@ -180,11 +194,25 @@
 											'key' => $currentFolder['CabinetFile']['key']
 										]
 									),
-									['class' => 'btn btn-xs btn-default']
+									['class' => 'btn btn-xs btn-default',
+										'style' => 'margin-left:0px;'
+									]
 								);
 
 							}
 							?>
+						</td>
+					</tr>
+				<?php endif ?>
+
+				<?php if (count($cabinetFiles) == 0): ?>
+					<tr>
+						<td colspan="4">
+							<?php echo __d(
+								'net_commons',
+								'%s is not.',
+								__d('cabinets', 'File/Folder')
+							); ?>
 						</td>
 					</tr>
 				<?php endif ?>
@@ -205,25 +233,26 @@
 								);
 								?>
 								<div class="cabinets__index__description text-muted small"
-									 data-content="<?php echo nl2br(
-										 h($cabinetFile['CabinetFile']['description'])
-									 ); ?>"
-									 data-toggle="popover"
-									 data-placement="bottom"
+									data-content="<?php echo nl2br(
+										h($cabinetFile['CabinetFile']['description'])
+									); ?>"
+									data-toggle="popover"
+									data-placement="bottom"
 								>
 									<?php echo h($cabinetFile['CabinetFile']['description']); ?>
 								</div>
 
 
 							</td>
-							<td class="cabinets__index__size  hidden-sm hidden-xs"><?php echo $this->Number->toReadableSize(
+							<td class="cabinets__index__size  hidden-sm hidden-xs text-right"><?php echo $this->Number->toReadableSize(
 									$cabinetFile['CabinetFile']['size']
 								) ?></td>
-							<td><?php echo $this->Date->dateFormat(
+							<td class="text-right">
+								<?php echo $this->Date->dateFormat(
 									$cabinetFile['CabinetFile']['modified']
-								) ?><?php echo $cabinetFile['TrackableUpdater']['handlename'] ?></td>
+								) ?></td>
 
-							<td>
+							<td class="text-right cabinets__index__button">
 								<?php
 								// link folder_detail
 								$detailUrl = $this->NetCommonsHtml->url(
@@ -236,19 +265,19 @@
 								?>
 
 								<div class="dropdown">
-									<button class="btn btn-default dropdown-toggle" type="button"
-											id="cabinets__file-<?php echo $cabinetFile['CabinetFile']['id'] ?>"
-											data-toggle="dropdown" aria-haspopup="true"
-											aria-expanded="true">
+									<button class="btn btn-default dropdown-toggle btn-xs" type="button"
+										id="cabinets__file-<?php echo $cabinetFile['CabinetFile']['id'] ?>"
+										data-toggle="dropdown" aria-haspopup="true"
+										aria-expanded="true">
 										<span class="glyphicon glyphicon-option-vertical"
-											  aria-hidden="true"></span>
+											aria-hidden="true"></span>
 										<!--<span class="caret"></span>-->
 									</button>
 									<ul class="dropdown-menu dropdown-menu-right"
 										aria-labelledby="cabinets__file-<?php echo $cabinetFile['CabinetFile']['id'] ?>">
 										<li>
 											<?php echo $this->NetCommonsHtml->link(
-												__d('cabinets', 'Description'),
+												__d('cabinets', 'View'),
 												[
 													'controller' => 'cabinet_files',
 													'action' => 'folder_detail',
@@ -257,7 +286,7 @@
 											); ?>
 										</li>
 										<li><a href="#"
-											   ng-click="moveFile('<?php echo $cabinetFile['CabinetFile']['key'] ?>', true)"><?php echo __d(
+												ng-click="moveFile('<?php echo $cabinetFile['CabinetFile']['key'] ?>', true)"><?php echo __d(
 													'net_commons',
 													'Move'
 												); ?></a></li>
@@ -314,48 +343,51 @@
 								); ?>
 								<?php if (isset($cabinetFile['AuthorizationKey'])): ?>
 									<span class="glyphicon glyphicon-lock" aria-hidden="true"
-										  title="<?php echo __d(
-											  'cabinets',
-											  'Password is required to download.'
-										  ) ?>"></span>
+										title="<?php echo __d(
+											'cabinets',
+											'Password is required to download.'
+										) ?>"></span>
 								<?php endif ?>
 								<span class="badge ">
-							<?php echo $cabinetFile['UploadFile']['file']['download_count'] ?>
-							</span>
+									<?php echo $cabinetFile['UploadFile']['file']
+									['total_download_count'] ?>
+								</span>
 
 								<div class="cabinets__index__description text-muted small"
-									 data-content="<?php echo nl2br(
-										 h($cabinetFile['CabinetFile']['description'])
-									 ); ?>"
-									 data-toggle="popover"
-									 data-placement="bottom"
+									data-content="<?php echo nl2br(
+										h($cabinetFile['CabinetFile']['description'])
+									); ?>"
+									data-toggle="popover"
+									data-placement="bottom"
 								>
 									<?php echo h($cabinetFile['CabinetFile']['description']); ?>
 								</div>
 
 							</td>
-							<td class="hidden-sm hidden-xs"><?php echo $this->Number->toReadableSize(
+							<td class="hidden-sm hidden-xs text-right"><?php echo
+								$this->Number->toReadableSize(
 									$cabinetFile['UploadFile']['file']['size']
 								) ?></td>
-							<td><?php echo $this->Date->dateFormat(
+							<td class="text-right"><?php echo $this->Date->dateFormat(
 									$cabinetFile['CabinetFile']['modified']
-								) ?><?php echo $cabinetFile['TrackableUpdater']['handlename'] ?></td>
+								) ?></td>
 
-							<td>
+							<td class="text-right  cabinets__index__button">
 								<div class="dropdown">
-									<button class="btn btn-default dropdown-toggle" type="button"
-											id="cabinets__file-<?php echo $cabinetFile['CabinetFile']['id'] ?>"
-											data-toggle="dropdown" aria-haspopup="true"
-											aria-expanded="true">
+									<button class="btn btn-default dropdown-toggle btn-xs"
+										type="button"
+										id="cabinets__file-<?php echo $cabinetFile['CabinetFile']['id'] ?>"
+										data-toggle="dropdown" aria-haspopup="true"
+										aria-expanded="true">
 										<span class="glyphicon glyphicon-option-vertical"
-											  aria-hidden="true"></span>
+											aria-hidden="true"></span>
 										<!--<span class="caret"></span>-->
 									</button>
 									<ul class="dropdown-menu dropdown-menu-right"
 										aria-labelledby="cabinets__file-<?php echo $cabinetFile['CabinetFile']['id'] ?>">
 										<li>
 											<?php echo $this->NetCommonsHtml->link(
-												__d('cabinets', 'Description'),
+												__d('cabinets', 'View'),
 												[
 													'controller' => 'cabinet_files',
 													'action' => 'view',
@@ -364,7 +396,7 @@
 											); ?>
 										</li>
 										<li><a href="#"
-											   ng-click="moveFile('<?php echo $cabinetFile['CabinetFile']['key'] ?>', false)"><?php echo __d(
+												ng-click="moveFile('<?php echo $cabinetFile['CabinetFile']['key'] ?>', false)"><?php echo __d(
 													'net_commons',
 													'Move'
 												); ?></a></li>
