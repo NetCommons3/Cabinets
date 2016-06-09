@@ -202,8 +202,8 @@
 					<tr>
 						<td colspan="4">
 							<?php echo __d(
-								'cabinets',
-								'No %s found.',
+								'net_commons',
+								'%s is not.',
 								__d('cabinets', 'File/Folder')
 							); ?>
 						</td>
