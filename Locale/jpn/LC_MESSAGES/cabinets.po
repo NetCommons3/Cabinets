@@ -45,7 +45,7 @@ msgstr ""
 
 #: View/CabinetBlocks/index.ctp:35
 msgid "Size"
-msgstr "ファイル容量"
+msgstr "サイズ"
 
 #: View/CabinetFiles/download_folder.ctp:13
 msgid "Download failed"
@@ -55,7 +55,7 @@ msgstr "ダウンロード失敗"
 #: View/CabinetFiles/folder_detail.ctp:104
 #: View/CabinetFiles/view.ctp:80
 msgid "Go to List"
-msgstr "一覧へ戻る"
+msgstr "ファイル一覧へ"
 
 #: View/CabinetFiles/folder_detail.ctp:46
 #: View/CabinetFilesEdit/folder_form.ctp:58

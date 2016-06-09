@@ -138,6 +138,7 @@
 		<div class="col-md-9 ">
 			<table
 				class="table table-hover cabinets__index__file-list"
+				style="table-layout: fixed"
 				ng-controller="CabinetFile.index"
 				ng-init="init(<?php echo
 				$currentTreeId ?>)">
@@ -154,12 +155,13 @@
 					<th class="cabinets__index__size hidden-sm hidden-xs">
 						<?php echo $this->Paginator->sort('size', __d('cabinets', 'Size')); ?>
 					</th>
-					<th class="cabinets__index__modified" colspan="2">
+					<th class="cabinets__index__modified">
 						<?php echo $this->Paginator->sort(
 							'modified',
 							__d('net_commons', 'Modified datetime')
 						); ?>
 					</th>
+					<th class="cabinets__index__button"></th>
 
 				</tr>
 				</thead>
@@ -180,7 +182,8 @@
 							?>
 						</td>
 						<td class="hidden-sm hidden-xs"></td>
-						<td colspan="2" style="text-align: right">
+						<!--<td></td>-->
+						<td colspan="2" style="text-align: right; ">
 							<?php
 							if (count($cabinetFiles) > 0) {
 								echo $this->Html->link(
@@ -191,7 +194,9 @@
 											'key' => $currentFolder['CabinetFile']['key']
 										]
 									),
-									['class' => 'btn btn-xs btn-default']
+									['class' => 'btn btn-xs btn-default',
+										'style' => 'margin-left:0px;'
+									]
 								);
 
 							}
@@ -239,14 +244,15 @@
 
 
 							</td>
-							<td class="cabinets__index__size  hidden-sm hidden-xs"><?php echo $this->Number->toReadableSize(
+							<td class="cabinets__index__size  hidden-sm hidden-xs text-right"><?php echo $this->Number->toReadableSize(
 									$cabinetFile['CabinetFile']['size']
 								) ?></td>
-							<td><?php echo $this->Date->dateFormat(
+							<td class="text-right">
+								<?php echo $this->Date->dateFormat(
 									$cabinetFile['CabinetFile']['modified']
 								) ?></td>
 
-							<td>
+							<td class="text-right cabinets__index__button">
 								<?php
 								// link folder_detail
 								$detailUrl = $this->NetCommonsHtml->url(
@@ -259,7 +265,7 @@
 								?>
 
 								<div class="dropdown">
-									<button class="btn btn-default dropdown-toggle" type="button"
+									<button class="btn btn-default dropdown-toggle btn-xs" type="button"
 										id="cabinets__file-<?php echo $cabinetFile['CabinetFile']['id'] ?>"
 										data-toggle="dropdown" aria-haspopup="true"
 										aria-expanded="true">
@@ -358,16 +364,18 @@
 								</div>
 
 							</td>
-							<td class="hidden-sm hidden-xs"><?php echo $this->Number->toReadableSize(
+							<td class="hidden-sm hidden-xs text-right"><?php echo
+								$this->Number->toReadableSize(
 									$cabinetFile['UploadFile']['file']['size']
 								) ?></td>
-							<td><?php echo $this->Date->dateFormat(
+							<td class="text-right"><?php echo $this->Date->dateFormat(
 									$cabinetFile['CabinetFile']['modified']
 								) ?></td>
 
-							<td>
+							<td class="text-right  cabinets__index__button">
 								<div class="dropdown">
-									<button class="btn btn-default dropdown-toggle" type="button"
+									<button class="btn btn-default dropdown-toggle btn-xs"
+										type="button"
 										id="cabinets__file-<?php echo $cabinetFile['CabinetFile']['id'] ?>"
 										data-toggle="dropdown" aria-haspopup="true"
 										aria-expanded="true">

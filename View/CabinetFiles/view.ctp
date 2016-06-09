@@ -98,6 +98,13 @@ echo $this->Html->script(
 				'action' => 'index'
 			];
 		}
+
+		//echo $this->BackTo->linkButton(
+		//	__d('net_commons', 'Go to List'),
+		//	$this->NetCommonsHtml->url($url),
+		//	['class' => 'btn btn-default']
+		//);
+
 		echo $this->Html->link(
 			__d('cabinets', 'Go to List'),
 			$this->NetCommonsHtml->url($url),
