@@ -261,7 +261,6 @@ class CabinetFilesController extends CabinetsAppController {
  * @return void
  */
 	public function folder_detail() {
-		// TODO folderじゃなかったらエラー
 		$folderKey = Hash::get($this->request->params, 'pass.1', null);
 
 		$conditions = [
@@ -270,6 +269,10 @@ class CabinetFilesController extends CabinetsAppController {
 		];
 		$conditions = $this->CabinetFile->getWorkflowConditions($conditions);
 		$cabinetFile = $this->CabinetFile->find('first', ['conditions' => $conditions]);
+		// folderじゃなかったらエラー
+		if (!$cabinetFile['CabinetFile']['is_folder']) {
+			return $this->throwBadRequest();
+		}
 
 		$cabinetFile['CabinetFile']['size'] = $this->CabinetFile->getTotalSizeByFolder(
 			$cabinetFile
@@ -319,7 +322,6 @@ class CabinetFilesController extends CabinetsAppController {
  * @return void
  */
 	public function view() {
-		// TODO ファイルでなければエラー
 		$folderKey = isset($this->request->params['pass'][1]) ? $this->request->params['pass'][1] : null;
 		$conditions = [
 			'CabinetFile.key' => $folderKey,
@@ -327,6 +329,12 @@ class CabinetFilesController extends CabinetsAppController {
 		];
 		$conditions = $this->CabinetFile->getWorkflowConditions($conditions);
 		$cabinetFile = $this->CabinetFile->find('first', ['conditions' => $conditions]);
+
+		// ファイルでなければエラー
+		if ($cabinetFile['CabinetFile']['is_folder']) {
+			return $this->throwBadRequest();
+		}
+
 		$this->set('cabinetFile', $cabinetFile);
 
 		$this->_setFolderPath($cabinetFile);
