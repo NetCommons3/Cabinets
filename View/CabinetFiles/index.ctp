@@ -65,11 +65,7 @@
 			<?php if (Current::permission('content_creatable')) : ?>
 				<div class="pull-right" style="margin-left: 10px;">
 					<?php
-					if (count($folderPath) <= 0) {
-						$parentId = null;
-					} else {
-						$parentId = $folderPath[count($folderPath) - 1]['CabinetFileTree']['id'];
-					}
+					$parentId = $folderPath[count($folderPath) - 1]['CabinetFileTree']['id'];
 
 					$addUrl = $this->NetCommonsHtml->url(
 						array(
