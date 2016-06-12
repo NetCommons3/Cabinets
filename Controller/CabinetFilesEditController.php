@@ -38,7 +38,8 @@ class CabinetFilesEditController extends CabinetsAppController {
 			//アクセスの権限
 			'allow' => array(
 				'add,edit,delete' => 'content_creatable',
-				'add_folder,edit_folder' => 'content_editable', // フォルダの作成・編集は編集権限以上
+				// フォルダの作成・編集は公開権限以上
+				'add_folder,edit_folder' => 'content_publishable',
 				'unzip' => 'content_publishable'
 			),
 		),
@@ -97,7 +98,6 @@ class CabinetFilesEditController extends CabinetsAppController {
 			}
 
 			$this->CabinetFile->create();
-			$this->request->data['CabinetFile']['cabinet_key'] = ''; // https://github.com/NetCommons3/NetCommons3/issues/7 対策
 
 			// set status folderは常に公開
 			$status = $this->Workflow->parseStatus();
@@ -113,7 +113,8 @@ class CabinetFilesEditController extends CabinetsAppController {
 			$this->request->data['CabinetFileTree']['cabinet_key'] = $this->_cabinet['Cabinet']['key'];
 
 			// タイトルをファイル名にする
-			$this->request->data['CabinetFile']['filename'] = $this->request->data['CabinetFile']['file']['name'];
+			$filename = $this->request->data['CabinetFile']['file']['name'];
+			$this->request->data['CabinetFile']['filename'] = $filename;
 			if (($this->CabinetFile->saveFile($this->request->data))) {
 
 				$parentFolder = $this->CabinetFileTree->findById(
@@ -281,7 +282,6 @@ class CabinetFilesEditController extends CabinetsAppController {
 
 		if ($this->request->is('post')) {
 			$this->CabinetFile->create();
-			$this->request->data['CabinetFile']['cabinet_key'] = ''; // https://github.com/NetCommons3/NetCommons3/issues/7 対策
 
 			// set status folderは常に公開
 			$status = WorkflowComponent::STATUS_PUBLISHED;

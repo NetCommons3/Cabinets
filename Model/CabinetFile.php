@@ -61,7 +61,8 @@ class CabinetFile extends CabinetsAppModel {
 				'path' => '/:plugin_key/cabinet_files/view/:block_id/:content_key',
 			),
 		),
-		'Mails.MailQueue' => array( // 自動でメールキューの登録, 削除。ワークフロー利用時はWorkflow.Workflowより下に記述する
+		// 自動でメールキューの登録, 削除。ワークフロー利用時はWorkflow.Workflowより下に記述する
+		'Mails.MailQueue' => array(
 			'embedTags' => array(
 				'X-SUBJECT' => 'CabinetFile.filename',
 				'X-BODY' => 'CabinetFile.description',
@@ -404,7 +405,8 @@ class CabinetFile extends CabinetsAppModel {
 
 					$this->validationErrors[] = __d(
 						'cabinets',
-						'Failed to expand. The total size exceeds the limit.<br />The total size limit is %s (%s left).',
+						'Failed to expand. The total size exceeds the limit.<br />' .
+						'The total size limit is %s (%s left).',
 						CakeNumber::toReadableSize($roomFileSize + $unzipTotalSize),
 						CakeNumber::toReadableSize($maxRoomDiskSize)
 					);

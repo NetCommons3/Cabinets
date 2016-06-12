@@ -458,8 +458,10 @@ class CabinetFilesController extends CabinetsAppController {
 				// ダウンロードカウントアップ
 				$this->CabinetFile->downloadCountUp($file, 'file');
 
-				$filePath = WWW_ROOT . $file['UploadFile']['file']['path'] . $file['UploadFile']['file']['id'] . DS . $file['UploadFile']['file']['real_file_name'];
-				//copy($filePath, $path . DS . $file['UploadFile']['file']['original_name']);
+				$filePath = WWW_ROOT .
+					$file['UploadFile']['file']['path'] .
+					$file['UploadFile']['file']['id'] .
+					DS . $file['UploadFile']['file']['real_file_name'];
 				copy($filePath, $path . DS . $file['CabinetFile']['filename']);
 
 			}

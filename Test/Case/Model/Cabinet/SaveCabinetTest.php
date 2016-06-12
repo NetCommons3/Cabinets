@@ -35,6 +35,7 @@ class CabinetSaveCabinetTest extends NetCommonsSaveTest {
 		'plugin.workflow.workflow_comment',
 
 		'plugin.authorization_keys.authorization_keys',
+		'plugin.site_manager.site_setting',
 	);
 
 /**
@@ -149,7 +150,7 @@ class CabinetSaveCabinetTest extends NetCommonsSaveTest {
 	public function dataProviderSave() {
 		$data['Cabinet'] = (new CabinetFixture())->records[0];
 
-		//TODO:テストパタンを書く
+		// テストパタンを書く
 		$results = array();
 		// * 編集の登録処理
 		$results[0] = array($data);
@@ -176,7 +177,7 @@ class CabinetSaveCabinetTest extends NetCommonsSaveTest {
 	public function dataProviderSaveOnExceptionError() {
 		$data = $this->dataProviderSave()[0][0];
 
-		//TODO:テストパタンを書く
+		// テストパタンを書く
 		return array(
 			array($data, 'Cabinets.Cabinet', 'save'),
 		);
@@ -195,7 +196,7 @@ class CabinetSaveCabinetTest extends NetCommonsSaveTest {
 	public function dataProviderSaveOnValidationError() {
 		$data = $this->dataProviderSave()[0][0];
 
-		//TODO:テストパタンを書く
+		// テストパタンを書く
 		return array(
 			array($data, 'Cabinets.Cabinet'),
 		);
