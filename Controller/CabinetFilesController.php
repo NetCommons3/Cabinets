@@ -128,7 +128,11 @@ class CabinetFilesController extends CabinetsAppController {
 		} else {
 			$currentFolder = $this->CabinetFile->find(
 				'first',
-				['conditions' => ['CabinetFile.key' => $folderKey]]
+				['conditions' => [
+					'CabinetFile.key' => $folderKey,
+					'CabinetFile.language_id' => Current::read('Language.id'),
+					'CabinetFile.is_latest' => true,
+				]]
 			);
 			$currentTreeId = $currentFolder['CabinetFileTree']['id'];
 		}
@@ -230,8 +234,8 @@ class CabinetFilesController extends CabinetsAppController {
 		$folderPath = $this->CabinetFileTree->getPath($currentTreeId, null, 0);
 		$this->set('folderPath', $folderPath);
 
-		// 1つ上へのリンク
-		if ($currentFolder['CabinetFileTree']['parent_id'] && $currentFolder['CabinetFileTree']['parent_id'] != $folderPath[0]['CabinetFileTree']['id']) {
+		// 親フォルダのTreeIDがルートフォルダのTreeIDと違うなら親フォルダは通常フォルダ
+		if ($currentFolder['CabinetFileTree']['parent_id'] != $folderPath[0]['CabinetFileTree']['id']) {
 			// 親フォルダあり
 			$nestCount = count($folderPath);
 			$url = NetCommonsUrl::actionUrl(
