@@ -147,8 +147,7 @@
 					<th class="cabinets__index__name">
 						<?php echo $this->Paginator->sort(
 							'filename',
-							__d('cabinets', 'Filename')
-							,
+							__d('cabinets', 'Filename'),
 							['direction' => 'desc']
 						); ?>
 					</th>
@@ -349,8 +348,9 @@
 										) ?>"></span>
 								<?php endif ?>
 								<span class="badge ">
-									<?php echo $cabinetFile['UploadFile']['file']
-									['total_download_count'] ?>
+									<?php
+									echo $cabinetFile['UploadFile']['file']['total_download_count'];
+									?>
 								</span>
 
 								<div class="cabinets__index__description text-muted small"
