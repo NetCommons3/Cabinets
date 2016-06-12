@@ -42,7 +42,7 @@ class CabinetsAppController extends AppController {
  * @var array helpers
  */
 	public $helpers = array(
-		'Cabinets.CabinetsFormat',
+		//'Cabinets.CabinetsFormat',
 	);
 
 /**
