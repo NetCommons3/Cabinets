@@ -320,34 +320,6 @@ class CabinetFile extends CabinetsAppModel {
 	}
 
 /**
- * 過去に一度も公開されてないか
- *
- * @param array $cabinetFile チェック対象ファイル
- * @return bool true:公開されてない false: 公開されたことあり
- */
-	public function yetPublish($cabinetFile) {
-		$conditions = array(
-			'CabinetFile.key' => $cabinetFile['CabinetFile']['key'],
-			'CabinetFile.is_active' => 1
-		);
-		$count = $this->find('count', array('conditions' => $conditions));
-		return ($count == 0);
-	}
-
-/**
- * 公開データ取得のconditionsを返す
- *
- * @param datetime $currentDateTime 現在の日時
- * @return array
- */
-	protected function _getPublishedConditions($currentDateTime) {
-		return array(
-			$this->name . '.is_active' => 1,
-			'CabinetFile.publish_start <=' => $currentDateTime,
-		);
-	}
-
-/**
  * キャビネットファイルのUnzip
  *
  * @param array $cabinetFile CabinetFileデータ
