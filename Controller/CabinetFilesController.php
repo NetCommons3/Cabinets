@@ -83,6 +83,9 @@ class CabinetFilesController extends CabinetsAppController {
 		'yearMonth' => 0,
 	);
 
+/**
+ * @var array Cabinet
+ */
 	protected $_cabinet;
 
 /**

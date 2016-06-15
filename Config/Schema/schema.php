@@ -8,6 +8,9 @@
  */
 class CabinetsSchema extends CakeSchema {
 
+/**
+ * @var string connection
+ */
 	public $connection = 'master';
 
 /**
