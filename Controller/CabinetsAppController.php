@@ -42,7 +42,7 @@ class CabinetsAppController extends AppController {
  * @var array helpers
  */
 	public $helpers = array(
-		'Cabinets.CabinetsFormat',
+		//'Cabinets.CabinetsFormat',
 	);
 
 /**
@@ -110,18 +110,6 @@ class CabinetsAppController extends AppController {
 		$this->_setupCabinetTitle();
 		$this->initCabinet(['cabinetSetting']);
 		$this->_loadFrameSetting();
-	}
-
-/**
- * namedパラメータ取得
- *
- * @param string $name namedパラメータ名
- * @param null $default パラメータが存在しなかったときのデフォルト値
- * @return int|string
- */
-	protected function _getNamed($name, $default = null) {
-		$value = isset($this->request->params['named'][$name]) ? $this->request->params['named'][$name] : $default;
-		return $value;
 	}
 
 /**

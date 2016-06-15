@@ -65,11 +65,7 @@
 			<?php if (Current::permission('content_creatable')) : ?>
 				<div class="pull-right" style="margin-left: 10px;">
 					<?php
-					if (count($folderPath) <= 0) {
-						$parentId = null;
-					} else {
-						$parentId = $folderPath[count($folderPath) - 1]['CabinetFileTree']['id'];
-					}
+					$parentId = $folderPath[count($folderPath) - 1]['CabinetFileTree']['id'];
 
 					$addUrl = $this->NetCommonsHtml->url(
 						array(
@@ -147,8 +143,7 @@
 					<th class="cabinets__index__name">
 						<?php echo $this->Paginator->sort(
 							'filename',
-							__d('cabinets', 'Filename')
-							,
+							__d('cabinets', 'Filename'),
 							['direction' => 'desc']
 						); ?>
 					</th>
@@ -349,8 +344,9 @@
 										) ?>"></span>
 								<?php endif ?>
 								<span class="badge ">
-									<?php echo $cabinetFile['UploadFile']['file']
-									['total_download_count'] ?>
+									<?php
+									echo $cabinetFile['UploadFile']['file']['total_download_count'];
+									?>
 								</span>
 
 								<div class="cabinets__index__description text-muted small"

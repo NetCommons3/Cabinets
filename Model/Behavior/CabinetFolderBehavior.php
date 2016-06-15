@@ -62,7 +62,6 @@ class CabinetFolderBehavior extends ModelBehavior {
  *
  * @param Model $model CabinetFile
  * @param array $cabinet Cabinet model data
- * @param bool $created 新規キャビネットか
  * @return bool
  * @throws Exception
  */
@@ -182,9 +181,13 @@ class CabinetFolderBehavior extends ModelBehavior {
 		return $conditions;
 	}
 
-	/**
-	 * @param Model $model
-	 */
+/**
+ * Cabinet.total_sizeに容量をキャッシュする
+ *
+ * @param Model $model モデル
+ * @param int $cabinetId キャビネットID
+ * @return void
+ */
 	public function updateCabinetTotalSize(Model $model, $cabinetId) {
 		$cabinet = $model->Cabinet->findById($cabinetId);
 		// トータルサイズ取得

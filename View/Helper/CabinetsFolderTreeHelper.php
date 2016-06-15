@@ -79,21 +79,9 @@ class CabinetsFolderTreeHelper extends AppHelper {
 			} else {
 				$active = '';
 			}
-			// 下位のフォルダがなければアローアイコン不要
-			if ($nest == -1) {
-				// Cabinet
-				$arrowIcon = '';
-				$folderIcon = '<span class="glyphicon glyphicon-hdd" aria-hidden="true" ></span>';
-			} else {
-				if (Hash::get($folder, 'children', false)) {
-					$arrowIcon = '<span class="glyphicon cabinets__folder-tree-toggle" aria-hidden="true"  style="width: 15px" ng-class="{\'glyphicon-menu-down\': folder[' . $treeId . '], \'glyphicon-menu-right\': ! folder[' . $treeId . ']}" ng-click="toggle(' . $treeId . ')"></span> ';
-				} else {
-					$arrowIcon = '<span  class="glyphicon" style="width: 15px"></span> ';
-				}
 
-				$folderIcon = '<span class="glyphicon " aria-hidden="true" ng-class="{\'glyphicon-folder-open\': folder[' . $treeId . '], \'glyphicon-folder-close\': ! folder[' . $treeId . ']}"></span>';
+			$folderIcon = $this->_getFolderIcon($nest, $folder, $treeId);
 
-			}
 			$options = [
 				'escape' => false,
 				'class' => 'cabinets__folder-tree__folder list-group-item ' . $active,
@@ -106,7 +94,7 @@ class CabinetsFolderTreeHelper extends AppHelper {
 			if ($isActiveFolder) {
 				echo $this->Html->tag(
 					'li',
-					$tree . $arrowIcon . $folderIcon . $folder['CabinetFile']['filename'],
+					$tree . $folderIcon . $folder['CabinetFile']['filename'],
 					$options
 				);
 			} else {
@@ -128,7 +116,7 @@ class CabinetsFolderTreeHelper extends AppHelper {
 				);
 				echo $this->Html->tag(
 					'li',
-					$tree . $arrowIcon . $folderIcon . $link,
+					$tree . $folderIcon . $link,
 					$options
 				);
 			}
@@ -140,5 +128,39 @@ class CabinetsFolderTreeHelper extends AppHelper {
 			}
 
 		}
+	}
+
+/**
+ * フォルダアイコンを返す
+ *
+ * @param int $nest フォルダのネストレベル
+ * @param array $folder CabinetFile フォルダデータ
+ * @param int $treeId CabinetFileTree.id
+ * @return string アイコン
+ */
+	protected function _getFolderIcon($nest, $folder, $treeId) {
+		if ($nest == -1) {
+			// Cabinet
+			$arrowIcon = '';
+			$folderIcon = '<span class="glyphicon glyphicon-hdd" aria-hidden="true" ></span>';
+		} else {
+			// 下位のフォルダがなければアローアイコン不要
+			if (Hash::get($folder, 'children', false)) {
+				$arrowIcon = '<span class="glyphicon cabinets__folder-tree-toggle"' .
+					' aria-hidden="true"  style="width: 15px"' .
+					' ng-class="{\'glyphicon-menu-down\': folder[' . $treeId . '],' .
+					' \'glyphicon-menu-right\': ! folder[' . $treeId . ']}"' .
+					' ng-click="toggle(' . $treeId . ')"></span> ';
+			} else {
+				$arrowIcon = '<span  class="glyphicon" style="width: 15px"></span> ';
+			}
+
+			$folderIcon = '<span class="glyphicon " aria-hidden="true"' .
+				' ng-class="{\'glyphicon-folder-open\': folder[' . $treeId . '], ' .
+				'\'glyphicon-folder-close\': ! folder[' . $treeId . ']}"></span>';
+		}
+
+		$folderIcon = $arrowIcon . $folderIcon;
+		return $folderIcon;
 	}
 }

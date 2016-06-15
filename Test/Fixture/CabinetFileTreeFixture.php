@@ -44,6 +44,7 @@ class CabinetFileTreeFixture extends CakeTestFixture {
 			'comment' => 'bbs articles key | ファイルキー | Hash値 | ',
 			'charset' => 'utf8'
 		),
+		'cabinet_file_id' => array('type' => 'integer', 'null' => false, 'default' => null, 'unsigned' => false),
 		'parent_id' => array(
 			'type' => 'integer',
 			'null' => true,

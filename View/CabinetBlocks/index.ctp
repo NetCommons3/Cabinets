@@ -33,10 +33,12 @@
 				'Cabinet.total_size', __d('cabinets', 'Size'),
 				array('sort' => true)
 			); ?>
-			<?php echo $this->BlockIndex->tableHeader( // TODO 公開状態まち
-				'Block.public_type', __d('blocks', 'Publishing setting'),
-				array('sort' => true)
-			); ?>
+			<?php // ε(　　　　 v ﾟωﾟ)　＜ 公開状態機能まち ?>
+			<?php
+			//echo $this->BlockIndex->tableHeader(
+			//	'Block.public_type', __d('blocks', 'Publishing setting'),
+			//	array('sort' => true)
+			//); ?>
 			<?php echo $this->BlockIndex->tableHeader(
 				'TrackableUpdater.handlename', __d('net_commons', 'Modified user'),
 				array('sort' => true, 'type' => 'handle')
@@ -61,9 +63,11 @@
 				'Cabinet.total_size',
 				$this->Number->toReadableSize($cabinet['Cabinet']['total_size'])
 			); ?>
-			<?php echo $this->BlockIndex->tableData( // TODO
-				'Block.public_type', $cabinet['Block']['public_type']
-			); ?>
+			<?php // ε(　　　　 v ﾟωﾟ)　＜ 公開状態機能まち ?>
+			<?php
+			//echo $this->BlockIndex->tableData(
+			//	'Block.public_type', $cabinet['Block']['public_type']
+			//); ?>
 			<?php echo $this->BlockIndex->tableData(
 				'TrackableUpdater', $cabinet,
 				array('type' => 'handle')

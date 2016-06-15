@@ -33,8 +33,5 @@ $currentFolderTree = array_map('intval', $currentFolderTree);
 	<?php
 
 	$this->CabinetsFolderTree->renderSelectFolderTree($folders, $currentTreeId);
-	// TODO Modalで移動先を選択したら移動先行がactive化
-	// TODO 移動の確定は「決定」ボタンを押して確定とする。（編集時は別）
-
 	?>
 </ul>

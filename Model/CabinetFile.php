@@ -61,7 +61,8 @@ class CabinetFile extends CabinetsAppModel {
 				'path' => '/:plugin_key/cabinet_files/view/:block_id/:content_key',
 			),
 		),
-		'Mails.MailQueue' => array( // 自動でメールキューの登録, 削除。ワークフロー利用時はWorkflow.Workflowより下に記述する
+		// 自動でメールキューの登録, 削除。ワークフロー利用時はWorkflow.Workflowより下に記述する
+		'Mails.MailQueue' => array(
 			'embedTags' => array(
 				'X-SUBJECT' => 'CabinetFile.filename',
 				'X-BODY' => 'CabinetFile.description',
@@ -319,34 +320,6 @@ class CabinetFile extends CabinetsAppModel {
 	}
 
 /**
- * 過去に一度も公開されてないか
- *
- * @param array $cabinetFile チェック対象ファイル
- * @return bool true:公開されてない false: 公開されたことあり
- */
-	public function yetPublish($cabinetFile) {
-		$conditions = array(
-			'CabinetFile.key' => $cabinetFile['CabinetFile']['key'],
-			'CabinetFile.is_active' => 1
-		);
-		$count = $this->find('count', array('conditions' => $conditions));
-		return ($count == 0);
-	}
-
-/**
- * 公開データ取得のconditionsを返す
- *
- * @param datetime $currentDateTime 現在の日時
- * @return array
- */
-	protected function _getPublishedConditions($currentDateTime) {
-		return array(
-			$this->name . '.is_active' => 1,
-			'CabinetFile.publish_start <=' => $currentDateTime,
-		);
-	}
-
-/**
  * キャビネットファイルのUnzip
  *
  * @param array $cabinetFile CabinetFileデータ
@@ -404,7 +377,8 @@ class CabinetFile extends CabinetsAppModel {
 
 					$this->validationErrors[] = __d(
 						'cabinets',
-						'Failed to expand. The total size exceeds the limit.<br />The total size limit is %s (%s left).',
+						'Failed to expand. The total size exceeds the limit.<br />' .
+						'The total size limit is %s (%s left).',
 						CakeNumber::toReadableSize($roomFileSize + $unzipTotalSize),
 						CakeNumber::toReadableSize($maxRoomDiskSize)
 					);
