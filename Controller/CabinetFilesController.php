@@ -98,11 +98,9 @@ class CabinetFilesController extends CabinetsAppController {
 		$this->Auth->allow(
 			'index',
 			'view',
-			'category',
-			'tag',
-			'year_month',
+			'folder_detail',
 			'download',
-			'download_pdf'
+			'download_folder'
 		);
 		parent::beforeFilter();
 		$blockId = Current::read('Block.id');
@@ -399,7 +397,10 @@ class CabinetFilesController extends CabinetsAppController {
  */
 	protected function _getParentFolderUrl($currentFolder, $folderPath) {
 		// 親フォルダのTreeIDがルートフォルダのTreeIDと違うなら親フォルダは通常フォルダ
-		if ($currentFolder['CabinetFileTree']['parent_id'] != $folderPath[0]['CabinetFileTree']['id']) {
+		if ($currentFolder['CabinetFileTree']['parent_id'] === null) {
+			// root folder
+			$url = null;
+		} elseif ($currentFolder['CabinetFileTree']['parent_id'] != $folderPath[0]['CabinetFileTree']['id']) {
 			// 親フォルダあり
 			$nestCount = count($folderPath);
 			$url = NetCommonsUrl::actionUrl(
@@ -413,11 +414,6 @@ class CabinetFilesController extends CabinetsAppController {
 			// 親はキャビネット（ルートフォルダ）
 			$url = NetCommonsUrl::backToPageUrl();
 
-		}
-		if ($currentFolder['CabinetFileTree']['parent_id'] == null) {
-			// root folder
-			$url = null;
-			return $url;
 		}
 		return $url;
 	}
