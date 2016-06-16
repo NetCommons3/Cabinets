@@ -34,6 +34,7 @@ class CabinetFileGetRootFolderTest extends WorkflowGetTest {
 		'plugin.workflow.workflow_comment',
 
 		'plugin.authorization_keys.authorization_keys',
+		'plugin.site_manager.site_setting',
 	);
 
 /**
@@ -72,7 +73,8 @@ class CabinetFileGetRootFolderTest extends WorkflowGetTest {
 
 		//テスト実施
 		$result = $this->$model->$methodName($cabinet);
-
+		//$log = $this->$model->getDataSource()->getLog();
+		//debug($log);
 		$this->assertEquals(10, $result['CabinetFile']['id']);
 	}
 

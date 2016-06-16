@@ -37,7 +37,7 @@ class CabinetFilesEditController extends CabinetsAppController {
 		'NetCommons.Permission' => array(
 			//アクセスの権限
 			'allow' => array(
-				'add,edit,delete' => 'content_creatable',
+				'add,edit,delete,move' => 'content_creatable',
 				// フォルダの作成・編集は公開権限以上
 				'add_folder,edit_folder' => 'content_publishable',
 				'unzip' => 'content_publishable'
@@ -194,7 +194,6 @@ class CabinetFilesEditController extends CabinetsAppController {
 			$this->CabinetFile->create();
 			//$this->request->data['CabinetFile']['cabinet_key'] = ''; // https://github.com/NetCommons3/NetCommons3/issues/7 対策
 
-			// set status folderは常に公開
 			$status = $this->Workflow->parseStatus();
 
 			// ファイル名変更
@@ -487,18 +486,39 @@ class CabinetFilesEditController extends CabinetsAppController {
  * ファイル・フォルダ移動
  *
  * @return void
+ * @throws ForbiddenException
  */
 	public function move() {
 		if ($this->request->is(array('post', 'put'))) {
 			$key = $this->params['pass'][1];
 
-			//  keyのis_latstを元に編集を開始
+			//  keyのis_latestを元に編集を開始
 			$cabinetFile = $this->CabinetFile->findByKeyAndIsLatest($key, 1);
 			$parentId = Hash::get($this->request->named, 'parent_id', null);
 
 			$cabinetFile['CabinetFileTree']['parent_id'] = $parentId;
+			// フォルダの移動は公開権限が必要
+			if ($cabinetFile['CabinetFile']['is_folder']) {
+				if (!Current::permission('content_publishable')) {
+					throw new ForbiddenException(__d('net_commons', 'Permission denied'));
+				}
+			}
 
-			$result = $this->CabinetFileTree->save($cabinetFile);
+			// 編集できるユーザかチェック
+			if ($this->CabinetFile->canEditWorkflowContent($cabinetFile) === false) {
+				throw new ForbiddenException(__d('net_commons', 'Permission denied'));
+			}
+
+			// 権限に応じたステータスをセット
+			// 公開されてるファイルを公開権限がないユーザが移動したら承認待ちにもどす
+			$isPublish =
+				($cabinetFile['CabinetFile']['status'] == WorkflowComponent::STATUS_PUBLISHED);
+			if ($isPublish && !Current::permission('content_publishable')) {
+				$cabinetFile['CabinetFile']['status'] = WorkflowComponent::STATUS_APPROVED;
+			}
+
+			$result = $this->CabinetFile->saveFile($cabinetFile);
+			//$result = $this->CabinetFileTree->save($cabinetFile);
 
 			if ($result) {
 				//正常の場合

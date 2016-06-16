@@ -32,6 +32,7 @@ class CabinetFileRootFolderExistTest extends WorkflowGetTest {
 		'plugin.categories.category',
 		'plugin.categories.category_order',
 		'plugin.workflow.workflow_comment',
+		'plugin.site_manager.site_setting',
 	);
 
 /**
