@@ -159,3 +159,6 @@ msgstr "名前"
 
 msgid "File creatable roles"
 msgstr "ファイルを投稿できる権限"
+
+msgid "Invalid character for file/folder name."
+msgstr "ファイル名(フォルダ名)には次の文字は使えません。. / ? | : \ < > ' * \""

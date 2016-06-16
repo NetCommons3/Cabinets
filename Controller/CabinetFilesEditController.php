@@ -209,8 +209,11 @@ class CabinetFilesEditController extends CabinetsAppController {
 					PATHINFO_EXTENSION
 				);
 			}
+			$this->request->data['CabinetFile']['filename'] =
+				$this->request->data['CabinetFile']['withOutExtFileName'];
 			if ($ext !== null) {
 				$this->request->data['CabinetFile']['filename'] .= '.' . $ext;
+				$this->request->data['CabinetFile']['extension'] = $ext;
 			}
 
 			$this->request->data['CabinetFile']['status'] = $status;
@@ -255,7 +258,8 @@ class CabinetFilesEditController extends CabinetsAppController {
 			list($withOutExtFileName, $ext) = $this->CabinetFile->splitFileName(
 				$cabinetFile['CabinetFile']['filename']
 			);
-			$this->request->data['CabinetFile']['filename'] = $withOutExtFileName;
+			$this->request->data['CabinetFile']['withOutExtFileName'] = $withOutExtFileName;
+			$this->request->data['CabinetFile']['extension'] = $ext;
 			if ($this->CabinetFile->canEditWorkflowContent($cabinetFile) === false) {
 				throw new ForbiddenException(__d('net_commons', 'Permission denied'));
 			}

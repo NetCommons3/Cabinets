@@ -116,6 +116,12 @@ class CabinetFile extends CabinetsAppModel {
 					//'last' => false, // Stop validation after this rule
 					//'on' => 'create', // Limit validation to 'create' or 'update' operations
 				],
+				'filename' => [
+					// is_folder falseのときは . ひとつはOK
+					'rule' => ['validateFilename'],
+					//'rule' => '/[^' . preg_quote('\'./?|:\<>\*"') . ']/',
+					'message' => __d('cabinets', 'Invalid character for file/folder name.'),
+				],
 			),
 			'status' => array(
 				'numeric' => array(
@@ -142,6 +148,21 @@ class CabinetFile extends CabinetsAppModel {
 		$this->validate = Hash::merge($this->validate, $validate);
 
 		return parent::beforeValidate($options);
+	}
+
+/**
+ * ファイル名検査
+ *
+ * @param array $check 検査対象
+ * @return bool
+ */
+	public function validateFilename($check) {
+		$filename = $check['filename'];
+		if ($this->data[$this->alias]['is_folder']) {
+			return !preg_match('/[' . preg_quote('\'./?|:\<>\*"', '/') . ']/', $filename);
+		} else {
+			return !preg_match('/[' . preg_quote('\'/?|:\<>\*"', '/') . ']/', $filename);
+		}
 	}
 
 /**
