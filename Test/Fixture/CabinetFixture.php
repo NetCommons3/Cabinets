@@ -114,9 +114,9 @@ class CabinetFixture extends CakeTestFixture {
 			'block_id' => '4',
 			'name' => 'Cabinet4',
 			'key' => 'content_block_2',
-			'created_user' => 1,
+			'created_user' => 2,
 			'created' => '2016-04-14 02:49:44',
-			'modified_user' => 1,
+			'modified_user' => 2,
 			'modified' => '2016-04-14 02:49:44',
 			'total_size' => '1'
 		),
