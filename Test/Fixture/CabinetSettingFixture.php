@@ -86,8 +86,8 @@ class CabinetSettingFixture extends CakeTestFixture {
 	public $records = array(
 		array(
 			'id' => 1,
-			'cabinet_key' => 'Lorem ipsum dolor sit amet',
-			'use_workflow' => 1,
+			'cabinet_key' => 'content_block_1',
+			'use_workflow' => true,
 			'created_user' => 1,
 			'created' => '2016-04-14 02:49:54',
 			'modified_user' => 1,
