@@ -510,7 +510,7 @@ class CabinetFilesEditController extends CabinetsAppController {
 			}
 
 			// 権限に応じたステータスをセット
-			// 公開権限がなければ承認待ちにする
+			// TODO 公開されてるファイルを公開権限がないユーザが移動したら承認待ちにもどす
 			if (!Current::permission('content_publishable')) {
 				$cabinetFile['CabinetFile']['status'] = WorkflowComponent::STATUS_APPROVED;
 			}

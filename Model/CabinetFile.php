@@ -155,7 +155,10 @@ class CabinetFile extends CabinetsAppModel {
 		$this->begin();
 		$this->_autoRename($data);
 		try {
-			$this->create(); // 常に新規登録
+			// 常に新規登録
+			$this->create();
+			unset($data[$this->alias]['id']);
+
 			$data['CabinetFile']['cabinet_file_tree_parent_id'] = $data['CabinetFileTree']['parent_id'];
 			// 先にvalidate 失敗したらfalse返す
 			$this->set($data);

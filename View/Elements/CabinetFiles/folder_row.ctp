@@ -32,6 +32,7 @@
 <td class="text-right cabinets__index__button">
 	<?php
 	// link folder_detail
+	$detailUrl = $this->NetCommonsHtml->url(
 		[
 			'action' => 'folder_detail',
 			'key' => $cabinetFile['CabinetFile']['key']
