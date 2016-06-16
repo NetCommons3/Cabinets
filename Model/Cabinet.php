@@ -44,13 +44,9 @@ class Cabinet extends CabinetsAppModel {
 		'Blocks.Block' => array(
 			'name' => 'Cabinet.name',
 			'loadModels' => array(
-				'Like' => 'Likes.Like',
 				'WorkflowComment' => 'Workflow.WorkflowComment',
-				'Category' => 'Categories.Category',
-				'CategoryOrder' => 'Categories.CategoryOrder',
 			)
 		),
-		'Categories.Category',
 		'NetCommons.OriginalKey',
 	);
 
