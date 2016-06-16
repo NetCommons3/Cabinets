@@ -397,10 +397,14 @@ class CabinetFilesController extends CabinetsAppController {
  */
 	protected function _getParentFolderUrl($currentFolder, $folderPath) {
 		// 親フォルダのTreeIDがルートフォルダのTreeIDと違うなら親フォルダは通常フォルダ
-		if ($currentFolder['CabinetFileTree']['parent_id'] === null) {
+		$isRootFolder = ($currentFolder['CabinetFileTree']['parent_id'] === null);
+		$hasParentFolder = ($currentFolder['CabinetFileTree']['parent_id'] !=
+			$folderPath[0]['CabinetFileTree']['id']);
+
+		if ($isRootFolder) {
 			// root folder
 			$url = null;
-		} elseif ($currentFolder['CabinetFileTree']['parent_id'] != $folderPath[0]['CabinetFileTree']['id']) {
+		} elseif ($hasParentFolder) {
 			// 親フォルダあり
 			$nestCount = count($folderPath);
 			$url = NetCommonsUrl::actionUrl(

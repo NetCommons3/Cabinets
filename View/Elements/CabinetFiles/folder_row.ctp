@@ -60,8 +60,8 @@
 					]
 				); ?>
 			</li>
-			<?php // フォルダ移動・編集は公開権限必要
-			if (Current::permission('content_publishable')) :?>
+			<?php // フォルダ移動・編集は公開権限必要 ?>
+			<?php if (Current::permission('content_publishable')) :?>
 			<li>
 				<a href="#"
 					ng-click="moveFile('<?php echo $cabinetFile['CabinetFile']['key'] ?>', true)"><?php echo __d(
