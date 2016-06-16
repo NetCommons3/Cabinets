@@ -32,6 +32,8 @@ class CabinetFileMakeRootFolderTest extends WorkflowGetTest {
 		'plugin.categories.category',
 		'plugin.categories.category_order',
 		'plugin.workflow.workflow_comment',
+		'plugin.authorization_keys.authorization_keys',
+		'plugin.site_manager.site_setting',
 	);
 
 /**
