@@ -69,7 +69,7 @@ class CabinetSettingGetCabinetSettingTest extends NetCommonsGetTest {
 		$result = $this->$model->$methodName($cabinetKey);
 
 		$this->assertInternalType('array', $result);
-		$this->assertEquals(1, $result['CabinetSetting']['id']);
+		$this->assertEquals(2, $result['CabinetSetting']['id']);
 	}
 
 }

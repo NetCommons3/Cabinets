@@ -86,8 +86,7 @@ class CabinetBlockRolePermissionsController extends CabinetsAppController {
  */
 	public function edit() {
 		if (!$cabinet = $this->Cabinet->getCabinet()) {
-			$this->setAction('throwBadRequest');
-			return false;
+			return $this->setAction('throwBadRequest');
 		}
 
 		$permissions = $this->Workflow->getBlockRolePermissions(
@@ -102,10 +101,13 @@ class CabinetBlockRolePermissionsController extends CabinetsAppController {
 
 		if ($this->request->isPost()) {
 			if ($this->CabinetSetting->saveCabinetSetting($this->request->data)) {
-				$this->redirect(NetCommonsUrl::backToIndexUrl('default_setting_action'));
-				return;
+				return $this->redirect(NetCommonsUrl::backToIndexUrl('default_setting_action'));
 			}
 			$this->NetCommons->handleValidationError($this->CabinetSetting->validationErrors);
+			$this->request->data['BlockRolePermission'] = Hash::merge(
+				$permissions['BlockRolePermissions'],
+				$this->request->data['BlockRolePermission']
+			);
 
 		} else {
 			$this->request->data['CabinetSetting'] = $cabinet['CabinetSetting'];

@@ -11,18 +11,16 @@
 ?>
 
 <?php echo $this->Form->hidden('Block.id'); ?>
-<?php echo $this->Form->hidden('Block.key'); ?>
+<?php //echo $this->Form->hidden('Block.key'); ?>
 <?php echo $this->Form->hidden('CabinetSetting.cabinet_key'); ?>
 <?php echo $this->Form->hidden('CabinetSetting.id'); ?>
 
-<?php echo $this->element(
-	'Blocks.block_creatable_setting',
-	array(
-		'settingPermissions' => array(
-			'content_creatable' => __d('blocks', 'Content creatable roles'),
-			'content_creatable' => __d('cabinets', 'File creatable roles'),
-			//'content_comment_creatable' => __d('blocks', 'Content comment creatable roles'),
-		),
+<?php echo $this->element('Blocks.block_creatable_setting', array(
+	'settingPermissions' => array(
+		//'content_creatable' => __d('blocks', 'Content creatable roles'),
+		'content_creatable' => __d('cabinets', 'File creatable roles'),
+		//'content_comment_creatable' => __d('blocks', 'Content comment creatable roles'),
+	),
 	)
 ); ?>
 
