@@ -32,6 +32,8 @@ class CabinetFilesControllerBeforeFilterTest extends NetCommonsControllerTestCas
 		'plugin.workflow.workflow_comment',
 		'plugin.authorization_keys.authorization_keys',
 		'plugin.site_manager.site_setting',
+		'plugin.cabinets.upload_file_for_cabinets',
+		'plugin.cabinets.upload_files_content_for_cabinets',
 	);
 
 /**
