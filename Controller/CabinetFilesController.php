@@ -165,19 +165,23 @@ class CabinetFilesController extends CabinetsAppController {
 		];
 		$conditions = $this->CabinetFile->getWorkflowConditions($conditions);
 		$cabinetFile = $this->CabinetFile->find('first', ['conditions' => $conditions]);
-		// folderじゃなかったらエラー
-		if (!$cabinetFile['CabinetFile']['is_folder']) {
+		if ($cabinetFile) {
+			// folderじゃなかったらエラー
+			if (!$cabinetFile['CabinetFile']['is_folder']) {
+				return $this->throwBadRequest();
+			}
+
+			$cabinetFile['CabinetFile']['size'] = $this->CabinetFile->getTotalSizeByFolder(
+				$cabinetFile
+			);
+			//$cabinetFile['CabinetFile']['size'] =
+
+			$this->set('cabinetFile', $cabinetFile);
+
+			$this->_setFolderPath($cabinetFile);
+		} else {
 			return $this->throwBadRequest();
 		}
-
-		$cabinetFile['CabinetFile']['size'] = $this->CabinetFile->getTotalSizeByFolder(
-			$cabinetFile
-		);
-		//$cabinetFile['CabinetFile']['size'] =
-
-		$this->set('cabinetFile', $cabinetFile);
-
-		$this->_setFolderPath($cabinetFile);
 	}
 
 /**
