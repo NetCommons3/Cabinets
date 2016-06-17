@@ -202,8 +202,6 @@ class CabinetFilesControllerFolderDetailTest extends WorkflowControllerViewTest 
 			'urlOptions' => Hash::insert($data, 'key', 'content_key_1'),
 			'assert' => null, 'exception' => 'BadRequestException'
 		);
-
-
 		return $results;
 	}
 
