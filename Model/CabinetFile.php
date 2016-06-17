@@ -32,6 +32,7 @@ class CabinetFile extends CabinetsAppModel {
 		'Workflow.Workflow',
 		'Workflow.WorkflowComment',
 		'Cabinets.CabinetFolder',
+		'Cabinets.CabinetUnzip',
 		'Files.Attachment' => [
 			'file' => [
 				//'thumbnails' => false,
@@ -195,7 +196,7 @@ class CabinetFile extends CabinetsAppModel {
 			$data['CabinetFileTree']['cabinet_file_id'] = $savedData[$this->alias]['id'];
 
 			$this->CabinetFileTree->create();
-			if ($treeData = $this->CabinetFileTree->save($data) === false) {
+			if (($treeData = $this->CabinetFileTree->save($data)) === false) {
 				throw new InternalErrorException(__d('net_commons', 'Internal Server Error'));
 			}
 			$savedData['CabinetFileTree'] = $treeData['CabinetFileTree'];
@@ -320,149 +321,10 @@ class CabinetFile extends CabinetsAppModel {
 			if (!$this->CabinetFileTree->deleteAll($conditions, true, true)) {
 				throw new InternalErrorException(__d('net_commons', 'Internal Server Error'));
 			}
-			$this->commit();
 			return true;
 		} else {
 			throw new InternalErrorException(__d('net_commons', 'Internal Server Error'));
 		}
-	}
-
-/**
- * キャビネットファイルのUnzip
- *
- * @param array $cabinetFile CabinetFileデータ
- * @return bool
- * @throws InternalErrorException
- */
-	public function unzip($cabinetFile) {
-		$this->begin();
-
-		try {
-			// テンポラリフォルダにunzip
-			$zipPath = WWW_ROOT . $cabinetFile['UploadFile']['file']['path'] .
-				$cabinetFile['UploadFile']['file']['id'] . DS .
-				$cabinetFile['UploadFile']['file']['real_file_name'];
-			//debug($zipPath);
-			App::uses('UnZip', 'Files.Utility');
-			$unzip = new UnZip($zipPath);
-			$tmpFolder = $unzip->extract();
-			if ($tmpFolder === false) {
-				throw new InternalErrorException('UnZip Failed.');
-			}
-
-			$parentCabinetFolder = $this->find(
-				'first',
-				['conditions' => ['CabinetFileTree.id' => $cabinetFile['CabinetFileTree']['parent_id']]]
-			);
-
-			// unzipされたファイル拡張子のバリデーション
-			// unzipされたファイルのファイルサイズバリデーション
-			$files = $tmpFolder->findRecursive();
-			$unzipTotalSize = 0;
-			foreach ($files as $file) {
-				//
-				$unzipTotalSize += filesize($file);
-
-				// ここでは拡張子だけチェックする
-				$extension = pathinfo($file, PATHINFO_EXTENSION);
-				if (!$this->isAllowUploadFileExtension($extension)) {
-					// NG
-					$this->validationErrors = [
-						__d('cabinets', 'Unzip failed. Contains does not allow file format.')
-					];
-					return false;
-				}
-			}
-			// ルームファイルサイズ制限
-			$maxRoomDiskSize = Current::read('Space.room_disk_size');
-			if ($maxRoomDiskSize !== null) {
-				// nullだったらディスクサイズ制限なし。null以外ならディスクサイズ制限あり
-				// 解凍後の合計
-				// 現在のルームファイルサイズ
-				$roomId = Current::read('Room.id');
-				$roomFileSize = $this->getTotalSizeByRoomId($roomId);
-				if (($roomFileSize + $unzipTotalSize) > $maxRoomDiskSize) {
-
-					$this->validationErrors[] = __d(
-						'cabinets',
-						'Failed to expand. The total size exceeds the limit.<br />' .
-						'The total size limit is %s (%s left).',
-						CakeNumber::toReadableSize($roomFileSize + $unzipTotalSize),
-						CakeNumber::toReadableSize($maxRoomDiskSize)
-					);
-					return false;
-				}
-			}
-
-			// 再帰ループで登録処理
-			list($folders, $files) = $tmpFolder->read(true, false, true);
-			foreach ($files as $file) {
-				$this->_addFileFromPath($parentCabinetFolder, $file);
-			}
-			foreach ($folders as $folder) {
-				$this->_addFolderFromPath($parentCabinetFolder, $folder);
-			}
-		} catch (Exception $e) {
-			return $this->rollback($e);
-		}
-		$this->commit();
-		return true;
-	}
-
-/**
- * フォルダパスにある実フォルダをキャビネットに登録する
- *
- * @param array $parentCabinetFolder 登録する親フォルダ
- * @param string $folderPath 実フォルダのパス
- * @throws InternalErrorException
- * @return void
- */
-	protected function _addFolderFromPath($parentCabinetFolder, $folderPath) {
-		$newFolder = [
-			'CabinetFile' => [
-				'cabinet_id' => $parentCabinetFolder['CabinetFile']['cabinet_id'],
-				'is_folder' => true,
-				'filename' => $this->basename($folderPath),
-				'status' => WorkflowComponent::STATUS_PUBLISHED,
-			],
-			'CabinetFileTree' => [
-				'parent_id' => $parentCabinetFolder['CabinetFileTree']['id'],
-				'cabinet_key' => $parentCabinetFolder['CabinetFileTree']['cabinet_key'],
-			],
-		];
-		$newFolder = $this->create($newFolder);
-
-		if (!$savedFolder = $this->saveFile($newFolder)) {
-			throw new InternalErrorException('Save Failed');
-		}
-		//// folder配下のread
-		$thisFolder = new Folder($folderPath);
-		list($folders, $files) = $thisFolder->read(true, false, true);
-		// 配下のファイル登録
-		foreach ($files as $childFilePath) {
-			$this->_addFileFromPath($savedFolder, $childFilePath);
-		}
-		// 配下のフォルダ登録
-		foreach ($folders as $childFolderPath) {
-			$this->_addFolderFromPath($savedFolder, $childFolderPath);
-		}
-	}
-
-/**
- * ファイルパスにある実ファイルをキャビネットに登録する
- *
- * @param array $parentCabinetFolder 登録する親フォルダ
- * @param string $filePath 実ファイルのパス
- * @throws InternalErrorException
- * @return void
- */
-	protected function _addFileFromPath($parentCabinetFolder, $filePath) {
-		$newFile = $this->_makeCabinetFileDataFromPath($parentCabinetFolder, $filePath);
-
-		if (!$this->saveFile($newFile)) {
-			throw new InternalErrorException('Save Failed');
-		}
-		//$this->attachFile($savedFile, 'file', $filePath);
 	}
 
 /**
@@ -558,40 +420,5 @@ class CabinetFile extends CabinetsAppModel {
 			}
 			$this->data['CabinetFile']['filename'] = $cabinetFile['CabinetFile']['filename'];
 		}
-	}
-
-/**
- * CabinetFileデータをファイルパスから作成する
- *
- * @param array $parentCabinetFolder 親フォルダデータ
- * @param string $filePath ファイルパス
- * @return array フォームからポストされる形のCabinetFileデータ
- */
-	protected function _makeCabinetFileDataFromPath($parentCabinetFolder, $filePath) {
-		//MIMEタイプの取得
-		$finfo = new finfo(FILEINFO_MIME_TYPE);
-		$mimeType = $finfo->file($filePath);
-
-		$newFile = [
-			'CabinetFile' => [
-				'cabinet_id' => $parentCabinetFolder['CabinetFile']['cabinet_id'],
-				'is_folder' => false,
-				'filename' => $this->basename($filePath),
-				'status' => WorkflowComponent::STATUS_PUBLISHED,
-				'file' => [
-					'name' => $this->basename($filePath),
-					'type' => $mimeType,
-					'tmp_name' => $filePath,
-					'error' => 0,
-					'size' => filesize($filePath),
-				],
-			],
-			'CabinetFileTree' => [
-				'parent_id' => $parentCabinetFolder['CabinetFileTree']['id'],
-				'cabinet_key' => $parentCabinetFolder['CabinetFileTree']['cabinet_key'],
-			],
-		];
-		$newFile = $this->create($newFile);
-		return $newFile;
 	}
 }

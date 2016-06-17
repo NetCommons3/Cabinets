@@ -52,7 +52,7 @@ class UploadFileForCabinetsFixture extends UploadFileFixture {
 			'download_count' => 11,
 			'total_download_count' => 11,
 			'room_id' => 1,
-			'block_key' => 'Lorem ipsum dolor sit amet',
+			'block_key' => 'block_1',
 		),
 		array( // cabinets
 			'id' => 12,
@@ -68,7 +68,7 @@ class UploadFileForCabinetsFixture extends UploadFileFixture {
 			'download_count' => 12,
 			'total_download_count' => 12,
 			'room_id' => 1,
-			'block_key' => 'Lorem ipsum dolor sit amet',
+			'block_key' => 'block_1',
 		),
 		array( // cabinets
 			'id' => 13,
@@ -84,7 +84,7 @@ class UploadFileForCabinetsFixture extends UploadFileFixture {
 			'download_count' => 12,
 			'total_download_count' => 12,
 			'room_id' => 1,
-			'block_key' => 'Lorem ipsum dolor sit amet',
+			'block_key' => 'block_1',
 		),
 		array( // cabinets
 			'id' => 14,
@@ -100,7 +100,7 @@ class UploadFileForCabinetsFixture extends UploadFileFixture {
 			'download_count' => 12,
 			'total_download_count' => 12,
 			'room_id' => 1,
-			'block_key' => 'Lorem ipsum dolor sit amet',
+			'block_key' => 'block_1',
 		),
 		array( // cabinets
 			'id' => 15,
@@ -116,7 +116,7 @@ class UploadFileForCabinetsFixture extends UploadFileFixture {
 			'download_count' => 12,
 			'total_download_count' => 12,
 			'room_id' => 1,
-			'block_key' => 'Lorem ipsum dolor sit amet',
+			'block_key' => 'block_1',
 		),
 		array( // cabinets
 			'id' => 16,
@@ -132,7 +132,7 @@ class UploadFileForCabinetsFixture extends UploadFileFixture {
 			'download_count' => 12,
 			'total_download_count' => 12,
 			'room_id' => 1,
-			'block_key' => 'Lorem ipsum dolor sit amet',
+			'block_key' => 'block_1',
 		),
 	);
 

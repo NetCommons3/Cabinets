@@ -203,5 +203,4 @@ class CabinetFolderBehavior extends ModelBehavior {
 		$model->Cabinet->id = $cabinetId;
 		$model->Cabinet->saveField('total_size', $totalSize, ['callbacks' => false]);
 	}
-
 }

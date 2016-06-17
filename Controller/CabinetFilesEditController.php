@@ -192,7 +192,6 @@ class CabinetFilesEditController extends CabinetsAppController {
 		if ($this->request->is(array('post', 'put'))) {
 
 			$this->CabinetFile->create();
-			//$this->request->data['CabinetFile']['cabinet_key'] = ''; // https://github.com/NetCommons3/NetCommons3/issues/7 対策
 
 			$status = $this->Workflow->parseStatus();
 
@@ -229,8 +228,6 @@ class CabinetFilesEditController extends CabinetsAppController {
 				// 認証キーを使わない設定だったら、認証キーのPOST値を握りつぶす
 				unset($data['AuthorizationKey']);
 			}
-
-			unset($data['CabinetFile']['id']); // 常に新規保存
 
 			if ($this->CabinetFile->saveFile($data)) {
 				$parentFolder = $this->CabinetFileTree->findById(
