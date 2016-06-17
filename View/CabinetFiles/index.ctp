@@ -75,7 +75,7 @@
 							'parent_id' => $parentId,
 						)
 					);
-					if (Current::permission('content_editable')) {
+					if (Current::permission('content_publishable')) {
 						echo $this->Button->addLink(
 							'<span class="glyphicon glyphicon-folder-close" aria-hidden="true"></span>' . __d(
 								'cabinets',

@@ -32,6 +32,8 @@ class CabinetFilesControllerIndexTest extends WorkflowControllerIndexTest {
 		'plugin.workflow.workflow_comment',
 		'plugin.authorization_keys.authorization_keys',
 		'plugin.site_manager.site_setting',
+		'plugin.cabinets.upload_file_for_cabinets',
+		'plugin.cabinets.upload_files_content_for_cabinets',
 	);
 
 /**
@@ -87,8 +89,6 @@ class CabinetFilesControllerIndexTest extends WorkflowControllerIndexTest {
 			'assert' => array('method' => 'assertNotEmpty'),
 		);
 
-		//TODO:必要なテストデータ追加
-
 		return $results;
 	}
 
@@ -106,9 +106,9 @@ class CabinetFilesControllerIndexTest extends WorkflowControllerIndexTest {
 		//テスト実行
 		parent::testIndex($urlOptions, $assert, $exception, $return);
 
+		// 追加ボタンがない
+		$this->assertNotContains('addFile()', $this->view);
 		//チェック
-		//TODO:view(ctp)ファイルに対するassert追加
-		debug($this->view);
 	}
 
 /**
@@ -141,8 +141,18 @@ class CabinetFilesControllerIndexTest extends WorkflowControllerIndexTest {
 		parent::testIndexByCreatable($urlOptions, $assert, $exception, $return);
 
 		//チェック
-		//TODO:view(ctp)ファイルに対するassert追加
-		debug($this->view);
+		// 追加ボタンがある
+		$this->assertContains('addFile()', $this->view);
+		// 自分で作成したファイルは編集出来る
+		$this->assertContains(
+			'cabinet_files_edit/edit/' . $urlOptions['block_id'] . '/content_key_2',
+			$this->view);
+		// 他人が作成したファイルは編集出来ない
+		$this->assertNotContains(
+			'cabinet_files_edit/edit/' . $urlOptions['block_id'] . '/content_key_1',
+			$this->view);
+		// フォルダ作成ボタンがない
+		$this->assertNotContains('cabinet_files_edit/add_folder', $this->view);
 	}
 
 /**
@@ -175,8 +185,43 @@ class CabinetFilesControllerIndexTest extends WorkflowControllerIndexTest {
 		parent::testIndexByEditable($urlOptions, $assert, $exception, $return);
 
 		//チェック
-		//TODO:view(ctp)ファイルに対するassert追加
-		debug($this->view);
+		// 他人が作成したファイルも編集出来る
+		$this->assertContains(
+			'cabinet_files_edit/edit/' . $urlOptions['block_id'] . '/content_key_1',
+			$this->view);
+		// フォルダ作成ボタンがない
+		$this->assertNotContains('cabinet_files_edit/add_folder', $this->view);
+	}
+
+/**
+ * indexアクションのテスト(公開権限あり)
+ *
+ * @param array $urlOptions URLオプション
+ * @param array $assert テストの期待値
+ * @param string|null $exception Exception
+ * @param string $return testActionの実行後の結果
+ * @dataProvider dataProviderIndexByEditable
+ * @return void
+ */
+	public function testIndexByPublishable($urlOptions, $assert, $exception = null, $return =
+	'view') {
+		//ログイン
+		TestAuthGeneral::login($this, Role::ROOM_ROLE_KEY_ROOM_ADMINISTRATOR);
+
+		//テスト実施
+		$url = Hash::merge(array(
+			'plugin' => $this->plugin,
+			'controller' => $this->_controller,
+			'action' => 'index',
+		), $urlOptions);
+
+		$this->_testGetAction($url, $assert, $exception, $return);
+
+		// フォルダ作成ボタンがある
+		$this->assertContains('cabinet_files_edit/add_folder', $this->view);
+
+		//ログアウト
+		TestAuthGeneral::logout($this);
 	}
 
 }
