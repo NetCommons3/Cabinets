@@ -192,7 +192,6 @@ class CabinetFilesEditController extends CabinetsAppController {
 		if ($this->request->is(array('post', 'put'))) {
 
 			$this->CabinetFile->create();
-			//$this->request->data['CabinetFile']['cabinet_key'] = ''; // https://github.com/NetCommons3/NetCommons3/issues/7 対策
 
 			$status = $this->Workflow->parseStatus();
 
@@ -209,8 +208,11 @@ class CabinetFilesEditController extends CabinetsAppController {
 					PATHINFO_EXTENSION
 				);
 			}
+			$this->request->data['CabinetFile']['filename'] =
+				$this->request->data['CabinetFile']['withOutExtFileName'];
 			if ($ext !== null) {
 				$this->request->data['CabinetFile']['filename'] .= '.' . $ext;
+				$this->request->data['CabinetFile']['extension'] = $ext;
 			}
 
 			$this->request->data['CabinetFile']['status'] = $status;
@@ -226,8 +228,6 @@ class CabinetFilesEditController extends CabinetsAppController {
 				// 認証キーを使わない設定だったら、認証キーのPOST値を握りつぶす
 				unset($data['AuthorizationKey']);
 			}
-
-			unset($data['CabinetFile']['id']); // 常に新規保存
 
 			if ($this->CabinetFile->saveFile($data)) {
 				$parentFolder = $this->CabinetFileTree->findById(
@@ -255,7 +255,8 @@ class CabinetFilesEditController extends CabinetsAppController {
 			list($withOutExtFileName, $ext) = $this->CabinetFile->splitFileName(
 				$cabinetFile['CabinetFile']['filename']
 			);
-			$this->request->data['CabinetFile']['filename'] = $withOutExtFileName;
+			$this->request->data['CabinetFile']['withOutExtFileName'] = $withOutExtFileName;
+			$this->request->data['CabinetFile']['extension'] = $ext;
 			if ($this->CabinetFile->canEditWorkflowContent($cabinetFile) === false) {
 				throw new ForbiddenException(__d('net_commons', 'Permission denied'));
 			}

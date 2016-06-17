@@ -62,13 +62,15 @@ echo $this->Html->script(
 							); ?>
 							<?php
 							echo $this->NetCommonsForm->input(
-								'filename',
+								//'filename',
+								'withOutExtFileName',
 								array(
 									//'label' => __d('cabinets', 'ファイル名'),
 									'label' => false,
 									'required' => 'required',
 									'after' => ' .' .
-										$this->request->data['UploadFile']['file']['extension'],
+										//$this->request->data['UploadFile']['file']['extension'],
+										$this->request->data['CabinetFile']['extension'],
 									'div' => 'form-inline'
 								)
 							);

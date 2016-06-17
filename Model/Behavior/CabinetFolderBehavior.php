@@ -77,7 +77,10 @@ class CabinetFolderBehavior extends ModelBehavior {
 				return true;
 			}
 			$rootFolder['CabinetFile']['filename'] = $cabinet['Cabinet']['name'];
-			return ($model->save($rootFolder)) ? true : false;
+			$model->Behaviors->disable('Topics');
+			$result = ($model->save($rootFolder)) ? true : false;
+			$model->Behaviors->enable('Topics');
+			return $result;
 		} else {
 			return $model->makeRootFolder($cabinet);
 		}
@@ -200,5 +203,4 @@ class CabinetFolderBehavior extends ModelBehavior {
 		$model->Cabinet->id = $cabinetId;
 		$model->Cabinet->saveField('total_size', $totalSize, ['callbacks' => false]);
 	}
-
 }
