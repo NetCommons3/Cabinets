@@ -1,11 +1,15 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: ryuji
- * Date: 2016/06/17
- * Time: 15:12
+ * CabinetUnzipBehavior
+ *
+ * @author   Ryuji AMANO <ryuji@ryus.co.jp>
+ * @link http://www.netcommons.org NetCommons Project
+ * @license http://www.netcommons.org/license.txt NetCommons License
  */
 
+/**
+ * Class CabinetUnzipBehavior
+ */
 class CabinetUnzipBehavior extends ModelBehavior {
 
 /**
