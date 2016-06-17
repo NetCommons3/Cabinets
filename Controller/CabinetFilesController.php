@@ -26,7 +26,6 @@ class CabinetFilesController extends CabinetsAppController {
 		'Cabinets.CabinetFile',
 		'Cabinets.CabinetFileTree',
 		'Workflow.WorkflowComment',
-		'Categories.Category',
 	);
 
 /**
@@ -63,7 +62,6 @@ class CabinetFilesController extends CabinetsAppController {
 				//'approve' => 'content_comment_publishable',
 			),
 		),
-		'Categories.Categories',
 		'Files.Download',
 		'AuthorizationKeys.AuthorizationKey' => [
 			//'operationType' => AuthorizationKeyComponent::OPERATION_REDIRECT,
@@ -228,17 +226,21 @@ class CabinetFilesController extends CabinetsAppController {
 		$conditions = $this->CabinetFile->getWorkflowConditions($conditions);
 		$cabinetFile = $this->CabinetFile->find('first', ['conditions' => $conditions]);
 
-		// ファイルでなければエラー
-		if ($cabinetFile['CabinetFile']['is_folder']) {
+		if ($cabinetFile) {
+			// ファイルでなければエラー
+			if ($cabinetFile['CabinetFile']['is_folder']) {
+				return $this->throwBadRequest();
+			}
+
+			$this->set('cabinetFile', $cabinetFile);
+
+			$this->_setFolderPath($cabinetFile);
+
+			//新着データを既読にする
+			$this->CabinetFile->saveTopicUserStatus($cabinetFile);
+		} else {
 			return $this->throwBadRequest();
 		}
-
-		$this->set('cabinetFile', $cabinetFile);
-
-		$this->_setFolderPath($cabinetFile);
-
-		//新着データを既読にする
-		$this->CabinetFile->saveTopicUserStatus($cabinetFile);
 	}
 
 /**

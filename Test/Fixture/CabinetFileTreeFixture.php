@@ -134,6 +134,19 @@ class CabinetFileTreeFixture extends CakeTestFixture {
 			'modified_user' => 1,
 			'modified' => '2016-04-14 02:48:19'
 		),
+		array(
+			'id' => 11,
+			'cabinet_key' => 'content_block_1',
+			'cabinet_file_key' => 'content_key_11',
+			'cabinet_file_id' => '10',
+			'parent_id' => null,
+			'lft' => 3,
+			'rght' => 4,
+			'created_user' => 1,
+			'created' => '2016-04-14 02:48:19',
+			'modified_user' => 1,
+			'modified' => '2016-04-14 02:48:19'
+		),
 	);
 
 }
