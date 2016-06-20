@@ -67,13 +67,11 @@
 					<?php
 					$parentId = $folderPath[count($folderPath) - 1]['CabinetFileTree']['id'];
 
-					$addUrl = $this->NetCommonsHtml->url(
-						array(
-							'controller' => 'cabinet_files_edit',
-							'action' => 'add_folder',
-							'frame_id' => Current::read('Frame.id'),
-							'parent_id' => $parentId,
-						)
+					$addUrl = array(
+						'controller' => 'cabinet_files_edit',
+						'action' => 'add_folder',
+						'frame_id' => Current::read('Frame.id'),
+						'parent_id' => $parentId,
 					);
 					if (Current::permission('content_publishable')) {
 						echo $this->Button->addLink(
@@ -96,13 +94,11 @@
 				<div class="pull-right" ng-controller="CabinetFile.addFile"
 					ng-init="init(<?php echo $parentId ?>)">
 					<?php
-					$addUrl = $this->NetCommonsHtml->url(
-						array(
-							'controller' => 'cabinet_files_edit',
-							'action' => 'add',
-							'frame_id' => Current::read('Frame.id'),
-							'parent_id' => $parentId,
-						)
+					$addUrl = array(
+						'controller' => 'cabinet_files_edit',
+						'action' => 'add',
+						'frame_id' => Current::read('Frame.id'),
+						'parent_id' => $parentId,
 					);
 					echo $this->Button->addLink(
 						'<span class="glyphicon glyphicon-file" aria-hidden="true"></span>' . __d(
