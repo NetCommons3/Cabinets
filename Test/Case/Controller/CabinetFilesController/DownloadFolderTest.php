@@ -76,7 +76,7 @@ class CabinetFilesControllerDownloadFolderTest extends NetCommonsControllerTestC
  *
  * @return void
  */
-	public function testDownloadGet() {
+	public function testDownloadFolder() {
 		$folderName = 'Folder1';
 		$controller = $this->generate(
 			'Cabinets.CabinetFiles',
