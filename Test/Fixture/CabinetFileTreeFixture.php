@@ -138,7 +138,7 @@ class CabinetFileTreeFixture extends CakeTestFixture {
 			'id' => 11,
 			'cabinet_key' => 'content_block_1',
 			'cabinet_file_key' => 'content_key_11',
-			'cabinet_file_id' => '10',
+			'cabinet_file_id' => '11',
 			'parent_id' => null,
 			'lft' => 3,
 			'rght' => 40,
@@ -186,6 +186,36 @@ class CabinetFileTreeFixture extends CakeTestFixture {
 			'modified_user' => 4,
 			'modified' => '2016-04-14 02:48:19'
 		),
+		// DownloadFolderTest
+		// folder
+		array(
+			'id' => 15,
+			'cabinet_key' => 'content_block_1',
+			'cabinet_file_key' => 'content_key_12',
+			'cabinet_file_id' => '12',
+			'parent_id' => 11,
+			'lft' => 10,
+			'rght' => 13,
+			'created_user' => 1,
+			'created' => '2016-04-14 02:48:19',
+			'modified_user' => 1,
+			'modified' => '2016-04-14 02:48:19'
+		),
+		// file
+		array(
+			'id' => 16,
+			'cabinet_key' => 'content_block_1',
+			'cabinet_file_key' => 'content_key_13',
+			'cabinet_file_id' => '13',
+			'parent_id' => 15,
+			'lft' => 11,
+			'rght' => 12,
+			'created_user' => 1,
+			'created' => '2016-04-14 02:48:19',
+			'modified_user' => 1,
+			'modified' => '2016-04-14 02:48:19'
+		),
+
 	);
 
 }

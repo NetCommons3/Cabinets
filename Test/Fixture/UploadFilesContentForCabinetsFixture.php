@@ -85,6 +85,12 @@ class UploadFilesContentForCabinetsFixture extends UploadFilesContentFixture {
 			'content_id' => 8,
 			'upload_file_id' => 16,
 		),
+		array( // DownloadFolderTest
+			'id' => 15,
+			'plugin_key' => 'cabinets',
+			'content_id' => 13,
+			'upload_file_id' => 17,
+		),
 	);
 
 }

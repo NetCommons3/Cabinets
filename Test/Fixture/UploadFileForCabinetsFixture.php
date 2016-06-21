@@ -134,6 +134,22 @@ class UploadFileForCabinetsFixture extends UploadFileFixture {
 			'room_id' => 1,
 			'block_key' => 'block_1',
 		),
+		array( // DownloadFolderTest
+			'id' => 17,
+			'plugin_key' => 'cabinets',
+			'content_key' => 'content_key_13',
+			'field_name' => 'file',
+			'original_name' => 'logo.gif',
+			'path' => 'files/upload_file/real_file_name/1/',
+			'real_file_name' => 'logo.gif',
+			'extension' => 'gif',
+			'mimetype' => 'image/gif',
+			'size' => 5000,
+			'download_count' => 12,
+			'total_download_count' => 12,
+			'room_id' => 1,
+			'block_key' => 'block_1',
+		),
 	);
 
 }

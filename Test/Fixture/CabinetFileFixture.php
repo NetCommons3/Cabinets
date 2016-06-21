@@ -200,7 +200,7 @@ class CabinetFileFixture extends CakeTestFixture {
 			'is_folder' => 1
 		),
 		array(
-			'id' => 11, // CabinetId3のRootFolder
+			'id' => 11, // CabinetId2のRootFolder
 			'cabinet_id' => 2,
 			'status' => 1,
 			'is_active' => 1,
@@ -215,6 +215,7 @@ class CabinetFileFixture extends CakeTestFixture {
 			'key' => 'content_key_11',
 			'is_folder' => 1
 		),
+		// DownloadFolderTest Folder
 		array(
 			'id' => '12',
 			'cabinet_id' => '2',
@@ -230,6 +231,23 @@ class CabinetFileFixture extends CakeTestFixture {
 			'modified' => '2016-04-14 02:48:11',
 			'key' => 'content_key_12',
 			'is_folder' => true,
+		),
+		// DownloadFolderTest File
+		array(
+			'id' => '13',
+			'cabinet_id' => '2',
+			'status' => '1',
+			'is_active' => true,
+			'is_latest' => true,
+			'language_id' => '2',
+			'filename' => 'File13',
+			'description' => 'Lorem ipsum dolor sit amet, aliquet feugiat. Convallis morbi fringilla gravida, phasellus feugiat dapibus velit nunc, pulvinar eget sollicitudin venenatis cum nullam, vivamus ut a sed, mollitia lectus. Nulla vestibulum massa neque ut et, id hendrerit sit, feugiat in taciti enim proin nibh, tempor dignissim, rhoncus duis vestibulum nunc mattis convallis.',
+			'created_user' => '1',
+			'created' => '2016-04-14 02:48:11',
+			'modified_user' => '1',
+			'modified' => '2016-04-14 02:48:11',
+			'key' => 'content_key_13',
+			'is_folder' => false,
 		),
 	);
 

@@ -306,7 +306,7 @@ class CabinetFilesController extends CabinetsAppController {
 
 			return;
 		}
-		$zipDownloader = new ZipDownloader();
+		$zipDownloader = $this->_getZipDownloader();
 
 		list($folders, $files) = $tmpFolder->read(true, false, true);
 		foreach ($folders as $folder) {
@@ -318,6 +318,8 @@ class CabinetFilesController extends CabinetsAppController {
 
 		//$zipDownloader->addFolder($tmpFolder->path);
 
+		//$this->response = $zipDownloader->download($cabinetFolder['CabinetFile']['filename'] . '.zip');
+		//return $this->response;
 		return $zipDownloader->download($cabinetFolder['CabinetFile']['filename'] . '.zip');
 	}
 
@@ -358,10 +360,12 @@ class CabinetFilesController extends CabinetsAppController {
 				// ダウンロードカウントアップ
 				$this->CabinetFile->downloadCountUp($file, 'file');
 
-				$filePath = WWW_ROOT .
-					$file['UploadFile']['file']['path'] .
-					$file['UploadFile']['file']['id'] .
-					DS . $file['UploadFile']['file']['real_file_name'];
+				$filePath = $this->CabinetFile->getRealFilePath($file, 'file');
+
+				//$filePath = WWW_ROOT .
+				//	$file['UploadFile']['file']['path'] .
+				//	$file['UploadFile']['file']['id'] .
+				//	DS . $file['UploadFile']['file']['real_file_name'];
 				copy($filePath, $path . DS . $file['CabinetFile']['filename']);
 
 			}
@@ -521,4 +525,13 @@ class CabinetFilesController extends CabinetsAppController {
 		return $files;
 	}
 
+/**
+ * ZipDownloaderを返す
+ *
+ * @return ZipDownloader ZipDownloader
+ */
+	protected function _getZipDownloader() {
+		$zipDownloader = new ZipDownloader();
+		return $zipDownloader;
+	}
 }
