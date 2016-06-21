@@ -45,8 +45,6 @@ class CabinetFilesEditController extends CabinetsAppController {
 		),
 		'Workflow.Workflow',
 
-		'Categories.Categories',
-		//'Cabinets.CabinetFilePermission',
 		'NetCommons.NetCommonsTime',
 		'Files.FileUpload',
 		'Files.Download',
