@@ -302,7 +302,7 @@ class CabinetFilesController extends CabinetsAppController {
 		try {
 			$this->_prepareDownload($tmpFolder->path, $cabinetFolder);
 		} catch (Exception $e) {
-			debug($e);
+			var_dump($e);
 			$this->set('error', $e->getMessage());
 
 			return;
