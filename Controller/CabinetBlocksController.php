@@ -84,10 +84,7 @@ class CabinetBlocksController extends CabinetsAppController {
  */
 	public function index() {
 		$this->Paginator->settings = array(
-			'Cabinet' => array(
-				'order' => array('Cabinet.id' => 'desc'),
-				'conditions' => $this->Cabinet->getBlockConditions(),
-			)
+			'Cabinet' => $this->Cabinet->getBlockIndexSettings()
 		);
 
 		$cabinets = $this->Paginator->paginate('Cabinet');

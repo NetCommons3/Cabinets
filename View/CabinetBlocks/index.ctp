@@ -31,7 +31,7 @@
 			); ?>
 			<?php echo $this->BlockIndex->tableHeader(
 				'Cabinet.total_size', __d('cabinets', 'Size'),
-				array('sort' => true)
+				array('sort' => true, 'type' => 'numeric')
 			); ?>
 			<?php
 			echo $this->BlockIndex->tableHeader(
@@ -60,7 +60,8 @@
 			); ?>
 			<?php echo $this->BlockIndex->tableData(
 				'Cabinet.total_size',
-				$this->Number->toReadableSize($cabinet['Cabinet']['total_size'])
+				$this->Number->toReadableSize($cabinet['Cabinet']['total_size']),
+				array('type' => 'numeric')
 			); ?>
 			<?php echo $this->BlockIndex->tableData(
 				'Block.public_type', $cabinet
