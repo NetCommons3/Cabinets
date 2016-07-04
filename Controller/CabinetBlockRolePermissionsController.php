@@ -99,7 +99,7 @@ class CabinetBlockRolePermissionsController extends CabinetsAppController {
 		);
 		$this->set('roles', $permissions['Roles']);
 
-		if ($this->request->isPost()) {
+		if ($this->request->is('post')) {
 			if ($this->CabinetSetting->saveCabinetSetting($this->request->data)) {
 				return $this->redirect(NetCommonsUrl::backToIndexUrl('default_setting_action'));
 			}
