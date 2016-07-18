@@ -120,7 +120,7 @@ class CabinetFilesController extends CabinetsAppController {
 
 		// currentFolderを取得
 		//$folderKey = isset($this->request->params['pass'][1]) ? $this->request->params['pass'][1] : null;
-		$folderKey = Hash::get($this->request->params['pass'], 1, null);
+		$folderKey = Hash::get($this->request->params, 'key', null);
 		$currentFolder = $this->_getCurrentFolder($folderKey);
 		$currentTreeId = $currentFolder['CabinetFileTree']['id'];
 
@@ -157,7 +157,7 @@ class CabinetFilesController extends CabinetsAppController {
  * @return void
  */
 	public function folder_detail() {
-		$folderKey = Hash::get($this->request->params, 'pass.1', null);
+		$folderKey = Hash::get($this->request->params, 'key', null);
 
 		$conditions = [
 			'CabinetFile.key' => $folderKey,
@@ -222,7 +222,7 @@ class CabinetFilesController extends CabinetsAppController {
  * @return void
  */
 	public function view() {
-		$folderKey = isset($this->request->params['pass'][1]) ? $this->request->params['pass'][1] : null;
+		$folderKey = Hash::get($this->request->params, 'key', null);
 		$conditions = [
 			'CabinetFile.key' => $folderKey,
 			'CabinetFile.cabinet_id' => $this->_cabinet['Cabinet']['id']
@@ -255,7 +255,7 @@ class CabinetFilesController extends CabinetsAppController {
  */
 	public function download() {
 		// ここから元コンテンツを取得する処理
-		$folderKey = isset($this->request->params['pass'][1]) ? $this->request->params['pass'][1] : null;
+		$folderKey = Hash::get($this->request->params, 'key', null);
 		$conditions = [
 			'CabinetFile.key' => $folderKey,
 			'CabinetFile.cabinet_id' => $this->_cabinet['Cabinet']['id']
@@ -290,7 +290,7 @@ class CabinetFilesController extends CabinetsAppController {
  */
 	public function download_folder() {
 		// フォルダを取得
-		$folderKey = isset($this->request->params['pass'][1]) ? $this->request->params['pass'][1] : null;
+		$folderKey = Hash::get($this->request->params, 'key', null);
 		$conditions = [
 			'CabinetFile.key' => $folderKey,
 			'CabinetFile.cabinet_id' => $this->_cabinet['Cabinet']['id']
