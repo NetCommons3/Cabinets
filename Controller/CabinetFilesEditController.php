@@ -172,7 +172,7 @@ class CabinetFilesEditController extends CabinetsAppController {
 	public function edit() {
 		$this->set('isEdit', true);
 		//$key = $this->request->params['named']['key'];
-		$key = $this->request->params['pass'][1];
+		$key = $this->request->params['key'];
 
 		//  keyのis_latstを元に編集を開始
 		$cabinetFile = $this->CabinetFile->findByKeyAndIsLatest($key, 1);
@@ -348,7 +348,7 @@ class CabinetFilesEditController extends CabinetsAppController {
 	public function edit_folder() {
 		$this->set('isEdit', true);
 		//$key = $this->request->params['named']['key'];
-		$key = $this->request->params['pass'][1];
+		$key = $this->request->params['key'];
 
 		//  keyのis_latstを元に編集を開始
 		$cabinetFile = $this->CabinetFile->findByKeyAndIsLatest($key, 1);
@@ -420,7 +420,7 @@ class CabinetFilesEditController extends CabinetsAppController {
  */
 	public function select_folder() {
 		//$currentTreeId = Hash::get($this->request->named, 'parent_tree_id', null);
-		$key = isset($this->request->params['pass'][1]) ? $this->request->params['pass'][1] : null;
+		$key = isset($this->request->params['key']) ? $this->request->params['key'] : null;
 		$conditions = [
 			'CabinetFile.key' => $key,
 			'CabinetFile.cabinet_id' => $this->_cabinet['Cabinet']['id']
@@ -491,7 +491,7 @@ class CabinetFilesEditController extends CabinetsAppController {
  */
 	public function move() {
 		if ($this->request->is(array('post', 'put'))) {
-			$key = $this->params['pass'][1];
+			$key = $this->request->params['key'];
 
 			//  keyのis_latestを元に編集を開始
 			$cabinetFile = $this->CabinetFile->findByKeyAndIsLatest($key, 1);
@@ -610,7 +610,7 @@ class CabinetFilesEditController extends CabinetsAppController {
  * @return void
  */
 	public function unzip() {
-		$key = $this->request->params['pass'][1];
+		$key = $this->request->params['key'];
 
 		$options = [
 			'conditions' => [
