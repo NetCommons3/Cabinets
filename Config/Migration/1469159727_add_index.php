@@ -1,6 +1,6 @@
 <?php
 /**
- * AlterCabinetsTotalSize
+ * AddIndex
  *
  * @author   Ryuji AMANO <ryuji@ryus.co.jp>
  * @link http://www.netcommons.org NetCommons Project
@@ -8,7 +8,7 @@
  */
 
 /**
- * Class AlterCabinetsTotalSize
+ * Class AddIndex
  */
  class AddIndex extends CakeMigration {
 
