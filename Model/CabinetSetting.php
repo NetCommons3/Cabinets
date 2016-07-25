@@ -11,7 +11,8 @@
  * @copyright Copyright 2014, NetCommons Project
  */
 
-App::uses('CabinetsAppModel', 'Cabinets.Model');
+App::uses('BlockBaseModel', 'Blocks.Model');
+App::uses('BlockSettingBehavior', 'Blocks.Model/Behavior');
 
 /**
  * CabinetSetting Model
@@ -19,7 +20,14 @@ App::uses('CabinetsAppModel', 'Cabinets.Model');
  * @author Shohei Nakajima <nakajimashouhei@gmail.com>
  * @package NetCommons\Cabinets\Model
  */
-class CabinetSetting extends CabinetsAppModel {
+class CabinetSetting extends BlockBaseModel {
+
+/**
+ * Custom database table name
+ *
+ * @var string
+ */
+	public $useTable = false;
 
 /**
  * Validation rules
@@ -35,28 +43,18 @@ class CabinetSetting extends CabinetsAppModel {
  */
 	public $actsAs = array(
 		'Blocks.BlockRolePermission',
+		'Blocks.BlockSetting' => array(
+			BlockSettingBehavior::FIELD_USE_WORKFLOW,
+		),
 	);
 
 /**
  * Get cabinet setting data
  *
- * @param string $cabinetKey cabinets.key
  * @return array
  */
-	public function getCabinetSetting($cabinetKey) {
-		$conditions = array(
-			'cabinet_key' => $cabinetKey
-		);
-
-		$cabinetSetting = $this->find(
-			'first',
-			array(
-				'recursive' => -1,
-				'conditions' => $conditions,
-			)
-		);
-
-		return $cabinetSetting;
+	public function getCabinetSetting() {
+		return $this->getBlockSetting();
 	}
 
 /**
@@ -67,12 +65,6 @@ class CabinetSetting extends CabinetsAppModel {
  * @throws InternalErrorException
  */
 	public function saveCabinetSetting($data) {
-		$this->loadModels(
-			[
-				'CabinetSetting' => 'Cabinets.CabinetSetting',
-			]
-		);
-
 		//トランザクションBegin
 		$this->begin();
 
@@ -84,9 +76,8 @@ class CabinetSetting extends CabinetsAppModel {
 		}
 
 		try {
-			if (!$this->save(null, false)) {
-				throw new InternalErrorException(__d('net_commons', 'Internal Server Error'));
-			}
+			// useTable = falseでsaveすると必ずfalseになるので、throwしない
+			$this->save(null, false);
 
 			//トランザクションCommit
 			$this->commit();

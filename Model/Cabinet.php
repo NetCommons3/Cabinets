@@ -44,6 +44,7 @@ class Cabinet extends CabinetsAppModel {
 		'Blocks.Block' => array(
 			'name' => 'Cabinet.name',
 			'loadModels' => array(
+				'CabinetSetting' => 'Cabinets.CabinetSetting',
 				'WorkflowComment' => 'Workflow.WorkflowComment',
 			)
 		),
@@ -71,11 +72,6 @@ class Cabinet extends CabinetsAppModel {
  * @var array
  */
 	public $hasMany = array(
-		'CabinetSetting' => array(
-			'className' => 'Cabinets.CabinetSetting',
-			'foreignKey' => 'cabinet_key',
-			'dependent' => false
-		),
 		//'CabinetFile' => [
 		//	'className' => 'Cabinets.CabinetFile'
 		//]
@@ -169,12 +165,8 @@ class Cabinet extends CabinetsAppModel {
 		);
 		//CabinetSetting登録
 		if (isset($this->CabinetSetting->data['CabinetSetting'])) {
-			if (!Hash::get($this->CabinetSetting->data, 'CabinetSetting.cabinet_key', false)) {
-				$this->CabinetSetting->data['CabinetSetting']['cabinet_key'] = $this->data[$this->alias]['key'];
-			}
-			if (!$this->CabinetSetting->save(null, false)) {
-				throw new InternalErrorException(__d('net_commons', 'Internal Server Error'));
-			}
+			$this->CabinetSetting->set($this->CabinetSetting->data['CabinetSetting']);
+			$this->CabinetSetting->save(null, false);
 		}
 
 		// ルートフォルダがまだなければルートフォルダをつくる。あれば名前の同期
@@ -204,7 +196,7 @@ class Cabinet extends CabinetsAppModel {
 				),
 			)
 		);
-		$cabinet = Hash::merge($cabinet, $this->CabinetSetting->create());
+		$cabinet = Hash::merge($cabinet, $this->CabinetSetting->createBlockSetting());
 
 		return $cabinet;
 	}
@@ -215,6 +207,8 @@ class Cabinet extends CabinetsAppModel {
  * @return array
  */
 	public function getCabinet() {
+		$this->CabinetSetting = ClassRegistry::init('Cabinets.CabinetSetting');
+
 		$cabinet = $this->find(
 			'all',
 			array(
@@ -222,7 +216,6 @@ class Cabinet extends CabinetsAppModel {
 				'fields' => array(
 					$this->alias . '.*',
 					$this->Block->alias . '.*',
-					$this->CabinetSetting->alias . '.*',
 				),
 				'joins' => array(
 					array(
@@ -233,14 +226,6 @@ class Cabinet extends CabinetsAppModel {
 							$this->alias . '.block_id' . ' = ' . $this->Block->alias . ' .id',
 						),
 					),
-					array(
-						'table' => $this->CabinetSetting->table,
-						'alias' => $this->CabinetSetting->alias,
-						'type' => 'INNER',
-						'conditions' => array(
-							$this->alias . '.key' . ' = ' . $this->CabinetSetting->alias . ' .cabinet_key',
-						),
-					),
 				),
 				'conditions' => $this->getBlockConditionById(),
 			)
@@ -248,7 +233,7 @@ class Cabinet extends CabinetsAppModel {
 		if (!$cabinet) {
 			return $cabinet;
 		}
-		return $cabinet[0];
+		return Hash::merge($cabinet[0], $this->CabinetSetting->getCabinetSetting());
 	}
 
 /**
@@ -304,7 +289,6 @@ class Cabinet extends CabinetsAppModel {
 		$this->loadModels(
 			[
 				'Cabinet' => 'Cabinets.Cabinet',
-				'CabinetSetting' => 'Cabinets.CabinetSetting',
 				'CabinetFile' => 'Cabinets.CabinetFile',
 				'CabinetFileTree' => 'Cabinets.CabinetFileTree',
 			]
@@ -335,14 +319,6 @@ class Cabinet extends CabinetsAppModel {
 				throw new InternalErrorException(__d('net_commons', 'Internal Server Error'));
 			}
 
-			if (!$this->CabinetSetting->deleteAll(
-				array($this->CabinetSetting->alias . '.cabinet_key' => $data['Cabinet']['key']),
-				false,
-				false
-			)
-			) {
-				throw new InternalErrorException(__d('net_commons', 'Internal Server Error'));
-			}
 			// アップロードファイルの削除をしたいのでコールバック有効にする
 			if (!$this->CabinetFile->deleteAll(
 				array($this->CabinetFile->alias . '.cabinet_id' => $cabinetIds),
