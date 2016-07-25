@@ -12,8 +12,6 @@
 
 <?php echo $this->Form->hidden('Block.id'); ?>
 <?php //echo $this->Form->hidden('Block.key'); ?>
-<?php echo $this->Form->hidden('CabinetSetting.cabinet_key'); ?>
-<?php echo $this->Form->hidden('CabinetSetting.id'); ?>
 
 <?php echo $this->element('Blocks.block_creatable_setting', array(
 	'settingPermissions' => array(

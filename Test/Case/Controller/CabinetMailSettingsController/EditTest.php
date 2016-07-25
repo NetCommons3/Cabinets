@@ -28,7 +28,7 @@ class CabinetMailSettingsControllerEditTest extends NetCommonsControllerTestCase
 		'plugin.cabinets.cabinet',
 		'plugin.cabinets.cabinet_file',
 		'plugin.cabinets.cabinet_file_tree',
-		'plugin.cabinets.cabinet_setting',
+		'plugin.cabinets.block_setting_for_cabinet',
 		'plugin.workflow.workflow_comment',
 		'plugin.mails.mail_setting_fixed_phrase',
 	);

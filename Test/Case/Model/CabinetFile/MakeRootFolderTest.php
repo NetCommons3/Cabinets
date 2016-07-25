@@ -28,7 +28,7 @@ class CabinetFileMakeRootFolderTest extends WorkflowGetTest {
 		'plugin.cabinets.cabinet',
 		'plugin.cabinets.cabinet_file',
 		'plugin.cabinets.cabinet_file_tree',
-		'plugin.cabinets.cabinet_setting',
+		'plugin.cabinets.block_setting_for_cabinet',
 		'plugin.categories.category',
 		'plugin.categories.category_order',
 		'plugin.workflow.workflow_comment',
