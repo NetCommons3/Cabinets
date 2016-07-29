@@ -189,13 +189,8 @@ class CabinetsAppController extends AppController {
 		$this->_cabinetTitle = $cabinet['cabinet']['name'];
 		$this->set($cabinet);
 
-		if (!$cabinetSetting = $this->CabinetSetting->getCabinetSetting(
-			$cabinet['cabinet']['key']
-		)
-		) {
-			$cabinetSetting = $this->CabinetSetting->create(
-				array('id' => null)
-			);
+		if (!$cabinetSetting = $this->CabinetSetting->getCabinetSetting()) {
+			$cabinetSetting = $this->CabinetSetting->createBlockSetting();
 		}
 		$this->_cabinetSetting = $cabinetSetting;
 		//$cabinetSetting = $this->camelizeKeyRecursive($cabinetSetting);
