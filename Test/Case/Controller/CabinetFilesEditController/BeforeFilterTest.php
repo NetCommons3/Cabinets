@@ -28,7 +28,6 @@ class CabinetFilesEditControllerBeforeFilterTest extends NetCommonsControllerTes
 		'plugin.cabinets.cabinet',
 		'plugin.cabinets.cabinet_file',
 		'plugin.cabinets.cabinet_file_tree',
-		'plugin.cabinets.cabinet_setting',
 		'plugin.workflow.workflow_comment',
 	);
 

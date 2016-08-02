@@ -28,7 +28,6 @@ class CabinetFilesEditControllerEditFolderTest extends WorkflowControllerEditTes
 		'plugin.cabinets.cabinet',
 		'plugin.cabinets.cabinet_file',
 		'plugin.cabinets.cabinet_file_tree',
-		'plugin.cabinets.cabinet_setting',
 		'plugin.workflow.workflow_comment',
 	);
 
