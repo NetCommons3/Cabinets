@@ -29,9 +29,6 @@ class CabinetFilesEditControllerAddFolderTest extends WorkflowControllerAddTest 
 		'plugin.cabinets.cabinet_file',
 		'plugin.cabinets.cabinet_file_tree',
 		'plugin.workflow.workflow_comment',
-		'plugin.authorization_keys.authorization_keys',
-		'plugin.site_manager.site_setting',
-
 	);
 
 /**
@@ -107,8 +104,7 @@ class CabinetFilesEditControllerAddFolderTest extends WorkflowControllerAddTest 
 		$results[0] = array(
 			'urlOptions' => array(
 				'frame_id' => $data['Frame']['id'],
-				'block_id' => $data['Block']['id'],
-				'action' => 'add_folder',
+				'block_id' => $data['Block']['id']
 			),
 			'assert' => null, 'exception' => 'ForbiddenException',
 		);
@@ -130,26 +126,20 @@ class CabinetFilesEditControllerAddFolderTest extends WorkflowControllerAddTest 
 	public function dataProviderAddGetByCreatable() {
 		$data = $this->__data();
 
-		// TODO アクセスできません　になるはず
 		//テストデータ
 		$results = array();
 		$results[0] = array(
 			'urlOptions' => array(
 				'frame_id' => $data['Frame']['id'],
 				'block_id' => $data['Block']['id'],
-				'action' => 'add_folder',
 			),
-			'assert' => null, 'exception' => 'ForbiddenException',
+			'assert' => array('method' => 'assertNotEmpty'),
 		);
 
 		// * フレームID指定なしテスト
 		array_push($results, Hash::merge($results[0], array(
-			'urlOptions' => array(
-				'frame_id' => null,
-				'block_id' => $data['Block']['id'],
-				'action' => 'add_folder',
-			),
-			'assert' => null, 'exception' => 'ForbiddenException',
+			'urlOptions' => array('frame_id' => null, 'block_id' => $data['Block']['id']),
+			'assert' => array('method' => 'assertNotEmpty'),
 		)));
 
 		return $results;
@@ -177,8 +167,7 @@ class CabinetFilesEditControllerAddFolderTest extends WorkflowControllerAddTest 
 			'data' => $data, 'role' => null,
 			'urlOptions' => array(
 				'frame_id' => $data['Frame']['id'],
-				'block_id' => $data['Block']['id'],
-				'action' => 'add_folder',
+				'block_id' => $data['Block']['id']
 			),
 			'exception' => 'ForbiddenException'
 		);
@@ -187,8 +176,7 @@ class CabinetFilesEditControllerAddFolderTest extends WorkflowControllerAddTest 
 			'data' => $data, 'role' => Role::ROOM_ROLE_KEY_GENERAL_USER,
 			'urlOptions' => array(
 				'frame_id' => $data['Frame']['id'],
-				'block_id' => $data['Block']['id'],
-				'action' => 'add_folder',
+				'block_id' => $data['Block']['id']
 			),
 		);
 		// * フレームID指定なしテスト
@@ -196,9 +184,7 @@ class CabinetFilesEditControllerAddFolderTest extends WorkflowControllerAddTest 
 			'data' => $data, 'role' => Role::ROOM_ROLE_KEY_ROOM_ADMINISTRATOR,
 			'urlOptions' => array(
 				'frame_id' => null,
-				'block_id' => $data['Block']['id'],
-				'action' => 'add_folder',
-			),
+				'block_id' => $data['Block']['id']),
 		);
 
 		return $results;
@@ -220,8 +206,7 @@ class CabinetFilesEditControllerAddFolderTest extends WorkflowControllerAddTest 
 			'data' => $data,
 			'urlOptions' => array(
 				'frame_id' => $data['Frame']['id'],
-				'block_id' => $data['Block']['id'],
-				'action' => 'add_folder',
+				'block_id' => $data['Block']['id']
 			),
 			'validationError' => array(),
 		);
@@ -270,10 +255,9 @@ class CabinetFilesEditControllerAddFolderTest extends WorkflowControllerAddTest 
 		$data = $this->__data();
 		$this->_testGetAction(
 			array(
-				'action' => 'add',
+				'action' => 'add_folder',
 				'frame_id' => $data['Frame']['id'],
 				'block_id' => $data['Block']['id'],
-				'action' => 'add_folder',
 			),
 			array('method' => 'assertNotEmpty')
 		);
@@ -302,10 +286,9 @@ class CabinetFilesEditControllerAddFolderTest extends WorkflowControllerAddTest 
 		$data = $this->__data();
 		$this->_testGetAction(
 			array(
-				'action' => 'add',
+				'action' => 'add_folder',
 				'frame_id' => $data['Frame']['id'],
 				'block_id' => $data['Block']['id'],
-				'action' => 'add_folder',
 			),
 			array('method' => 'assertNotEmpty')
 		);

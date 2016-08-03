@@ -10,6 +10,7 @@
  */
 
 App::uses('WorkflowControllerAddTest', 'Workflow.TestSuite');
+App::uses('TemporaryFolder', 'Files.Utility');
 
 /**
  * CabinetFilesEditController::add()のテスト
@@ -46,6 +47,34 @@ class CabinetFilesEditControllerAddTest extends WorkflowControllerAddTest {
 	protected $_controller = 'cabinet_files_edit';
 
 /**
+ * アップロードテストに使うファイルの情報
+ *
+ * @var array
+ */
+	protected $_uploadFile = [
+		'name' => 'logo.gif',
+		'type' => 'image/gif',
+		'tmp_name' => '',
+		'error' => 0,
+		'size' => 5873,
+	];
+
+/**
+ * setUp method
+ *
+ * @return void
+ */
+	public static function setUpBeforeClass() {
+		//parent::setUp();
+
+		// アップロードテストに使うファイルを準備
+		$tempUploadFolder = new TemporaryFolder();
+		copy(APP . 'Plugin/Cabinets/Test/Fixture/logo.gif', $tempUploadFolder->path . DS .
+			'tempfile');
+		$this->_uploadFile['tmp_name'] = $tempUploadFolder->path . DS . 'tempfile';
+	}
+
+/**
  * テストDataの取得
  *
  * @return array
@@ -68,13 +97,17 @@ class CabinetFilesEditControllerAddTest extends WorkflowControllerAddTest {
 				'plugin_key' => $this->plugin,
 			),
 
-			//TODO:必要のデータセットをここに書く
-			'' => array(
+			//:必要のデータセットをここに書く
+			'CabinetFile' => array(
 				'id' => null,
 				'key' => null,
 				'language_id' => '2',
 				'status' => null,
+				'file' => $this->_uploadFile,
 			),
+			'CabinetFileTree' => [
+				'parent_id' => 11,
+			],
 
 			'WorkflowComment' => array(
 				'comment' => 'WorkflowComment save test',
