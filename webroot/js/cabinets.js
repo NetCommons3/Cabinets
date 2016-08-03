@@ -111,7 +111,6 @@ NetCommonsApp.controller('Cabinets.FolderTree',
       $scope.folder = [];
 
       $scope.init = function(currentFolderPath) {
-        console.log(currentFolderPath);
         angular.forEach(currentFolderPath, function(value, key) {
           $scope.folder[value] = true;
         });
@@ -129,7 +128,7 @@ NetCommonsApp.controller('Cabinets.path',
 
       $scope.init = function(folderPath, pageUrl) {
 
-        // TODO 一つ目だけPageUrlにする
+        // 一つ目だけPageUrlにする
         angular.forEach(folderPath, function(value, key) {
           if (key == 0) {
             value['url'] = pageUrl;
@@ -158,11 +157,17 @@ NetCommonsApp.controller('CabinetFile.edit',
         };
 
         $scope.showFolderTree = function() {
+
+          var selectFolderUrl = $scope.baseUrl + '/cabinets/cabinet_files_edit/select_folder/' +
+              $scope.blockId + '/';
+          selectFolderUrl = selectFolderUrl + $scope.fileKey;
+          // 新規作成時はfileKeyがないのでparent_idで現在位置を特定
+          selectFolderUrl = selectFolderUrl + '/parent_id:' + $scope.parent_id;
+          selectFolderUrl = selectFolderUrl + '?frame_id=' + $scope.frameId;
+
           var modal = NetCommonsModal.show($scope, 'CabinetFile.edit.selectFolder',
-              $scope.baseUrl + '/cabinets/cabinet_files_edit/select_folder/' +
-              $scope.blockId + '/' + $scope.fileKey + '?frame_id=' + $scope.frameId);
+              selectFolderUrl);
           modal.result.then(function(parentId) {
-            console.log(parentId);
             $scope.parent_id = parentId;
 
             // 親ツリーIDが変更されたので、パス情報を取得しなおす。

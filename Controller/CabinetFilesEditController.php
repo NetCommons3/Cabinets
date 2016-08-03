@@ -419,7 +419,7 @@ class CabinetFilesEditController extends CabinetsAppController {
  * @return void
  */
 	public function select_folder() {
-		//$currentTreeId = Hash::get($this->request->named, 'parent_tree_id', null);
+		// 移動するファイル・フォルダを取得
 		$key = isset($this->request->params['key']) ? $this->request->params['key'] : null;
 		$conditions = [
 			'CabinetFile.key' => $key,
@@ -427,9 +427,12 @@ class CabinetFilesEditController extends CabinetsAppController {
 		];
 		$conditions = $this->CabinetFile->getWorkflowConditions($conditions);
 		$cabinetFile = $this->CabinetFile->find('first', ['conditions' => $conditions]);
-		$currentTreeId = $cabinetFile['CabinetFileTree']['parent_id'];
-
-		//$targetFileKey =
+		if ($cabinetFile) {
+			$currentTreeId = $cabinetFile['CabinetFileTree']['parent_id'];
+		} else {
+			// 新規フォルダ作成時はkeyが拾えないのでparent_idで現在位置を特定
+			$currentTreeId = Hash::get($this->request->named, 'parent_id', null);
+		}
 
 		$this->set('currentTreeId', $currentTreeId);
 		//レイアウトの設定
@@ -441,7 +444,8 @@ class CabinetFilesEditController extends CabinetsAppController {
 			'is_folder' => 1,
 			'cabinet_key' => $this->_cabinet['Cabinet']['key'],
 		];
-		if ($cabinetFile['CabinetFile']['is_folder']) {
+		// 移動するのがフォルダだったら、下位フォルダを除外する
+		if (isset($cabinetFile) && Hash::get($cabinetFile, 'CabinetFile.is_folder')) {
 			$conditions['NOT'] = array(
 				'AND' => array(
 					'CabinetFileTree.lft >=' => $cabinetFile['CabinetFileTree']['lft'],
