@@ -192,7 +192,7 @@ NetCommonsApp.controller('CabinetFile.edit',
                   $scope.folderPath = result;
                 })
                 .error(function(data, status, headers, config) {
-                  // TODO エラー処理
+                  $scope.flashMessage(data.name, 'danger', 0);
                 });
           });
         };
