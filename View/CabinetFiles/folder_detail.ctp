@@ -101,18 +101,16 @@ echo $this->Html->script(
 				'action' => 'index'
 			];
 		}
-		echo $this->Html->link(
+		echo $this->NetCommonsHtml->link(
 			__d('cabinets', 'Go to List'),
-			$this->NetCommonsHtml->url($url),
+			$url,
 			['class' => 'btn btn-default']
 		)
 		?>
 		<?php
-		echo $this->Html->link(
+		echo $this->NetCommonsHtml->link(
 			__d('cabinets', 'Download'),
-			$this->NetCommonsHtml->url(
-				['action' => 'download_folder', 'key' => $cabinetFile['CabinetFile']['key']]
-			),
+			['action' => 'download_folder', 'key' => $cabinetFile['CabinetFile']['key']],
 			['class' => 'btn btn-primary']
 		)
 		?>

@@ -101,7 +101,7 @@ echo $this->Html->script(
 					<?php echo $this->Button->cancelAndSave(
 						__d('net_commons', 'Cancel'),
 						__d('net_commons', 'OK'),
-						$this->NetCommonsHtml->url(
+						NetCommonsUrl::blockUrl(
 							[
 								'controller' => 'cabinet_files',
 								'action' => $isEdit ? 'folder_detail' : 'index',
@@ -118,7 +118,7 @@ echo $this->Html->script(
 							'CabinetFile',
 							array(
 								'type' => 'delete',
-								'url' => $this->NetCommonsHtml->url(
+								'url' => NetCommonsUrl::blockUrl(
 									array(
 										'controller' => 'cabinet_files_edit',
 										'action' => 'delete',

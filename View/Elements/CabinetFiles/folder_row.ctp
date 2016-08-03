@@ -88,14 +88,12 @@
 			?>
 			<li <?php echo $zipDisabled; ?>>
 				<?php
-				echo $this->Html->link(
+				echo $this->NetCommonsHtml->link(
 					__d('cabinets', 'Zip download'),
-					$this->NetCommonsHtml->url(
-						[
-							'action' => 'download_folder',
-							'key' => $cabinetFile['CabinetFile']['key']
-						]
-					)
+					[
+						'action' => 'download_folder',
+						'key' => $cabinetFile['CabinetFile']['key']
+					]
 				);
 				?>
 			</li>
