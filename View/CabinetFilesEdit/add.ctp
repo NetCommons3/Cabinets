@@ -1,11 +1,3 @@
-<?php echo $this->Html->script(
-	'/cabinets/js/cabinet_file_edit.js',
-	array(
-		'plugin' => false,
-		'once' => true,
-		'inline' => false
-	)
-); ?>
 <?php
 echo $this->Html->script(
 	'/cabinets/js/cabinets.js',
