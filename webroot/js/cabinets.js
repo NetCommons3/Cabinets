@@ -19,8 +19,8 @@ NetCommonsApp.controller('Cabinets',
 
 
 NetCommonsApp.controller('CabinetFile.index',
-    ['$scope', '$filter', 'NetCommonsModal', '$http',
-      function($scope, $filter, NetCommonsModal, $http) {
+    ['$scope', '$filter', 'NetCommonsModal', '$http', 'NC3_URL',
+      function($scope, $filter, NetCommonsModal, $http, NC3_URL) {
         $scope.moved = {};
         $scope.init = function(parentId) {
           $scope.parent_id = parentId;
@@ -30,13 +30,13 @@ NetCommonsApp.controller('CabinetFile.index',
 
           var modal = NetCommonsModal.show(
               $scope, 'CabinetFile.edit.selectFolder',
-              $scope.baseUrl + '/cabinets/cabinet_files_edit/select_folder/' + $scope.blockId +
+              NC3_URL + '/cabinets/cabinet_files_edit/select_folder/' + $scope.blockId +
               '/' + cabinetFileKey + '?frame_id=' + $scope.frameId);
           modal.result.then(function(parentId) {
 
             if ($scope.parent_id != parentId) {
               // 移動を裏で呼び出す
-              var url = $scope.baseUrl + '/cabinets/cabinet_files_edit/move/' + $scope.blockId +
+              var url = NC3_URL + '/cabinets/cabinet_files_edit/move/' + $scope.blockId +
                   '/' + cabinetFileKey + '/parent_id:' + parentId + '?frame_id=' + $scope.frameId;
 
               $http({
@@ -66,8 +66,8 @@ NetCommonsApp.controller('CabinetFile.index',
 );
 
 NetCommonsApp.controller('CabinetFile.addFile',
-    ['$scope', '$filter', 'NetCommonsModal', '$http',
-      function($scope, $filter, NetCommonsModal, $http) {
+    ['$scope', '$filter', 'NetCommonsModal', '$http', 'NC3_URL',
+      function($scope, $filter, NetCommonsModal, $http, NC3_URL) {
         $scope.init = function(parentId) {
           $scope.parent_id = parentId;
         };
@@ -76,7 +76,7 @@ NetCommonsApp.controller('CabinetFile.addFile',
 
           var blockId = $scope.blockId;
           var frameId = $scope.frameId;
-          var url = $scope.baseUrl + '/cabinets/cabinet_files_edit/add/' + blockId;
+          var url = NC3_URL + '/cabinets/cabinet_files_edit/add/' + blockId;
           if ($scope.parent_id > 0) {
             url = url + '/parent_id:' + $scope.parent_id;
           }
@@ -111,7 +111,6 @@ NetCommonsApp.controller('Cabinets.FolderTree',
       $scope.folder = [];
 
       $scope.init = function(currentFolderPath) {
-        console.log(currentFolderPath);
         angular.forEach(currentFolderPath, function(value, key) {
           $scope.folder[value] = true;
         });
@@ -125,16 +124,16 @@ NetCommonsApp.controller('Cabinets.FolderTree',
 
 
 NetCommonsApp.controller('Cabinets.path',
-    ['$scope', function($scope) {
+    ['$scope', 'NC3_URL', function($scope, NC3_URL) {
 
       $scope.init = function(folderPath, pageUrl) {
 
-        // TODO 一つ目だけPageUrlにする
+        // 一つ目だけPageUrlにする
         angular.forEach(folderPath, function(value, key) {
           if (key == 0) {
             value['url'] = pageUrl;
           } else {
-            value['url'] = $scope.baseUrl + '/cabinets/cabinet_files/index/' +
+            value['url'] = NC3_URL + '/cabinets/cabinet_files/index/' +
                 $scope.blockId + '/' + value.CabinetFile.key + '?frame_id=' + $scope.frameId;
           }
 
@@ -149,8 +148,8 @@ NetCommonsApp.controller('Cabinets.path',
  * Cabinets edit Javascript
  */
 NetCommonsApp.controller('CabinetFile.edit',
-    ['$scope', '$filter', 'NetCommonsModal', '$http',
-      function($scope, $filter, NetCommonsModal, $http) {
+    ['$scope', '$filter', 'NetCommonsModal', '$http', 'NC3_URL',
+      function($scope, $filter, NetCommonsModal, $http, NC3_URL) {
         $scope.init = function(parentId, fileKey) {
           $scope.parent_id = parentId;
           $scope.parent_id = parentId;
@@ -158,17 +157,23 @@ NetCommonsApp.controller('CabinetFile.edit',
         };
 
         $scope.showFolderTree = function() {
+
+          var selectFolderUrl = NC3_URL + '/cabinets/cabinet_files_edit/select_folder/' +
+              $scope.blockId + '/';
+          selectFolderUrl = selectFolderUrl + $scope.fileKey;
+          // 新規作成時はfileKeyがないのでparent_idで現在位置を特定
+          selectFolderUrl = selectFolderUrl + '/parent_id:' + $scope.parent_id;
+          selectFolderUrl = selectFolderUrl + '?frame_id=' + $scope.frameId;
+
           var modal = NetCommonsModal.show($scope, 'CabinetFile.edit.selectFolder',
-              $scope.baseUrl + '/cabinets/cabinet_files_edit/select_folder/' +
-              $scope.blockId + '/' + $scope.fileKey + '?frame_id=' + $scope.frameId);
+              selectFolderUrl);
           modal.result.then(function(parentId) {
-            console.log(parentId);
             $scope.parent_id = parentId;
 
             // 親ツリーIDが変更されたので、パス情報を取得しなおす。
             //  Ajax json形式でパス情報を取得する
 
-            var url = $scope.baseUrl + '/cabinets/cabinet_files_edit/get_folder_path/' +
+            var url = NC3_URL + '/cabinets/cabinet_files_edit/get_folder_path/' +
                 $scope.blockId + '/tree_id:' + $scope.parent_id + '?frame_id=' + $scope.frameId;
 
             $http({
@@ -178,7 +183,7 @@ NetCommonsApp.controller('CabinetFile.edit',
                 .success(function(data, status, headers, config) {
                   var result = [];
                   angular.forEach(data['folderPath'], function(value, key) {
-                    value['url'] = $scope.baseUrl + '/cabinets/cabinet_files/index/' +
+                    value['url'] = NC3_URL + '/cabinets/cabinet_files/index/' +
                         $scope.blockId + '/' + value.CabinetFile.key +
                         '?frame_id=' + $scope.frameId;
 

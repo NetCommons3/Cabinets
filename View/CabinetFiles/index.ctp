@@ -162,7 +162,7 @@
 					<tr>
 						<td>
 							<?php
-							echo $this->Html->link(
+							echo $this->NetCommonsHtml->link(
 								'<span class="glyphicon glyphicon-circle-arrow-up" aria-hidden="true"></span>' . __d(
 									'cabinets',
 									'Parent folder'
@@ -177,14 +177,12 @@
 						<td colspan="2" style="text-align: right; ">
 							<?php
 							if (count($cabinetFiles) > 0) {
-								echo $this->Html->link(
+								echo $this->NetCommonsHtml->link(
 									__d('cabinets', 'Zip download'),
-									$this->NetCommonsHtml->url(
-										[
-											'action' => 'download_folder',
-											'key' => $currentFolder['CabinetFile']['key']
-										]
-									),
+									[
+										'action' => 'download_folder',
+										'key' => $currentFolder['CabinetFile']['key']
+									],
 									['class' => 'btn btn-xs btn-default',
 										'style' => 'margin-left:0px;'
 									]

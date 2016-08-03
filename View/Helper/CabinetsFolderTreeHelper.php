@@ -102,12 +102,10 @@ class CabinetsFolderTreeHelper extends AppHelper {
 					// フォルダ選択用
 					$url = '#';
 				} else {
-					$url = $this->NetCommonsHtml->url(
-						[
-							'action' => 'index',
-							'key' => $folder['CabinetFile']['key']
-						]
-					);
+					$url = [
+						'action' => 'index',
+						'key' => $folder['CabinetFile']['key']
+					];
 				}
 				$link = $this->NetCommonsHtml->link(
 					$folder['CabinetFile']['filename'],
