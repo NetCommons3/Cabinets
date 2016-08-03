@@ -4,7 +4,7 @@ $currentFile = array_pop($tmpFolderPath); // 現在のファイルを後ろか�
 $encodedFolderPath = json_encode($tmpFolderPath);
 ?>
 <span ng-controller="Cabinets.path" ng-init='init(<?php echo h($encodedFolderPath) ?>,
- "<?php echo NetCommonsUrl::backToPageUrl(); ?>")' ng-cloak>
+ "<?php echo Router::url(NetCommonsUrl::backToPageUrl()); ?>")' ng-cloak>
 
 <?php
 //// パンクズ

@@ -20,9 +20,9 @@ echo $this->Html->css(
 <div class="text-center">
 	<?php
 	$url = NetCommonsUrl::backToPageUrl();
-	echo $this->Html->link(
+	echo $this->NetCommonsHtml->link(
 		__d('cabinets', 'Go to List'),
-		$this->NetCommonsHtml->url($url),
+		$url,
 		['class' => 'btn btn-default']
 	);
 	?>
