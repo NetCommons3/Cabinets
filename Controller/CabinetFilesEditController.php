@@ -586,6 +586,11 @@ class CabinetFilesEditController extends CabinetsAppController {
 		];
 		$cabinetFile = $this->CabinetFile->find('first', ['conditions' => $conditions]);
 
+		// フォルダを削除できるのは公開権限のあるユーザだけ。
+		if ($cabinetFile['CabinetFile']['is_folder'] && !Current::permission('content_publishable')) {
+			return $this->throwBadRequest();
+		}
+
 		// 権限チェック
 		if ($this->CabinetFile->canDeleteWorkflowContent($cabinetFile) === false) {
 			return $this->throwBadRequest();

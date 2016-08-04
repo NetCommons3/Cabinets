@@ -52,16 +52,18 @@ class CabinetFilesEditControllerDeleteTest extends WorkflowControllerDeleteTest 
  * @param string $contentKey キー
  * @return array
  */
-	private function __data($contentKey = null) {
+	private function __data($contentKey = null, $contentId = null) {
 		$frameId = '6';
 		$blockId = '2';
 		$blockKey = 'block_1';
-		if ($contentKey === 'content_key_2') {
-			$contentId = '3';
-		} elseif ($contentKey === 'content_key_4') {
-			$contentId = '5';
-		} else {
-			$contentId = '2';
+		if ($contentId === null){
+			if ($contentKey === 'content_key_2') {
+				$contentId = '3';
+			} elseif ($contentKey === 'content_key_4') {
+				$contentId = '5';
+			} else {
+				$contentId = '2';
+			}
 		}
 
 		$data = array(
@@ -236,6 +238,33 @@ class CabinetFilesEditControllerDeleteTest extends WorkflowControllerDeleteTest 
 			),
 		));
 
+		// * 編集権限あり
+		// ** フォルダ削除→実行できない
+		$contentKey = 'content_key_12';
+		array_push($results, array(
+			'data' => $this->__data($contentKey, 12),
+			'role' => Role::ROOM_ROLE_KEY_EDITOR,
+			'urlOptions' => array(
+				'frame_id' => null,
+				'block_id' => $data['Block']['id'],
+				'key' => $contentKey
+			),
+			'exception' => 'BadRequestException'
+		));
+
+		// * 公開権限あり
+		// ** フォルダ削除
+		$contentKey = 'content_key_12';
+		array_push($results, array(
+			'data' => $this->__data($contentKey, 12),
+			'role' => Role::ROOM_ROLE_KEY_ROOM_ADMINISTRATOR,
+			'urlOptions' => array(
+				'frame_id' => null,
+				'block_id' => $data['Block']['id'],
+				'key' => $contentKey
+			),
+		));
+
 		return $results;
 	}
 
@@ -253,7 +282,7 @@ class CabinetFilesEditControllerDeleteTest extends WorkflowControllerDeleteTest 
  * @return array
  */
 	public function dataProviderDeleteExceptionError() {
-		$data = $this->__data();
+		$data = $this->__data('content_key_1');
 
 		//テストデータ
 		$results = array();
