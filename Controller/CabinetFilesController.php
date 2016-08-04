@@ -116,7 +116,7 @@ class CabinetFilesController extends CabinetsAppController {
 			$this->autoRender = false;
 			return;
 		}
-		$this->CabinetFileTree->recover('parent');
+		//$this->CabinetFileTree->recover('parent');
 
 		// currentFolderを取得
 		//$folderKey = isset($this->request->params['pass'][1]) ? $this->request->params['pass'][1] : null;
