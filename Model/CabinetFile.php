@@ -108,6 +108,13 @@ class CabinetFile extends CabinetsAppModel {
 					'message' => __d('cabinets', 'Invalid character for file/folder name.'),
 				],
 			),
+			'withOutExtFileName' => [
+				'rule' => ['validateWithOutExtFileName'],
+				'message' => sprintf(
+					__d('net_commons', 'Please input %s.'),
+					__d('cabinets', 'Filename')
+				),
+			],
 			'status' => array(
 				'numeric' => array(
 					'rule' => array('numeric'),
@@ -148,6 +155,18 @@ class CabinetFile extends CabinetsAppModel {
 		} else {
 			return !preg_match('/[' . preg_quote('\'/?|:\<>\*"', '/') . ']/', $filename);
 		}
+	}
+
+	public function validateWithOutExtFileName($check) {
+		if ($this->data[$this->alias]['is_folder']) {
+			return true;
+		}
+		// ファイルの編集時だけ拡張子抜きのファイル名が空でないかチェックする
+		if ($this->data[$this->alias]['key']){
+			$withOutExtFileName = $this->data[$this->alias]['withOutExtFileName'];
+			return (strlen($withOutExtFileName) > 0);
+		}
+		return true;
 	}
 
 /**

@@ -29,6 +29,7 @@ class CabinetFilesEditControllerEditTest extends WorkflowControllerEditTest {
 		'plugin.cabinets.cabinet_file',
 		'plugin.cabinets.cabinet_file_tree',
 		'plugin.workflow.workflow_comment',
+		'plugin.authorization_keys.authorization_keys',
 	);
 
 /**
@@ -76,13 +77,26 @@ class CabinetFilesEditControllerEditTest extends WorkflowControllerEditTest {
 				'plugin_key' => $this->plugin,
 			),
 
-			//TODO:必要のデータセットをここに書く
-			'' => array(
+			//必要のデータセットをここに書く
+			'CabinetFile' => array(
 				'id' => $contentId,
 				'key' => $contentKey,
 				'language_id' => '2',
 				'status' => null,
+				'file' => [
+					'name' => '',
+					'type' => '',
+					'tmp_name' => '',
+					'error' => UPLOAD_ERR_NO_FILE,
+					'size' => 0,
+				],
+				'withOutExtFileName' => 'logo',
+				'extension' => 'gif',
 			),
+			'CabinetFileTree' => [
+				'parent_id' => 11,
+			],
+
 
 			'WorkflowComment' => array(
 				'comment' => 'WorkflowComment save test',
@@ -178,7 +192,6 @@ class CabinetFilesEditControllerEditTest extends WorkflowControllerEditTest {
 		// * 編集権限あり
 		$results = array();
 		// ** コンテンツあり
-		$base = 0;
 		$results[0] = array(
 			'urlOptions' => array(
 				'frame_id' => $data['Frame']['id'],
@@ -195,8 +208,8 @@ class CabinetFilesEditControllerEditTest extends WorkflowControllerEditTest {
 				'block_id' => null,
 				'key' => null
 			),
-			'assert' => array('method' => 'assertEquals', 'expected' => 'emptyRender'),
-			'exception' => null, 'return' => 'viewFile'
+			null,
+			'BadRequestException'
 		);
 
 		return $results;
@@ -337,13 +350,16 @@ class CabinetFilesEditControllerEditTest extends WorkflowControllerEditTest {
 		$results = array();
 		array_push($results, Hash::merge($result, array(
 			'validationError' => array(
-				'field' => '', //TODO:フィールド指定(Hashのpath形式)
+				'field' => 'CabinetFile.withOutExtFileName', // エラーにするフィールド指定
 				'value' => '',
-				'message' => '' //TODO:メッセージ追加
+				'message' => sprintf(
+					__d('net_commons', 'Please input %s.'),
+					__d('cabinets', 'Filename')
+				) // エラーメッセージ
 			)
 		)));
 
-		//TODO:必要なテストデータ追加
+		// 必要なテストデータ追加
 
 		return $results;
 	}
@@ -355,8 +371,8 @@ class CabinetFilesEditControllerEditTest extends WorkflowControllerEditTest {
  * @return void
  */
 	private function __assertEditGet($data) {
-		//TODO:必要に応じてassert書く
-		debug($this->view);
+		//必要に応じてassert書く
+		//debug($this->view);
 
 		$this->assertInput(
 			'input', 'data[Frame][id]', $data['Frame']['id'], $this->view
@@ -365,7 +381,7 @@ class CabinetFilesEditControllerEditTest extends WorkflowControllerEditTest {
 			'input', 'data[Block][id]', $data['Block']['id'], $this->view
 		);
 
-		//TODO:上記以外に必要なassert追加
+		// 上記以外に必要なassert追加
 	}
 
 /**
@@ -394,7 +410,7 @@ class CabinetFilesEditControllerEditTest extends WorkflowControllerEditTest {
 		$this->assertInput('button', 'save_' . WorkflowComponent::STATUS_APPROVED, null, $this->view);
 		$this->assertNotRegExp('/<input.*?name="_method" value="DELETE".*?>/', $this->view);
 
-		//TODO:上記以外に必要なassert追加
+		// 上記以外に必要なassert追加
 
 		TestAuthGeneral::logout($this);
 	}
@@ -424,8 +440,8 @@ class CabinetFilesEditControllerEditTest extends WorkflowControllerEditTest {
 		$this->assertInput('button', 'save_' . WorkflowComponent::STATUS_PUBLISHED, null, $this->view);
 		$this->assertInput('input', '_method', 'DELETE', $this->view);
 
-		//TODO:上記以外に必要なassert追加
-		debug($this->view);
+		// 上記以外に必要なassert追加
+		//debug($this->view);
 
 		//ログアウト
 		TestAuthGeneral::logout($this);

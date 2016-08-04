@@ -170,17 +170,19 @@ class CabinetFilesEditController extends CabinetsAppController {
 	public function edit() {
 		$this->set('isEdit', true);
 		//$key = $this->request->params['named']['key'];
-		$key = $this->request->params['key'];
+		$key = Hash::get($this->request->params, 'key');
 
 		//  keyのis_latstを元に編集を開始
 		$cabinetFile = $this->CabinetFile->findByKeyAndIsLatest($key, 1);
 		if (empty($cabinetFile)) {
-			//  404 NotFound
-			throw new NotFoundException();
+			return $this->throwBadRequest();
 		}
 		// フォルダならエラー
 		if ($cabinetFile['CabinetFile']['is_folder'] == true) {
-			throw new InternalErrorException();
+			return $this->throwBadRequest();
+		}
+		if ($this->CabinetFile->canEditWorkflowContent($cabinetFile) === false) {
+			return $this->throwBadRequest();
 		}
 
 		$treeId = $cabinetFile['CabinetFileTree']['id'];
