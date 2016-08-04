@@ -76,11 +76,14 @@ class CabinetFilesEditControllerBeforeFilterTest extends NetCommonsControllerTes
  */
 	public function testBeforeFilterGet() {
 		//テスト実行
-		$this->_testGetAction(array('action' => 'index'), array('method' => 'assertNotEmpty'), null, 'view');
+		$blockId = '2';
+
+		$this->_testGetAction(array('action' => 'add', 'block_id' => $blockId), array('method' =>
+		'assertNotEmpty'),
+			null, 'view');
 
 		//チェック
-		//TODO:assert追加
-		debug($this->view);
+		$this->assertNotEmpty($this->controller->viewVars['cabinet']);
 	}
 
 }
