@@ -97,7 +97,7 @@ class CabinetFilesEditController extends CabinetsAppController {
 
 			$this->CabinetFile->create();
 
-			// set status folderは常に公開
+			// set status
 			$status = $this->Workflow->parseStatus();
 			$this->request->data['CabinetFile']['status'] = $status;
 

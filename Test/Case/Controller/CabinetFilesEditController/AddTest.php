@@ -30,6 +30,8 @@ class CabinetFilesEditControllerAddTest extends WorkflowControllerAddTest {
 		'plugin.cabinets.cabinet_file',
 		'plugin.cabinets.cabinet_file_tree',
 		'plugin.workflow.workflow_comment',
+		'plugin.authorization_keys.authorization_keys',
+		'plugin.site_manager.site_setting',
 	);
 
 /**
@@ -60,18 +62,35 @@ class CabinetFilesEditControllerAddTest extends WorkflowControllerAddTest {
 	];
 
 /**
+ * テスト用のテンポラリフォルダ作成
+ *
+ * @param string $name The name parameter on PHPUnit_Framework_TestCase::__construct()
+ * @param array  $data The date parameter on PHPUnit_Framework_TestCase::__construct()
+ * @param string $dataName The dataName parameter on PHPUnit_Framework_TestCase::__construct()
+ * @return void
+ */
+	//public function __construct($name = null, array $data = array(), $dataName = '') {
+	//	parent::__construct($name, $data, $dataName);
+	//
+	//	$tempUploadFolder = new TemporaryFolder();
+	//	$this->_uploadFile['tmp_name'] = $tempUploadFolder->path . DS . 'tempfile';
+	//}
+
+/**
  * setUp method
  *
  * @return void
  */
-	public static function setUpBeforeClass() {
-		//parent::setUp();
+	public function setUp() {
+		parent::setUp();
+
+		// アップロードパスの変更
+		$tmpFolder = new TemporaryFolder();
+		$this->controller->UploadFile = ClassRegistry::init('Files.UploadFile', true);
+		$this->controller->UploadFile->uploadBasePath = $tmpFolder->path . '/';
 
 		// アップロードテストに使うファイルを準備
-		$tempUploadFolder = new TemporaryFolder();
-		copy(APP . 'Plugin/Cabinets/Test/Fixture/logo.gif', $tempUploadFolder->path . DS .
-			'tempfile');
-		$this->_uploadFile['tmp_name'] = $tempUploadFolder->path . DS . 'tempfile';
+		copy(APP . 'Plugin/Cabinets/Test/Fixture/logo.gif', $this->_getTempUploadFilePath());
 	}
 
 /**
@@ -113,6 +132,7 @@ class CabinetFilesEditControllerAddTest extends WorkflowControllerAddTest {
 				'comment' => 'WorkflowComment save test',
 			),
 		);
+		$data['CabinetFile']['file']['tmp_name'] = $this->_getTempUploadFilePath();
 
 		return $data;
 	}
@@ -235,6 +255,9 @@ class CabinetFilesEditControllerAddTest extends WorkflowControllerAddTest {
  */
 	public function dataProviderAddValidationError() {
 		$data = $this->__data();
+		$data['CabinetFile']['file']['name'] = '';
+		$data['CabinetFile']['file']['error'] = UPLOAD_ERR_NO_FILE;
+
 		$result = array(
 			'data' => $data,
 			'urlOptions' => array(
@@ -246,15 +269,14 @@ class CabinetFilesEditControllerAddTest extends WorkflowControllerAddTest {
 
 		//テストデータ
 		$results = array();
+		// add のエラーはFlashメッセージなのでViewを取得してもわからない。
 		array_push($results, Hash::merge($result, array(
 			'validationError' => array(
-				'field' => '', //TODO:エラーにするフィールド指定
+				'field' => 'CabinetFile.file.name', // エラーにするフィールド指定
 				'value' => '',
-				'message' => '' //TODO:エラーメッセージ指定
+				'message' => __d('cabinets', 'Add File') // エラーになったらフォームが再表示される
 			)
 		)));
-
-		//TODO:必要なテストデータ追加
 
 		return $results;
 	}
@@ -273,7 +295,7 @@ class CabinetFilesEditControllerAddTest extends WorkflowControllerAddTest {
 			'input', 'data[Block][id]', $data['Block']['id'], $this->view
 		);
 
-		//TODO:上記以外に必要なassert追加
+		// 上記以外に必要なassert追加
 	}
 
 /**
@@ -300,8 +322,8 @@ class CabinetFilesEditControllerAddTest extends WorkflowControllerAddTest {
 		$this->assertInput('button', 'save_' . WorkflowComponent::STATUS_IN_DRAFT, null, $this->view);
 		$this->assertInput('button', 'save_' . WorkflowComponent::STATUS_APPROVED, null, $this->view);
 
-		//TODO:上記以外に必要なassert追加
-		debug($this->view);
+		// 上記以外に必要なassert追加
+		//debug($this->view);
 
 		TestAuthGeneral::logout($this);
 	}
@@ -331,11 +353,25 @@ class CabinetFilesEditControllerAddTest extends WorkflowControllerAddTest {
 		$this->assertInput('button', 'save_' . WorkflowComponent::STATUS_IN_DRAFT, null, $this->view);
 		$this->assertInput('button', 'save_' . WorkflowComponent::STATUS_PUBLISHED, null, $this->view);
 
-		//TODO:上記以外に必要なassert追加
-		debug($this->view);
+		//上記以外に必要なassert追加
+		//debug($this->view);
 
 		//ログアウト
 		TestAuthGeneral::logout($this);
+	}
+
+/**
+ * テスト用にアップロードされたことにするテンポラリファイルのパスを返す
+ *
+ * @return string
+ */
+	protected function _getTempUploadFilePath() {
+		static $path = null;
+		if ($path === null) {
+			$tempFolder = new TemporaryFolder();
+			$path = $tempFolder->path . DS . 'tempfile';
+		}
+		return $path;
 	}
 
 }
