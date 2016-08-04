@@ -94,7 +94,7 @@ class CabinetFile extends CabinetsAppModel {
 					'rule' => array('notBlank'),
 					'message' => sprintf(
 						__d('net_commons', 'Please input %s.'),
-						__d('cabinets', 'Title')
+						__d('cabinets', 'Filename')
 					),
 					//'allowEmpty' => false,
 					'required' => true,

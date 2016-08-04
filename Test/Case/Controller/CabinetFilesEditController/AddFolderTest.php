@@ -29,6 +29,7 @@ class CabinetFilesEditControllerAddFolderTest extends WorkflowControllerAddTest 
 		'plugin.cabinets.cabinet_file',
 		'plugin.cabinets.cabinet_file_tree',
 		'plugin.workflow.workflow_comment',
+		'plugin.authorization_keys.authorization_keys',
 	);
 
 /**
@@ -68,13 +69,16 @@ class CabinetFilesEditControllerAddFolderTest extends WorkflowControllerAddTest 
 				'plugin_key' => $this->plugin,
 			),
 
-			//TODO:必要のデータセットをここに書く
-			'' => array(
+			// 必要のデータセットをここに書く
+			'CabinetFile' => array(
 				'id' => null,
 				'key' => null,
 				'language_id' => '2',
-				'status' => null,
+				'filename' => 'NewFolder',
 			),
+			'CabinetFileTree' => [
+				'parent_id' => 11,
+			],
 
 			'WorkflowComment' => array(
 				'comment' => 'WorkflowComment save test',
@@ -104,7 +108,8 @@ class CabinetFilesEditControllerAddFolderTest extends WorkflowControllerAddTest 
 		$results[0] = array(
 			'urlOptions' => array(
 				'frame_id' => $data['Frame']['id'],
-				'block_id' => $data['Block']['id']
+				'block_id' => $data['Block']['id'],
+				'action' => 'add_folder',
 			),
 			'assert' => null, 'exception' => 'ForbiddenException',
 		);
@@ -132,14 +137,19 @@ class CabinetFilesEditControllerAddFolderTest extends WorkflowControllerAddTest 
 			'urlOptions' => array(
 				'frame_id' => $data['Frame']['id'],
 				'block_id' => $data['Block']['id'],
+				'action' => 'add_folder',
 			),
-			'assert' => array('method' => 'assertNotEmpty'),
+			null,
+			'ForbiddenException'
 		);
 
 		// * フレームID指定なしテスト
 		array_push($results, Hash::merge($results[0], array(
-			'urlOptions' => array('frame_id' => null, 'block_id' => $data['Block']['id']),
-			'assert' => array('method' => 'assertNotEmpty'),
+			'urlOptions' => array('frame_id' => null, 'block_id' => $data['Block']['id'],
+				'action' => 'add_folder',
+			),
+			null,
+			'ForbiddenException'
 		)));
 
 		return $results;
@@ -167,7 +177,8 @@ class CabinetFilesEditControllerAddFolderTest extends WorkflowControllerAddTest 
 			'data' => $data, 'role' => null,
 			'urlOptions' => array(
 				'frame_id' => $data['Frame']['id'],
-				'block_id' => $data['Block']['id']
+				'block_id' => $data['Block']['id'],
+				'action' => 'add_folder'
 			),
 			'exception' => 'ForbiddenException'
 		);
@@ -176,15 +187,19 @@ class CabinetFilesEditControllerAddFolderTest extends WorkflowControllerAddTest 
 			'data' => $data, 'role' => Role::ROOM_ROLE_KEY_GENERAL_USER,
 			'urlOptions' => array(
 				'frame_id' => $data['Frame']['id'],
-				'block_id' => $data['Block']['id']
+				'block_id' => $data['Block']['id'],
+				'action' => 'add_folder'
 			),
+			'exception' => 'ForbiddenException'
 		);
 		// * フレームID指定なしテスト
 		$results[2] = array(
 			'data' => $data, 'role' => Role::ROOM_ROLE_KEY_ROOM_ADMINISTRATOR,
 			'urlOptions' => array(
 				'frame_id' => null,
-				'block_id' => $data['Block']['id']),
+				'block_id' => $data['Block']['id'],
+				'action' => 'add_folder'
+			),
 		);
 
 		return $results;
@@ -206,7 +221,8 @@ class CabinetFilesEditControllerAddFolderTest extends WorkflowControllerAddTest 
 			'data' => $data,
 			'urlOptions' => array(
 				'frame_id' => $data['Frame']['id'],
-				'block_id' => $data['Block']['id']
+				'block_id' => $data['Block']['id'],
+				'action' => 'add_folder',
 			),
 			'validationError' => array(),
 		);
@@ -215,13 +231,15 @@ class CabinetFilesEditControllerAddFolderTest extends WorkflowControllerAddTest 
 		$results = array();
 		array_push($results, Hash::merge($result, array(
 			'validationError' => array(
-				'field' => '', //TODO:エラーにするフィールド指定
+				'field' => 'CabinetFile.filename', // エラーにするフィールド指定
 				'value' => '',
-				'message' => '' //TODO:エラーメッセージ指定
+				'message' => sprintf(
+					__d('net_commons', 'Please input %s.'),
+					__d('cabinets', 'Filename')
+				) //エラーメッセージ指定
 			)
 		)));
 
-		//TODO:必要なテストデータ追加
 
 		return $results;
 	}
@@ -240,7 +258,6 @@ class CabinetFilesEditControllerAddFolderTest extends WorkflowControllerAddTest 
 			'input', 'data[Block][id]', $data['Block']['id'], $this->view
 		);
 
-		//TODO:上記以外に必要なassert追加
 	}
 
 /**
@@ -259,16 +276,9 @@ class CabinetFilesEditControllerAddFolderTest extends WorkflowControllerAddTest 
 				'frame_id' => $data['Frame']['id'],
 				'block_id' => $data['Block']['id'],
 			),
-			array('method' => 'assertNotEmpty')
+			array(),
+			'ForbiddenException'
 		);
-
-		//チェック
-		$this->__assertAddGet($data);
-		$this->assertInput('button', 'save_' . WorkflowComponent::STATUS_IN_DRAFT, null, $this->view);
-		$this->assertInput('button', 'save_' . WorkflowComponent::STATUS_APPROVED, null, $this->view);
-
-		//TODO:上記以外に必要なassert追加
-		debug($this->view);
 
 		TestAuthGeneral::logout($this);
 	}
@@ -295,11 +305,11 @@ class CabinetFilesEditControllerAddFolderTest extends WorkflowControllerAddTest 
 
 		//チェック
 		$this->__assertAddGet($data);
-		$this->assertInput('button', 'save_' . WorkflowComponent::STATUS_IN_DRAFT, null, $this->view);
-		$this->assertInput('button', 'save_' . WorkflowComponent::STATUS_PUBLISHED, null, $this->view);
+		//$this->assertInput('button', 'save_' . WorkflowComponent::STATUS_IN_DRAFT, null, $this->view);
+		$this->assertInput('button', 'save', null, $this->view);
 
-		//TODO:上記以外に必要なassert追加
-		debug($this->view);
+		//上記以外に必要なassert追加
+		//debug($this->view);
 
 		//ログアウト
 		TestAuthGeneral::logout($this);
