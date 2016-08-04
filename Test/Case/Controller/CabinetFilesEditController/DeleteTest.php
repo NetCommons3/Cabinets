@@ -29,6 +29,7 @@ class CabinetFilesEditControllerDeleteTest extends WorkflowControllerDeleteTest 
 		'plugin.cabinets.cabinet_file',
 		'plugin.cabinets.cabinet_file_tree',
 		'plugin.workflow.workflow_comment',
+		'plugin.authorization_keys.authorization_keys',
 	);
 
 /**
@@ -73,8 +74,8 @@ class CabinetFilesEditControllerDeleteTest extends WorkflowControllerDeleteTest 
 				'key' => $blockKey,
 			),
 
-			//TODO:必要のデータセットをここに書く
-			'' => array(
+			//必要のデータセットをここに書く
+			'CabinetFile' => array(
 				'id' => $contentId,
 				'key' => $contentKey,
 			),
@@ -117,17 +118,17 @@ class CabinetFilesEditControllerDeleteTest extends WorkflowControllerDeleteTest 
 				'block_id' => $data['Block']['id'],
 				'key' => 'content_key_2',
 			),
-			'assert' => null, 'exception' => 'BadRequestException'
+			'assert' => null, 'exception' => 'MethodNotAllowedException'
 		)));
 		// * 編集権限、公開権限なし
 		array_push($results, Hash::merge($results[0], array(
 			'role' => Role::ROOM_ROLE_KEY_EDITOR,
-			'assert' => null, 'exception' => 'BadRequestException'
+			'assert' => null, 'exception' => 'MethodNotAllowedException'
 		)));
 		// * 公開権限あり
 		array_push($results, Hash::merge($results[0], array(
 			'role' => Role::ROOM_ROLE_KEY_ROOM_ADMINISTRATOR,
-			'assert' => null, 'exception' => 'BadRequestException'
+			'assert' => null, 'exception' => 'MethodNotAllowedException'
 		)));
 
 		return $results;
@@ -257,19 +258,17 @@ class CabinetFilesEditControllerDeleteTest extends WorkflowControllerDeleteTest 
 		//テストデータ
 		$results = array();
 		$results[0] = array(
-			'mockModel' => 'Cabinets.Xxxxxx', //TODO:Mockモデルをセットする
-			'mockMethod' => 'deleteXxxxxx', //TODO:Mockメソッドをセットする
+			'mockModel' => 'Cabinets.CabinetFile', //Mockモデルをセットする
+			'mockMethod' => 'deleteFileByKey', //Mockメソッドをセットする
 			'data' => $data,
 			'urlOptions' => array(
 				'frame_id' => $data['Frame']['id'],
 				'block_id' => $data['Block']['id'],
 				'key' => 'content_key_1',
 			),
-			'exception' => 'BadRequestException',
+			'exception' => 'InternalErrorException',
 			'return' => 'view'
 		);
-
-		//TODO:必要なデータをここに書く
 
 		return $results;
 	}

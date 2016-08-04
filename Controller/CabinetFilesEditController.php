@@ -576,9 +576,9 @@ class CabinetFilesEditController extends CabinetsAppController {
  * @return void
  */
 	public function delete() {
-		$key = $this->request->data['CabinetFile']['key'];
-
 		$this->request->allowMethod('post', 'delete');
+
+		$key = $this->request->data['CabinetFile']['key'];
 
 		$conditions = [
 			'CabinetFile.key' => $key,
@@ -588,7 +588,7 @@ class CabinetFilesEditController extends CabinetsAppController {
 
 		// 権限チェック
 		if ($this->CabinetFile->canDeleteWorkflowContent($cabinetFile) === false) {
-			throw new ForbiddenException(__d('net_commons', 'Permission denied'));
+			return $this->throwBadRequest();
 		}
 
 		if ($this->CabinetFile->deleteFileByKey($key) === false) {
