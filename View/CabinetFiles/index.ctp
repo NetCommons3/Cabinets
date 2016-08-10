@@ -75,15 +75,12 @@
 					);
 					if (Current::permission('content_publishable')) {
 						echo $this->Button->addLink(
-							'<span class="glyphicon glyphicon-folder-close" aria-hidden="true"></span>' . __d(
-								'cabinets',
-								'Folder'
-							),
+							__d('cabinets', 'Add Folder'),
 							$addUrl,
 							array(
-								'tooltip' => __d('cabinets', 'Add Folder'),
 								'escapeTitle' => false,
-								'escape' => false
+								'escape' => false,
+								'addIcon' => 'glyphicon-folder-close'
 							)
 						);
 					}
@@ -101,16 +98,13 @@
 						'parent_id' => $parentId,
 					);
 					echo $this->Button->addLink(
-						'<span class="glyphicon glyphicon-file" aria-hidden="true"></span>' . __d(
-							'cabinets',
-							'File'
-						),
+						__d('cabinets', 'Add File'),
 						'#',
 						array(
-							'tooltip' => __d('cabinets', 'Add File'),
 							'ng-click' => 'addFile()',
 							'escapeTitle' => false,
-							'escape' => false
+							'escape' => false,
+							'addIcon' => 'glyphicon-file',
 						)
 					);
 					?>
