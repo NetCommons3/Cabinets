@@ -29,6 +29,7 @@ class CabinetFilesEditControllerSelectFolderTest extends WorkflowControllerIndex
 		'plugin.cabinets.cabinet_file',
 		'plugin.cabinets.cabinet_file_tree',
 		'plugin.workflow.workflow_comment',
+		'plugin.authorization_keys.authorization_keys',
 	);
 
 /**
@@ -55,9 +56,10 @@ class CabinetFilesEditControllerSelectFolderTest extends WorkflowControllerIndex
 		$blockId = '2';
 
 		$data = array(
-			'action' => 'index',
+			'action' => 'select_folder',
 			'frame_id' => $frameId,
 			'block_id' => $blockId,
+			'key' => 'content_key_14'
 		);
 
 		return $data;
@@ -84,7 +86,7 @@ class CabinetFilesEditControllerSelectFolderTest extends WorkflowControllerIndex
 			'assert' => array('method' => 'assertNotEmpty'),
 		);
 
-		//TODO:必要なテストデータ追加
+		//必要なテストデータ追加
 
 		return $results;
 	}
@@ -101,11 +103,15 @@ class CabinetFilesEditControllerSelectFolderTest extends WorkflowControllerIndex
  */
 	public function testIndex($urlOptions, $assert, $exception = null, $return = 'view') {
 		//テスト実行
+		TestAuthGeneral::login($this);
 		parent::testIndex($urlOptions, $assert, $exception, $return);
 
 		//チェック
-		//TODO:view(ctp)ファイルに対するassert追加
-		debug($this->view);
+		//view(ctp)ファイルに対するassert追加
+		$this->assertTextContains('RootFolder2', $this->view);
+		$this->assertTextContains('Folder1', $this->view);
+		//debug($this->view);
+		TestAuthGeneral::logout($this);
 	}
 
 /**
@@ -135,11 +141,12 @@ class CabinetFilesEditControllerSelectFolderTest extends WorkflowControllerIndex
  */
 	public function testIndexByCreatable($urlOptions, $assert, $exception = null, $return = 'view') {
 		//テスト実行
+
 		parent::testIndexByCreatable($urlOptions, $assert, $exception, $return);
 
 		//チェック
-		//TODO:view(ctp)ファイルに対するassert追加
-		debug($this->view);
+		$this->assertTextContains('RootFolder2', $this->view);
+		$this->assertTextContains('Folder1', $this->view);
 	}
 
 /**
@@ -172,8 +179,8 @@ class CabinetFilesEditControllerSelectFolderTest extends WorkflowControllerIndex
 		parent::testIndexByEditable($urlOptions, $assert, $exception, $return);
 
 		//チェック
-		//TODO:view(ctp)ファイルに対するassert追加
-		debug($this->view);
+		$this->assertTextContains('RootFolder2', $this->view);
+		$this->assertTextContains('Folder1', $this->view);
 	}
 
 }
