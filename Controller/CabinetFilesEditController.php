@@ -511,7 +511,7 @@ class CabinetFilesEditController extends CabinetsAppController {
 
 			// 編集できるユーザかチェック
 			if ($this->CabinetFile->canEditWorkflowContent($cabinetFile) === false) {
-				throw new ForbiddenException(__d('net_commons', 'Permission denied'));
+				return $this->throwBadRequest();
 			}
 
 			// 権限に応じたステータスをセット
@@ -550,8 +550,10 @@ class CabinetFilesEditController extends CabinetsAppController {
 				);
 				//$this->NetCommons->handleValidationError($this->RolesRoomsUser->validationErrors);
 			}
-
 			//$this->set('_serialize', ['message']);
+			$this->emptyRender();
+		} else {
+			return $this->throwBadRequest();
 		}
 	}
 
