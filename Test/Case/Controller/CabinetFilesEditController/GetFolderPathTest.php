@@ -53,13 +53,12 @@ class CabinetFilesEditControllerGetFolderPathTest extends WorkflowControllerView
 	private function __data() {
 		$frameId = '6';
 		$blockId = '2';
-		$contentKey = 'content_key_1';
 
 		$data = array(
-			'action' => 'view',
+			'action' => 'get_folder_path',
 			'frame_id' => $frameId,
 			'block_id' => $blockId,
-			'key' => $contentKey,
+			'tree_id' => 17,
 		);
 
 		return $data;
@@ -82,28 +81,9 @@ class CabinetFilesEditControllerGetFolderPathTest extends WorkflowControllerView
 		//テストデータ
 		$results = array();
 		$results[0] = array(
-			'urlOptions' => Hash::insert($data, 'key', 'content_key_1'),
+			'urlOptions' => $data,
+			//'urlOptions' => Hash::insert($data, 'key', 'content_key_1'),
 			'assert' => array('method' => 'assertNotEmpty'),
-		);
-		$results[1] = array(
-			'urlOptions' => Hash::insert($data, 'key', 'content_key_2'),
-			'assert' => null, 'exception' => 'BadRequestException'
-		);
-		$results[2] = array(
-			'urlOptions' => Hash::insert($data, 'key', 'content_key_3'),
-			'assert' => array('method' => 'assertNotEmpty'),
-		);
-		$results[3] = array(
-			'urlOptions' => Hash::insert($data, 'key', 'content_key_4'),
-			'assert' => array('method' => 'assertNotEmpty'),
-		);
-		$results[4] = array(
-			'urlOptions' => Hash::insert($data, 'key', 'content_key_5'),
-			'assert' => null, 'exception' => 'BadRequestException'
-		);
-		$results[5] = array(
-			'urlOptions' => Hash::insert($data, 'key', 'content_key_999'),
-			'assert' => null, 'exception' => 'BadRequestException'
 		);
 
 		return $results;
@@ -119,15 +99,27 @@ class CabinetFilesEditControllerGetFolderPathTest extends WorkflowControllerView
  * @dataProvider dataProviderView
  * @return void
  */
-	public function testView($urlOptions, $assert, $exception = null, $return = 'view') {
+	public function testView($urlOptions, $assert, $exception = null, $return = 'json') {
+		TestAuthGeneral::login($this);
+
 		//テスト実行
 		parent::testView($urlOptions, $assert, $exception, $return);
 		if ($exception) {
 			return;
 		}
+		$result = json_decode($this->contents);
+		//
+		$folderPath = $result->folderPath;
+		$this->assertEquals(11, $folderPath[0]->CabinetFileTree->id);
+		$this->assertEquals(15, $folderPath[1]->CabinetFileTree->id);
+		$this->assertEquals(17, $folderPath[2]->CabinetFileTree->id);
+
+		//debug($result);
 
 		//チェック
-		$this->__assertView($urlOptions['key'], false);
+		//$this->__assertView($urlOptions['key'], false);
+		TestAuthGeneral::logout($this);
+
 	}
 
 /**
@@ -147,30 +139,9 @@ class CabinetFilesEditControllerGetFolderPathTest extends WorkflowControllerView
 		//テストデータ
 		$results = array();
 		$results[0] = array(
-			'urlOptions' => Hash::insert($data, 'key', 'content_key_1'),
-			'assert' => array('method' => 'assertNotEmpty'),
+			'urlOptions' => $data,
+			'assert' => array('method' => 'assertNotEmpty')
 		);
-		$results[1] = array(
-			'urlOptions' => Hash::insert($data, 'key', 'content_key_2'),
-			'assert' => array('method' => 'assertNotEmpty'),
-		);
-		$results[2] = array(
-			'urlOptions' => Hash::insert($data, 'key', 'content_key_3'),
-			'assert' => array('method' => 'assertNotEmpty'),
-		);
-		$results[3] = array(
-			'urlOptions' => Hash::insert($data, 'key', 'content_key_4'),
-			'assert' => array('method' => 'assertNotEmpty'),
-		);
-		$results[4] = array(
-			'urlOptions' => Hash::insert($data, 'key', 'content_key_5'),
-			'assert' => null, 'exception' => 'BadRequestException'
-		);
-		$results[5] = array(
-			'urlOptions' => Hash::insert($data, 'key', 'content_key_999'),
-			'assert' => null, 'exception' => 'BadRequestException'
-		);
-
 		return $results;
 	}
 
@@ -184,26 +155,18 @@ class CabinetFilesEditControllerGetFolderPathTest extends WorkflowControllerView
  * @dataProvider dataProviderViewByCreatable
  * @return void
  */
-	public function testViewByCreatable($urlOptions, $assert, $exception = null, $return = 'view') {
+	public function testViewByCreatable($urlOptions, $assert, $exception = null, $return = 'json') {
 		//テスト実行
 		parent::testViewByCreatable($urlOptions, $assert, $exception, $return);
 		if ($exception) {
 			return;
 		}
-
-		//チェック
-		if ($urlOptions['key'] === 'content_key_1') {
-			$this->__assertView($urlOptions['key'], false);
-
-		} elseif ($urlOptions['key'] === 'content_key_3') {
-			$this->__assertView($urlOptions['key'], true);
-
-		} elseif ($urlOptions['key'] === 'content_key_4') {
-			$this->__assertView($urlOptions['key'], false);
-
-		} else {
-			$this->__assertView($urlOptions['key'], false);
-		}
+		$result = json_decode($this->contents);
+		//
+		$folderPath = $result->folderPath;
+		$this->assertEquals(11, $folderPath[0]->CabinetFileTree->id);
+		$this->assertEquals(15, $folderPath[1]->CabinetFileTree->id);
+		$this->assertEquals(17, $folderPath[2]->CabinetFileTree->id);
 	}
 
 /**
@@ -223,28 +186,8 @@ class CabinetFilesEditControllerGetFolderPathTest extends WorkflowControllerView
 		//テストデータ
 		$results = array();
 		$results[0] = array(
-			'urlOptions' => Hash::insert($data, 'key', 'content_key_1'),
+			'urlOptions' => $data,
 			'assert' => array('method' => 'assertNotEmpty'),
-		);
-		$results[1] = array(
-			'urlOptions' => Hash::insert($data, 'key', 'content_key_2'),
-			'assert' => array('method' => 'assertNotEmpty'),
-		);
-		$results[2] = array(
-			'urlOptions' => Hash::insert($data, 'key', 'content_key_3'),
-			'assert' => array('method' => 'assertNotEmpty'),
-		);
-		$results[3] = array(
-			'urlOptions' => Hash::insert($data, 'key', 'content_key_4'),
-			'assert' => array('method' => 'assertNotEmpty'),
-		);
-		$results[4] = array(
-			'urlOptions' => Hash::insert($data, 'key', 'content_key_5'),
-			'assert' => array('method' => 'assertNotEmpty'),
-		);
-		$results[5] = array(
-			'urlOptions' => Hash::insert($data, 'key', 'content_key_999'),
-			'assert' => null, 'exception' => 'BadRequestException'
 		);
 
 		return $results;
@@ -260,64 +203,19 @@ class CabinetFilesEditControllerGetFolderPathTest extends WorkflowControllerView
  * @dataProvider dataProviderViewByEditable
  * @return void
  */
-	public function testViewByEditable($urlOptions, $assert, $exception = null, $return = 'view') {
+	public function testViewByEditable($urlOptions, $assert, $exception = null, $return = 'json') {
 		//テスト実行
 		parent::testViewByEditable($urlOptions, $assert, $exception, $return);
 		if ($exception) {
 			return;
 		}
-
 		//チェック
-		$this->__assertView($urlOptions['key'], true);
-	}
-
-/**
- * view()のassert
- *
- * @param string $contentKey コンテンツキー
- * @param bool $isLatest 最終コンテンツかどうか
- * @return void
- * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
- */
-	private function __assertView($contentKey, $isLatest = false) {
-		//TODO:view(ctp)ファイルに対するassert追加
-		//debug($this->view);
-
-		if ($contentKey === 'content_key_1') {
-			if ($isLatest) {
-				//TODO: コンテンツのデータ(id=2, key=content_key_1)に対する期待値
-				$this->assertTextContains('Title 2', $this->view);
-			} else {
-				//TODO: コンテンツのデータ(id=1, key=content_key_1)に対する期待値
-				$this->assertTextContains('Title 1', $this->view);
-			}
-
-		} elseif ($contentKey === 'content_key_2') {
-			//TODO: コンテンツのデータ(id=3, key=content_key_2)に対する期待値
-			$this->assertTextContains('Title 3', $this->view);
-
-		} elseif ($contentKey === 'content_key_3') {
-			if ($isLatest) {
-				//TODO: コンテンツのデータ(id=5, key=content_key_3)に対する期待値
-				$this->assertTextContains('', $this->view);
-			} else {
-				//TODO: コンテンツのデータ(id=4, key=content_key_3)に対する期待値
-				$this->assertTextContains('', $this->view);
-			}
-
-		} elseif ($contentKey === 'content_key_4') {
-			if ($isLatest) {
-				//TODO: コンテンツのデータ(id=7, key=content_key_4)に対する期待値
-				$this->assertTextContains('', $this->view);
-			} else {
-				//TODO: コンテンツのデータ(id=6, key=content_key_4)に対する期待値
-				$this->assertTextContains('', $this->view);
-			}
-
-		} elseif ($contentKey === 'content_key_5') {
-			//TODO: コンテンツのデータ(id=8, key=content_key_5)に対する期待値
-			$this->assertTextContains('', $this->view);
-		}
+		$result = json_decode($this->contents);
+		//
+		$folderPath = $result->folderPath;
+		$this->assertEquals(11, $folderPath[0]->CabinetFileTree->id);
+		$this->assertEquals(15, $folderPath[1]->CabinetFileTree->id);
+		$this->assertEquals(17, $folderPath[2]->CabinetFileTree->id);
 	}
 
 }

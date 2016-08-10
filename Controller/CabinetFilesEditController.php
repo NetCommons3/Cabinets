@@ -567,7 +567,8 @@ class CabinetFilesEditController extends CabinetsAppController {
 		//	$folder['url'] =
 		//}
 		$this->set('folderPath', $folderPath);
-		$this->set('_serialize', ['folderPath']);
+		$this->set('code', 200);
+		$this->set('_serialize', ['folderPath', 'code']);
 	}
 
 /**
