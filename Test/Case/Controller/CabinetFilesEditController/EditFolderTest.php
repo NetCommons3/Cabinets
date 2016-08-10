@@ -29,6 +29,7 @@ class CabinetFilesEditControllerEditFolderTest extends WorkflowControllerEditTes
 		'plugin.cabinets.cabinet_file',
 		'plugin.cabinets.cabinet_file_tree',
 		'plugin.workflow.workflow_comment',
+		'plugin.authorization_keys.authorization_keys',
 	);
 
 /**
@@ -55,13 +56,15 @@ class CabinetFilesEditControllerEditFolderTest extends WorkflowControllerEditTes
 		$frameId = '6';
 		$blockId = '2';
 		$blockKey = 'block_1';
-		if ($role === Role::ROOM_ROLE_KEY_GENERAL_USER) {
-			$contentId = '3';
-			$contentKey = 'content_key_2';
-		} else {
-			$contentId = '2';
-			$contentKey = 'content_key_1';
-		}
+		$contentKey = 'content_key_12';
+		$contentId = 12;
+		//if ($role === Role::ROOM_ROLE_KEY_GENERAL_USER) {
+		//	$contentId = '3';
+		//	$contentKey = 'content_key_2';
+		//} else {
+		//	$contentId = '2';
+		//	$contentKey = 'content_key_1';
+		//}
 
 		$data = array(
 			'save_' . WorkflowComponent::STATUS_IN_DRAFT => null,
@@ -76,13 +79,18 @@ class CabinetFilesEditControllerEditFolderTest extends WorkflowControllerEditTes
 				'plugin_key' => $this->plugin,
 			),
 
-			//TODO:必要のデータセットをここに書く
-			'' => array(
+			//必要のデータセットをここに書く
+			// 必要のデータセットをここに書く
+			'CabinetFile' => array(
 				'id' => $contentId,
 				'key' => $contentKey,
 				'language_id' => '2',
-				'status' => null,
+				'filename' => 'EditFolder',
+				'is_folder' => 1,
 			),
+			'CabinetFileTree' => [
+				'parent_id' => 11,
+			],
 
 			'WorkflowComment' => array(
 				'comment' => 'WorkflowComment save test',
@@ -113,7 +121,8 @@ class CabinetFilesEditControllerEditFolderTest extends WorkflowControllerEditTes
 			'urlOptions' => array(
 				'frame_id' => $data['Frame']['id'],
 				'block_id' => $data['Block']['id'],
-				'key' => 'content_key_1'
+				'key' => 'content_key_12',
+				'action' => 'edit_folder'
 			),
 			'assert' => null, 'exception' => 'ForbiddenException'
 		);
@@ -143,7 +152,7 @@ class CabinetFilesEditControllerEditFolderTest extends WorkflowControllerEditTes
 			'urlOptions' => array(
 				'frame_id' => $data['Frame']['id'],
 				'block_id' => $data['Block']['id'],
-				'key' => 'content_key_1'
+				'key' => 'content_key_12'
 			),
 			'assert' => null, 'exception' => 'BadRequestException'
 		);
@@ -152,9 +161,10 @@ class CabinetFilesEditControllerEditFolderTest extends WorkflowControllerEditTes
 			'urlOptions' => array(
 				'frame_id' => $data['Frame']['id'],
 				'block_id' => $data['Block']['id'],
-				'key' => 'content_key_2'
+				'key' => 'content_key_12'
 			),
-			'assert' => array('method' => 'assertNotEmpty'),
+			null,
+			'BadRequestException'
 		);
 
 		return $results;
@@ -178,14 +188,15 @@ class CabinetFilesEditControllerEditFolderTest extends WorkflowControllerEditTes
 		// * 編集権限あり
 		$results = array();
 		// ** コンテンツあり
-		$base = 0;
 		$results[0] = array(
 			'urlOptions' => array(
 				'frame_id' => $data['Frame']['id'],
 				'block_id' => $data['Block']['id'],
-				'key' => 'content_key_1'
+				'key' => 'content_key_12',
+				'action' => 'edit_folder'
 			),
-			'assert' => array('method' => 'assertNotEmpty'),
+			null,
+			'ForbiddenException'
 		);
 
 		// ** コンテンツなし
@@ -193,10 +204,11 @@ class CabinetFilesEditControllerEditFolderTest extends WorkflowControllerEditTes
 			'urlOptions' => array(
 				'frame_id' => '14',
 				'block_id' => null,
-				'key' => null
+				'key' => null,
+				'action' => 'edit_folder'
 			),
-			'assert' => array('method' => 'assertEquals', 'expected' => 'emptyRender'),
-			'exception' => null, 'return' => 'viewFile'
+			null,
+			'ForbiddenException'
 		);
 
 		return $results;
@@ -223,7 +235,8 @@ class CabinetFilesEditControllerEditFolderTest extends WorkflowControllerEditTes
 			'urlOptions' => array(
 				'frame_id' => null,
 				'block_id' => $data['Block']['id'],
-				'key' => 'content_key_1'
+				'key' => 'content_key_12',
+				'action' => 'edit_folder'
 			),
 			'assert' => array('method' => 'assertNotEmpty'),
 		);
@@ -249,7 +262,7 @@ class CabinetFilesEditControllerEditFolderTest extends WorkflowControllerEditTes
 		//テストデータ
 		$results = array();
 		// * ログインなし
-		$contentKey = 'content_key_1';
+		$contentKey = 'content_key_12';
 		array_push($results, array(
 			'data' => $data,
 			'role' => null,
@@ -257,12 +270,13 @@ class CabinetFilesEditControllerEditFolderTest extends WorkflowControllerEditTes
 				'frame_id' => $data['Frame']['id'],
 				'block_id' => $data['Block']['id'],
 				'key' => $contentKey,
+				'action' => 'edit_folder'
 			),
 			'exception' => 'ForbiddenException'
 		));
 		// * 作成権限のみ
 		// ** 他人の記事
-		$contentKey = 'content_key_1';
+		$contentKey = 'content_key_12';
 		array_push($results, array(
 			'data' => $data,
 			'role' => Role::ROOM_ROLE_KEY_GENERAL_USER,
@@ -270,11 +284,12 @@ class CabinetFilesEditControllerEditFolderTest extends WorkflowControllerEditTes
 				'frame_id' => $data['Frame']['id'],
 				'block_id' => $data['Block']['id'],
 				'key' => $contentKey,
+				'action' => 'edit_folder'
 			),
-			'exception' => 'BadRequestException'
+			'exception' => 'ForbiddenException'
 		));
 		// ** 自分の記事
-		$contentKey = 'content_key_2';
+		$contentKey = 'content_key_12';
 		array_push($results, array(
 			'data' => $this->__data(Role::ROOM_ROLE_KEY_GENERAL_USER),
 			'role' => Role::ROOM_ROLE_KEY_GENERAL_USER,
@@ -282,11 +297,13 @@ class CabinetFilesEditControllerEditFolderTest extends WorkflowControllerEditTes
 				'frame_id' => $data['Frame']['id'],
 				'block_id' => $data['Block']['id'],
 				'key' => $contentKey,
+				'action' => 'edit_folder'
 			),
+			'exception' => 'ForbiddenException'
 		));
 		// * 編集権限あり
 		// ** コンテンツあり
-		$contentKey = 'content_key_1';
+		$contentKey = 'content_key_12';
 		array_push($results, array(
 			'data' => $data,
 			'role' => Role::ROOM_ROLE_KEY_EDITOR,
@@ -294,10 +311,12 @@ class CabinetFilesEditControllerEditFolderTest extends WorkflowControllerEditTes
 				'frame_id' => $data['Frame']['id'],
 				'block_id' => $data['Block']['id'],
 				'key' => $contentKey,
+				'action' => 'edit_folder'
 			),
+			'exception' => 'ForbiddenException'
 		));
 		// ** フレームID指定なしテスト
-		$contentKey = 'content_key_1';
+		$contentKey = 'content_key_12';
 		array_push($results, array(
 			'data' => $data,
 			'role' => Role::ROOM_ROLE_KEY_ROOM_ADMINISTRATOR,
@@ -305,6 +324,7 @@ class CabinetFilesEditControllerEditFolderTest extends WorkflowControllerEditTes
 				'frame_id' => null,
 				'block_id' => $data['Block']['id'],
 				'key' => $contentKey,
+				'action' => 'edit_folder'
 			),
 		));
 
@@ -328,7 +348,8 @@ class CabinetFilesEditControllerEditFolderTest extends WorkflowControllerEditTes
 			'urlOptions' => array(
 				'frame_id' => $data['Frame']['id'],
 				'block_id' => $data['Block']['id'],
-				'key' => 'content_key_1',
+				'key' => 'content_key_12',
+				'action' => 'edit_folder'
 			),
 			'validationError' => array(),
 		);
@@ -337,13 +358,14 @@ class CabinetFilesEditControllerEditFolderTest extends WorkflowControllerEditTes
 		$results = array();
 		array_push($results, Hash::merge($result, array(
 			'validationError' => array(
-				'field' => '', //TODO:フィールド指定(Hashのpath形式)
+				'field' => 'CabinetFile.filename', //フィールド指定(Hashのpath形式)
 				'value' => '',
-				'message' => '' //TODO:メッセージ追加
+				'message' => sprintf(
+					__d('net_commons', 'Please input %s.'),
+					__d('cabinets', 'Filename')
+				) //メッセージ
 			)
 		)));
-
-		//TODO:必要なテストデータ追加
 
 		return $results;
 	}
@@ -355,7 +377,7 @@ class CabinetFilesEditControllerEditFolderTest extends WorkflowControllerEditTes
  * @return void
  */
 	private function __assertEditGet($data) {
-		//TODO:必要に応じてassert書く
+		//必要に応じてassert書く
 		debug($this->view);
 
 		$this->assertInput(
@@ -365,7 +387,7 @@ class CabinetFilesEditControllerEditFolderTest extends WorkflowControllerEditTes
 			'input', 'data[Block][id]', $data['Block']['id'], $this->view
 		);
 
-		//TODO:上記以外に必要なassert追加
+		//上記以外に必要なassert追加
 	}
 
 /**
@@ -380,22 +402,16 @@ class CabinetFilesEditControllerEditFolderTest extends WorkflowControllerEditTes
 		$data = $this->__data();
 		$this->_testGetAction(
 			array(
-				'action' => 'edit',
+				'action' => 'edit_folder',
 				'frame_id' => $data['Frame']['id'],
 				'block_id' => $data['Block']['id'],
-				'key' => 'content_key_1',
+				'key' => 'content_key_12',
 			),
-			array('method' => 'assertNotEmpty')
+			null,
+			'ForbiddenException'
 		);
 
 		//チェック
-		$this->__assertEditGet($data);
-		$this->assertInput('button', 'save_' . WorkflowComponent::STATUS_IN_DRAFT, null, $this->view);
-		$this->assertInput('button', 'save_' . WorkflowComponent::STATUS_APPROVED, null, $this->view);
-		$this->assertNotRegExp('/<input.*?name="_method" value="DELETE".*?>/', $this->view);
-
-		//TODO:上記以外に必要なassert追加
-
 		TestAuthGeneral::logout($this);
 	}
 
@@ -411,21 +427,21 @@ class CabinetFilesEditControllerEditFolderTest extends WorkflowControllerEditTes
 		//テスト実行
 		$data = $this->__data();
 		$urlOptions = array(
-			'action' => 'edit',
+			'action' => 'edit_folder',
 			'block_id' => $data['Block']['id'],
 			'frame_id' => $data['Frame']['id'],
-			'key' => 'content_key_1',
+			'key' => 'content_key_12',
+
 		);
 		$this->_testGetAction($urlOptions, array('method' => 'assertNotEmpty'));
 
 		//チェック
 		$this->__assertEditGet($data);
-		$this->assertInput('button', 'save_' . WorkflowComponent::STATUS_IN_DRAFT, null, $this->view);
-		$this->assertInput('button', 'save_' . WorkflowComponent::STATUS_PUBLISHED, null, $this->view);
+		$this->assertInput('button', 'save', null, $this->view);
 		$this->assertInput('input', '_method', 'DELETE', $this->view);
 
-		//TODO:上記以外に必要なassert追加
-		debug($this->view);
+		//上記以外に必要なassert追加
+		//debug($this->view);
 
 		//ログアウト
 		TestAuthGeneral::logout($this);
