@@ -653,6 +653,7 @@ class CabinetFilesEditController extends CabinetsAppController {
 						'action' => 'index',
 						'key' => $parentCabinetFolder['CabinetFile']['key'],
 						'block_id' => Current::read('Block.id'),
+						'frame_id' => Current::read('Frame.id')
 					]
 				)
 			);
