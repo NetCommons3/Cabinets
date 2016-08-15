@@ -1,21 +1,9 @@
-<?php echo $this->Html->script(
-	'/cabinets/js/cabinet_file_edit.js',
-	array(
-		'plugin' => false,
-		'once' => true,
-		'inline' => false
-	)
-); ?>
 <?php
-echo $this->Html->script(
-	'/cabinets/js/cabinets.js',
-	array(
-		'plugin' => false,
-		'once' => true,
-		'inline' => false
-	)
+echo $this->NetCommonsHtml->script(
+	'/cabinets/js/cabinets.js'
 );
 ?>
+
 <div ng-controller="Cabinets" ng-init="init(
 	 <?php echo Current::read('Block.id') ?>,
 	 <?php echo Current::read('Frame.id') ?>

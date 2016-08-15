@@ -1,13 +1,9 @@
 <?php
-echo $this->Html->script(
-	'/cabinets/js/cabinets.js',
-	array(
-		'plugin' => false,
-		'once' => true,
-		'inline' => false
-	)
+echo $this->NetCommonsHtml->script(
+	'/cabinets/js/cabinets.js'
 );
 ?>
+
 <?php $this->start('title_for_modal'); ?>
 <?php echo $cabinet['Cabinet']['name'] ?>
 <?php $this->end(); ?>
