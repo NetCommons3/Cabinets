@@ -10,7 +10,7 @@
 /**
  * Class AddIndex
  */
- class AddIndex extends CakeMigration {
+class AddIndex extends CakeMigration {
 
 /**
  * Migration description
