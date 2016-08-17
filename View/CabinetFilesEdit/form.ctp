@@ -76,7 +76,7 @@ echo $this->NetCommonsHtml->script(
 
 						<div class="form-group">
 							<?php echo $this->NetCommonsForm->checkbox(
-								'Cabinet.use_auth_key',
+								'CabinetFile.use_auth_key',
 								[
 									'ng-model' => 'use_auth_key',
 									'label' => __d('cabinets', 'Set download password.'),
