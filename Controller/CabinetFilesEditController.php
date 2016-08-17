@@ -45,8 +45,6 @@ class CabinetFilesEditController extends CabinetsAppController {
 		),
 		'Workflow.Workflow',
 
-		'Categories.Categories',
-		//'Cabinets.CabinetFilePermission',
 		'NetCommons.NetCommonsTime',
 		'Files.FileUpload',
 		'Files.Download',
@@ -92,7 +90,7 @@ class CabinetFilesEditController extends CabinetsAppController {
 
 		if ($this->request->is('post')) {
 
-			if (!Hash::get($this->request->data, 'use_auth_key', false)) {
+			if (!Hash::get($this->request->data, 'CabinetFile.use_auth_key', false)) {
 				// 認証キーを使わない設定だったら、認証キーのPOST値を握りつぶす
 				unset($this->request->data['AuthorizationKey']);
 			}
