@@ -499,7 +499,7 @@ class CabinetFilesEditController extends CabinetsAppController {
 
 			//  keyのis_latestを元に編集を開始
 			$cabinetFile = $this->CabinetFile->findByKeyAndIsLatest($key, 1);
-			$parentId = Hash::get($this->request->named, 'parent_id', null);
+			$parentId = Hash::get($this->request->data, 'parent_id', null);
 
 			$cabinetFile['CabinetFileTree']['parent_id'] = $parentId;
 			// フォルダの移動は公開権限が必要

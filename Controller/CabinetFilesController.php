@@ -36,7 +36,8 @@ class CabinetFilesController extends CabinetsAppController {
 		'NetCommons.BackTo',
 		'Workflow.Workflow',
 		'Users.DisplayUser',
-		'Paginator'
+		'Paginator',
+		'NetCommons.Token'
 	);
 
 /**
