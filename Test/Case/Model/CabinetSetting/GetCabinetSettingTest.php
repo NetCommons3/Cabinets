@@ -28,7 +28,7 @@ class CabinetSettingGetCabinetSettingTest extends NetCommonsGetTest {
 		'plugin.cabinets.cabinet',
 		'plugin.cabinets.cabinet_file',
 		'plugin.cabinets.cabinet_file_tree',
-		'plugin.cabinets.cabinet_setting',
+		'plugin.cabinets.block_setting_for_cabinet',
 		'plugin.workflow.workflow_comment',
 	);
 
@@ -62,14 +62,11 @@ class CabinetSettingGetCabinetSettingTest extends NetCommonsGetTest {
 		$model = $this->_modelName;
 		$methodName = $this->_methodName;
 
-		//データ生成
-		$cabinetKey = 'content_block_1';
-
 		//テスト実施
-		$result = $this->$model->$methodName($cabinetKey);
+		$result = $this->$model->$methodName();
 
 		$this->assertInternalType('array', $result);
-		$this->assertEquals(2, $result['CabinetSetting']['id']);
+		$this->assertEquals('0', $result['CabinetSetting']['use_workflow']);
 	}
 
 }

@@ -1,21 +1,9 @@
-<?php echo $this->Html->script(
-	'/cabinets/js/cabinet_file_edit.js',
-	array(
-		'plugin' => false,
-		'once' => true,
-		'inline' => false
-	)
-); ?>
 <?php
-echo $this->Html->script(
-	'/cabinets/js/cabinets.js',
-	array(
-		'plugin' => false,
-		'once' => true,
-		'inline' => false
-	)
+echo $this->NetCommonsHtml->script(
+	'/cabinets/js/cabinets.js'
 );
 ?>
+
 <div ng-controller="Cabinets" ng-init="init(
 	 <?php echo Current::read('Block.id') ?>,
 	 <?php echo Current::read('Frame.id') ?>
@@ -101,7 +89,7 @@ echo $this->Html->script(
 					<?php echo $this->Button->cancelAndSave(
 						__d('net_commons', 'Cancel'),
 						__d('net_commons', 'OK'),
-						$this->NetCommonsHtml->url(
+						NetCommonsUrl::blockUrl(
 							[
 								'controller' => 'cabinet_files',
 								'action' => $isEdit ? 'folder_detail' : 'index',
@@ -118,7 +106,7 @@ echo $this->Html->script(
 							'CabinetFile',
 							array(
 								'type' => 'delete',
-								'url' => $this->NetCommonsHtml->url(
+								'url' => NetCommonsUrl::blockUrl(
 									array(
 										'controller' => 'cabinet_files_edit',
 										'action' => 'delete',

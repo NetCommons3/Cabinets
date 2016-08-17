@@ -75,15 +75,12 @@
 					);
 					if (Current::permission('content_publishable')) {
 						echo $this->Button->addLink(
-							'<span class="glyphicon glyphicon-folder-close" aria-hidden="true"></span>' . __d(
-								'cabinets',
-								'Folder'
-							),
+							__d('cabinets', 'Add Folder'),
 							$addUrl,
 							array(
-								'tooltip' => __d('cabinets', 'Add Folder'),
 								'escapeTitle' => false,
-								'escape' => false
+								'escape' => false,
+								'addIcon' => 'glyphicon-folder-close'
 							)
 						);
 					}
@@ -101,16 +98,13 @@
 						'parent_id' => $parentId,
 					);
 					echo $this->Button->addLink(
-						'<span class="glyphicon glyphicon-file" aria-hidden="true"></span>' . __d(
-							'cabinets',
-							'File'
-						),
+						__d('cabinets', 'Add File'),
 						'#',
 						array(
-							'tooltip' => __d('cabinets', 'Add File'),
 							'ng-click' => 'addFile()',
 							'escapeTitle' => false,
-							'escape' => false
+							'escape' => false,
+							'addIcon' => 'glyphicon-file',
 						)
 					);
 					?>
@@ -162,7 +156,7 @@
 					<tr>
 						<td>
 							<?php
-							echo $this->Html->link(
+							echo $this->NetCommonsHtml->link(
 								'<span class="glyphicon glyphicon-circle-arrow-up" aria-hidden="true"></span>' . __d(
 									'cabinets',
 									'Parent folder'
@@ -177,14 +171,12 @@
 						<td colspan="2" style="text-align: right; ">
 							<?php
 							if (count($cabinetFiles) > 0) {
-								echo $this->Html->link(
+								echo $this->NetCommonsHtml->link(
 									__d('cabinets', 'Zip download'),
-									$this->NetCommonsHtml->url(
-										[
-											'action' => 'download_folder',
-											'key' => $currentFolder['CabinetFile']['key']
-										]
-									),
+									[
+										'action' => 'download_folder',
+										'key' => $currentFolder['CabinetFile']['key']
+									],
 									['class' => 'btn btn-xs btn-default',
 										'style' => 'margin-left:0px;'
 									]
