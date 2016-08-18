@@ -1,6 +1,26 @@
 /**
  * Cabinets Javascript
  */
+// NetCommonsApp.directive('resize', ['$rootScope', '$window', '$timeout', function($rootScope, $window, $timeout){
+//   return {
+//     restrict: 'EA',
+//     scope: {
+//       resize: '&'
+//     },
+//     link: function(scope){
+//       var timer = false;
+//       angular.element($window).on('load resize', function(e){
+//         console.log('resize');
+//         if(timer) $timeout.cancel(timer);
+//
+//         timer = $timeout(function(){
+//           scope.resize();
+//         }, 200);
+//
+//       });
+//     }
+//   }
+// }]);
 
 NetCommonsApp.controller('Cabinets',
     ['$scope', function($scope) {
@@ -108,6 +128,22 @@ NetCommonsApp.controller('CabinetFile.addFileModal',
 
 NetCommonsApp.controller('Cabinets.FolderTree',
     ['$scope', function($scope) {
+
+      // $scope.treeVisible = true;
+      //
+      // this.trigger = function(event){
+      //   $scope.$broadcast(event);
+      // }
+      // this.resizeHandler = function(){
+      //   // Treeのサイズを取得
+      //   main = angular.element(document).find('#container-main');
+      //   if (main.width() < 600) {
+      //     $scope.treeVisible = false;
+      //   } else {
+      //     $scope.treeVisible = true;
+      //   }
+      // }
+
       $scope.folder = [];
 
       $scope.init = function(currentFolderPath) {

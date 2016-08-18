@@ -116,12 +116,19 @@
 
 	<div class="row">
 		<?php // ============ フォルダツリー ============?>
+		<?php
+		$is3columnLayout = $this->PageLayout->hasContainer(Container::TYPE_MAJOR) && $this->PageLayout->hasContainer(Container::TYPE_MINOR);
+		$listCol = $is3columnLayout ? 'col-md-12' : 'col-md-9';
+		?>
+		<?php if (! $is3columnLayout): ?>
 		<div class="col-md-3 hidden-sm hidden-xs cabinets-folder-tree inline"
-			ng-controller="Cabinets.FolderTree">
-			<?php echo $this->element('CabinetFiles/folder_tree'); ?>
+			ng-controller="Cabinets.FolderTree as foldertree">
+			<div resize="foldertree.resizeHandler()">
+				<?php echo $this->element('CabinetFiles/folder_tree'); ?>
+			</div>
 		</div>
-
-		<div class="col-md-9 ">
+		<?php endif ?>
+		<div class="<?php echo $listCol?>">
 			<table
 				class="table table-hover cabinets__index__file-list"
 				style="table-layout: fixed"
