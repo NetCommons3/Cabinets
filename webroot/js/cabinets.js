@@ -1,7 +1,8 @@
 /**
  * Cabinets Javascript
  */
-// NetCommonsApp.directive('resize', ['$rootScope', '$window', '$timeout', function($rootScope, $window, $timeout){
+// NetCommonsApp.directive('resize',
+// ['$rootScope', '$window', '$timeout', function($rootScope, $window, $timeout){
 //   return {
 //     restrict: 'EA',
 //     scope: {
