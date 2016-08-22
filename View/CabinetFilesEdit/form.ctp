@@ -151,7 +151,7 @@ echo $this->NetCommonsHtml->script(
 							'CabinetFile',
 							array(
 								'type' => 'delete',
-								'url' => $this->NetCommonsHtml->url(
+								'url' => NetCommonsUrl::blockUrl(
 									array(
 										'controller' => 'cabinet_files_edit',
 										'action' => 'delete',
