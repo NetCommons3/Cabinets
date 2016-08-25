@@ -3,14 +3,36 @@
 	<?php
 	$icon = '<span class="glyphicon glyphicon-file text-primary cabinets__file-list-icon" aria-hidden="true"></span>';
 	echo $icon;
-	echo $this->NetCommonsHtml->link(
-		h($cabinetFile['CabinetFile']['filename']),
-		[
-			'action' => 'download',
-			'key' => $cabinetFile['CabinetFile']['key']
-		],
-		['escape' => false]
-	);
+	if (isset($cabinetFile['AuthorizationKey'])) {
+		// 認証キー必要
+		echo $this->NetCommonsHtml->link(
+			h($cabinetFile['CabinetFile']['filename']),
+			'#',
+			[
+				'authorization-keys-popup-link',
+				'url' => NetCommonsUrl::actionUrl(
+					[
+						'action' => 'download',
+						'key' => $cabinetFile['CabinetFile']['key'],
+						'block_id' => Current::read('Block.id'),
+						'frame_id' => Current::read('Frame.id')
+					]
+				),
+				'popup-title' => __d('authorization_keys', 'Authorization key confirm dialog'),
+				'popup-label' => __d('authorization_keys', 'Authorization key'),
+				'popup-placeholder' => __d('authorization_keys', 'Please input authorization key')
+			]
+		);
+	} else {
+		// 認証キー不要
+		echo $this->NetCommonsHtml->link(
+			h($cabinetFile['CabinetFile']['filename']),
+			[
+				'action' => 'download',
+				'key' => $cabinetFile['CabinetFile']['key']
+			]
+		);
+	}
 	?>
 	<?php echo $this->Workflow->label(
 		$cabinetFile['CabinetFile']['status']

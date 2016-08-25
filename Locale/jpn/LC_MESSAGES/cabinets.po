@@ -19,11 +19,11 @@ msgstr "ダウンロードパスワードが設定されてるファイルが存
 
 #: Controller/CabinetFilesEditController.php:146
 msgid "Add File"
-msgstr "新規ファイル"
+msgstr "ファイル追加"
 
 #: Controller/CabinetFilesEditController.php:303
 msgid "Add Folder"
-msgstr "新規フォルダ"
+msgstr "フォルダ作成"
 
 #: Controller/CabinetFilesEditController.php:475
 msgid "Moved."

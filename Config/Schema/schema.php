@@ -76,6 +76,7 @@ class CabinetsSchema extends CakeSchema {
 		'modified' => array('type' => 'datetime', 'null' => true, 'default' => null, 'comment' => 'modified datetime | 更新日時 |  | '),
 		'key' => array('type' => 'string', 'null' => false, 'default' => null, 'key' => 'index', 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
 		'is_folder' => array('type' => 'boolean', 'null' => false, 'default' => '0'),
+		'use_auth_key' => array('type' => 'boolean', 'null' => false, 'default' => '0'),
 		'indexes' => array(
 			'PRIMARY' => array('column' => 'id', 'unique' => 1),
 			'key' => array('column' => array('key', 'language_id'), 'unique' => 0)

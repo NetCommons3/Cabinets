@@ -90,7 +90,7 @@ class CabinetFilesEditController extends CabinetsAppController {
 
 		if ($this->request->is('post')) {
 
-			if (!Hash::get($this->request->data, 'use_auth_key', false)) {
+			if (!Hash::get($this->request->data, 'CabinetFile.use_auth_key', false)) {
 				// 認証キーを使わない設定だったら、認証キーのPOST値を握りつぶす
 				unset($this->request->data['AuthorizationKey']);
 			}
@@ -653,7 +653,7 @@ class CabinetFilesEditController extends CabinetsAppController {
 						'action' => 'index',
 						'key' => $parentCabinetFolder['CabinetFile']['key'],
 						'block_id' => Current::read('Block.id'),
-						'frame_id' => Current::read('Frame.id')
+						'frame_id' => Current::read('Frame.id'),
 					]
 				)
 			);
@@ -662,4 +662,3 @@ class CabinetFilesEditController extends CabinetsAppController {
 		}
 	}
 }
-

@@ -1,13 +1,9 @@
 <?php
-echo $this->Html->script(
-	'/cabinets/js/cabinets.js',
-	array(
-		'plugin' => false,
-		'once' => true,
-		'inline' => false
-	)
+echo $this->NetCommonsHtml->script(
+	'/cabinets/js/cabinets.js'
 );
 ?>
+
 <?php $this->start('title_for_modal'); ?>
 <?php echo $cabinet['Cabinet']['name'] ?>
 <?php $this->end(); ?>
@@ -62,7 +58,7 @@ echo $this->Html->script(
 
 						<div class="form-group">
 							<?php echo $this->NetCommonsForm->checkbox(
-								'Cabinet.use_auth_key',
+								'CabinetFile.use_auth_key',
 								[
 									'ng-model' => 'use_auth_key',
 									'label' => __d('cabinets', 'Set download password.'),

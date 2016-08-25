@@ -1,13 +1,9 @@
 <?php
-echo $this->Html->script(
-	'/cabinets/js/cabinets.js',
-	array(
-		'plugin' => false,
-		'once' => true,
-		'inline' => false
-	)
+echo $this->NetCommonsHtml->script(
+	'/cabinets/js/cabinets.js'
 );
 ?>
+
 <div ng-controller="Cabinets" ng-init="init(
 	 <?php echo Current::read('Block.id') ?>,
 	 <?php echo Current::read('Frame.id') ?>
@@ -87,7 +83,7 @@ echo $this->Html->script(
 
 						<div class="form-group">
 							<?php echo $this->NetCommonsForm->checkbox(
-								'Cabinet.use_auth_key',
+								'CabinetFile.use_auth_key',
 								[
 									'ng-model' => 'use_auth_key',
 									'label' => __d('cabinets', 'Set download password.'),
@@ -162,7 +158,7 @@ echo $this->Html->script(
 							'CabinetFile',
 							array(
 								'type' => 'delete',
-								'url' => $this->NetCommonsHtml->url(
+								'url' => NetCommonsUrl::blockUrl(
 									array(
 										'controller' => 'cabinet_files_edit',
 										'action' => 'delete',
