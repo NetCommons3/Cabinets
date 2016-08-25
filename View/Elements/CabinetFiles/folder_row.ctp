@@ -63,8 +63,36 @@
 			<?php // フォルダ移動・編集は公開権限必要 ?>
 			<?php if (Current::permission('content_publishable')) :?>
 			<li>
+				<?php
+				$data = [
+					'CabinetFileTree' => [
+						'parent_id' => $cabinetFile['CabinetFileTree']['parent_id'],
+					],
+					'Frame' => [
+						'id' => Current::read('Frame.id'),
+					]
+				];
+				$tokenFields = Hash::flatten($data);
+				//$hiddenFields = $tokenFields;
+				//unset($hiddenFields['LikesUser.is_liked']);
+				$hiddenFields = [
+					'Frame.id'
+				];
+
+				$this->request->data = Hash::merge($this->request->data, $data);
+				$this->request->data = $data;
+				$this->Token->unlockField('CabinetFileTree.parent_id');
+				//$tokens = $this->Token->getToken('CabinetFileTree', '/cabinets/cabinet_files_edit/move',
+				$tokens = $this->Token->getToken('CabinetFileTree', '/cabinets/cabinet_files_edit/move/' . Current::read('Block.id') . '/' . $cabinetFile['CabinetFile']['key'] . '?frame_id=' . Current::read('Frame.id'),
+					$tokenFields, $hiddenFields);
+				$data += $tokens;
+
+				?>
+
 				<a href="#"
-					ng-click="moveFile('<?php echo $cabinetFile['CabinetFile']['key'] ?>', true)"><?php echo __d(
+					ng-click="moveFile('<?php echo $cabinetFile['CabinetFile']['key'] ?>', true,
+					<?php echo h(json_encode($data)) ?>
+)"><?php echo __d(
 						'net_commons',
 						'Move'
 					); ?></a>

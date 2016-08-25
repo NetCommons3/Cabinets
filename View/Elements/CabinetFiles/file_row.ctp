@@ -97,7 +97,7 @@
 				<?php
 				$data = [
 					'CabinetFileTree' => [
-						'parent_id' => 1,
+						'parent_id' => $cabinetFile['CabinetFileTree']['parent_id'],
 						],
 					'Frame' => [
 						'id' => Current::read('Frame.id'),
@@ -113,8 +113,8 @@
 				$this->request->data = Hash::merge($this->request->data, $data);
 				$this->request->data = $data;
 				$this->Token->unlockField('CabinetFileTree.parent_id');
-				$tokens = $this->Token->getToken('CabinetFileTree', '/cabinets/cabinet_files_edit/move.json',
-				//$tokens = $this->Token->getToken('CabinetFileTree', '/cabinets/cabinet_files_edit/move/' . Current::read('Block.id') . '/' . $cabinetFile['CabinetFile']['key'] . '?frame_id=' . Current::read('Frame.id'),
+				//$tokens = $this->Token->getToken('CabinetFileTree', '/cabinets/cabinet_files_edit/move',
+				$tokens = $this->Token->getToken('CabinetFileTree', '/cabinets/cabinet_files_edit/move/' . Current::read('Block.id') . '/' . $cabinetFile['CabinetFile']['key'] . '?frame_id=' . Current::read('Frame.id'),
 					$tokenFields, $hiddenFields);
 				$data += $tokens;
 

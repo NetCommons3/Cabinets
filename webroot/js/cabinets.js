@@ -65,11 +65,9 @@ console.log(post);
 
                     post.CabinetFileTree.parent_id = parentId;
 console.log(post);
-                    // post.Test.foo = 1;
                     //POSTリクエスト
-                    var url = NC3_URL + '/cabinets/cabinet_files_edit/move.json';
-                    // var url = NC3_URL + '/cabinets/cabinet_files_edit/move/' + $scope.blockId +
-                    //     '/' + cabinetFileKey + '?frame_id=' + $scope.frameId;
+                    var url = NC3_URL + '/cabinets/cabinet_files_edit/move/' + $scope.blockId +
+                        '/' + cabinetFileKey + '?frame_id=' + $scope.frameId;
                     $http.post(
                         url,
                         $.param({_method: 'POST', data: post}),
