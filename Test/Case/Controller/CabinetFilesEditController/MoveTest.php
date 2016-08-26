@@ -116,7 +116,7 @@ class CabinetFilesEditControllerMoveTest extends NetCommonsControllerTestCase {
 
 			),
 			null,
-			'BadRequestException',
+			'MethodNotAllowedException',
 			'vars'
 		);
 
