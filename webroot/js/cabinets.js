@@ -60,11 +60,9 @@ NetCommonsApp.controller('CabinetFile.index',
               $http.get(NC3_URL + '/net_commons/net_commons/csrfToken.json')
                   .success(function(token) {
                     var post = data;
-console.log(post);
                     post._Token.key = token.data._Token.key;
 
                     post.CabinetFileTree.parent_id = parentId;
-console.log(post);
                     //POSTリクエスト
                     var url = NC3_URL + '/cabinets/cabinet_files_edit/move/' + $scope.blockId +
                         '/' + cabinetFileKey + '?frame_id=' + $scope.frameId;
@@ -98,6 +96,40 @@ console.log(post);
                   });
             }
           });
+        };
+
+        $scope.unzip = function(cabinetFileKey, data) {
+          // unzipを裏で呼び出す
+          // get token
+          $http.get(NC3_URL + '/net_commons/net_commons/csrfToken.json')
+              .success(function(token) {
+                var post = data;
+                post._Token.key = token.data._Token.key;
+
+                //POSTリクエスト
+                var url = NC3_URL + '/cabinets/cabinet_files_edit/unzip/' + $scope.blockId +
+                    '/' + cabinetFileKey + '?frame_id=' + $scope.frameId;
+                $http.post(
+                    url,
+                    $.param({_method: 'POST', data: post}),
+                    {cache: false,
+                      headers:
+                      {'Content-Type': 'application/x-www-form-urlencoded'}
+                    }
+                )
+                    .success(function(data) {
+                      location.reload();
+                    })
+                    .error(function(data, status) {
+                      // エラー処理
+                      $scope.flashMessage(data.name, 'danger', 0);
+                    });
+              })
+              .error(function(data, status) {
+                //Token error condition
+                // エラー処理
+                $scope.flashMessage(data.name, 'danger', 0);
+              });
         };
       }]
 );

@@ -645,18 +645,18 @@ class CabinetFilesEditController extends CabinetsAppController {
 					]
 				);
 			}
-			$parentCabinetFolder = $this->CabinetFile->getParent($cabinetFile);
-			$this->redirect(
-				NetCommonsUrl::actionUrl(
-					[
-						'controller' => 'cabinet_files',
-						'action' => 'index',
-						'key' => $parentCabinetFolder['CabinetFile']['key'],
-						'block_id' => Current::read('Block.id'),
-						'frame_id' => Current::read('Frame.id'),
-					]
-				)
-			);
+			//$parentCabinetFolder = $this->CabinetFile->getParent($cabinetFile);
+			//$this->redirect(
+			//	NetCommonsUrl::actionUrl(
+			//		[
+			//			'controller' => 'cabinet_files',
+			//			'action' => 'index',
+			//			'key' => $parentCabinetFolder['CabinetFile']['key'],
+			//			'block_id' => Current::read('Block.id'),
+			//			'frame_id' => Current::read('Frame.id'),
+			//		]
+			//	)
+			//);
 		} else {
 			return $this->throwBadRequest();
 		}

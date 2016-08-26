@@ -144,18 +144,41 @@
 			$unzipDisabled = '';
 			if ($cabinetFile['UploadFile']['file']['extension'] !== 'zip') {
 				$unzipDisabled = 'class="disabled"';
+			} else {
+				$data = [
+					'Frame' => [
+						'id' => Current::read('Frame.id'),
+					],
+					'Block' => [
+						'id' => Current::read('Block.id')
+					]
+				];
+				$tokenFields = Hash::flatten($data);
+				//$hiddenFields = $tokenFields;
+				//unset($hiddenFields['LikesUser.is_liked']);
+				$hiddenFields = [
+					'Frame.id', 'Block.id'
+				];
+
+				$this->request->data = Hash::merge($this->request->data, $data);
+				$this->request->data = $data;
+				//$tokens = $this->Token->getToken('CabinetFileTree', '/cabinets/cabinet_files_edit/move',
+				$tokens = $this->Token->getToken('CabinetFile',
+					'/cabinets/cabinet_files_edit/unzip/' . Current::read('Block.id') . '/' . $cabinetFile['CabinetFile']['key'] . '?frame_id=' . Current::read('Frame.id'),
+					$tokenFields, $hiddenFields);
+				$data += $tokens;
 			}
 			?>
+
 			<?php if (Current::permission('content_publishable')): ?>
 			<li <?php echo $unzipDisabled ?>>
-				<?php echo $this->NetCommonsHtml->link(
-					__d('cabinets', 'Unzip'),
-					[
-						'controller' => 'cabinet_files_edit',
-						'action' => 'unzip',
-						'key' => $cabinetFile['CabinetFile']['key']
-					]
-				); ?>
+				<a href="#"
+					ng-click="unzip('<?php echo $cabinetFile['CabinetFile']['key'] ?>',
+					 <?php echo h(json_encode($data))?>
+					)"><?php echo __d(
+						'cabinets',
+						'Unzip'
+					); ?></a>
 			</li>
 			<?php endif ?>
 		</ul>
