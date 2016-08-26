@@ -37,6 +37,13 @@ echo $this->NetCommonsHtml->script(
 					)
 				);
 				?>
+				<?php echo $this->NetCommonsForm->hidden('Frame.id', array(
+					'value' => Current::read('Frame.id'),
+				)); ?>
+				<?php echo $this->NetCommonsForm->hidden('Block.id', array(
+					'value' => Current::read('Block.id'),
+				)); ?>
+
 				<?php echo $this->NetCommonsForm->input('key', array('type' => 'hidden')); ?>
 				<?php echo $this->NetCommonsForm->input('is_folder', array('type' => 'hidden')); ?>
 

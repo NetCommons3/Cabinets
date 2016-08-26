@@ -47,8 +47,7 @@ NetCommonsApp.controller('CabinetFile.index',
           $scope.parent_id = parentId;
         };
 
-        $scope.moveFile = function(cabinetFileKey, isFolder) {
-
+        $scope.moveFile = function(cabinetFileKey, isFolder, data) {
           var modal = NetCommonsModal.show(
               $scope, 'CabinetFile.edit.selectFolder',
               NC3_URL + '/cabinets/cabinet_files_edit/select_folder/' + $scope.blockId +
@@ -57,31 +56,80 @@ NetCommonsApp.controller('CabinetFile.index',
 
             if ($scope.parent_id != parentId) {
               // 移動を裏で呼び出す
-              var url = NC3_URL + '/cabinets/cabinet_files_edit/move/' + $scope.blockId +
-                  '/' + cabinetFileKey + '/parent_id:' + parentId + '?frame_id=' + $scope.frameId;
+              // get token
+              $http.get(NC3_URL + '/net_commons/net_commons/csrfToken.json')
+                  .success(function(token) {
+                    var post = data;
+                    post._Token.key = token.data._Token.key;
 
-              $http({
-                url: url,
-                method: 'POST'
-              })
-                  .success(function(data, status, headers, config) {
-
-                    if (isFolder) {
-                      // フォルダを動かしたらリロード
-                      location.reload();
-                    } else {
-                      $scope.flashMessage(data.name, data.class, data.interval);
-
-                      // 違うフォルダへ移動なので、今のフォルダ内ファイル一覧から非表示にする
-                      $scope.moved[cabinetFileKey] = true;
-                    }
+                    post.CabinetFileTree.parent_id = parentId;
+                    //POSTリクエスト
+                    var url = NC3_URL + '/cabinets/cabinet_files_edit/move/' + $scope.blockId +
+                        '/' + cabinetFileKey + '?frame_id=' + $scope.frameId;
+                    $http.post(
+                        url,
+                        $.param({_method: 'POST', data: post}),
+                        {cache: false,
+                          headers:
+                          {'Content-Type': 'application/x-www-form-urlencoded'}
+                        }
+                    )
+                        .success(function(data) {
+                          if (isFolder) {
+                            // フォルダを動かしたらリロード
+                            location.reload();
+                          } else {
+                            $scope.flashMessage(data.name, data.class, data.interval);
+                            // 違うフォルダへ移動なので、今のフォルダ内ファイル一覧から非表示にする
+                            $scope.moved[cabinetFileKey] = true;
+                          }
+                        })
+                        .error(function(data, status) {
+                          // エラー処理
+                          $scope.flashMessage(data.name, 'danger', 0);
+                        });
                   })
-                  .error(function(data, status, headers, config) {
+                  .error(function(data, status) {
+                    //Token error condition
                     // エラー処理
                     $scope.flashMessage(data.name, 'danger', 0);
                   });
             }
           });
+        };
+
+        $scope.unzip = function(cabinetFileKey, data) {
+          // unzipを裏で呼び出す
+          // get token
+          $http.get(NC3_URL + '/net_commons/net_commons/csrfToken.json')
+              .success(function(token) {
+                var post = data;
+                post._Token.key = token.data._Token.key;
+
+                //POSTリクエスト
+                var url = NC3_URL + '/cabinets/cabinet_files_edit/unzip/' + $scope.blockId +
+                    '/' + cabinetFileKey + '?frame_id=' + $scope.frameId;
+                $http.post(
+                    url,
+                    $.param({_method: 'POST', data: post}),
+                    {cache: false,
+                      headers:
+                      {'Content-Type': 'application/x-www-form-urlencoded'}
+                    }
+                )
+                    .success(function(data) {
+                      location.reload();
+                    })
+                    .error(function(data, status) {
+                      // エラー処理
+                      $scope.flashMessage(data.name, 'danger', 0);
+                    });
+              })
+              .error(function(data, status) {
+                //Token error condition
+                // エラー処理
+                $scope.flashMessage(data.name, 'danger', 0);
+              });
         };
       }]
 );
