@@ -622,6 +622,10 @@ class CabinetFilesEditController extends CabinetsAppController {
  * @return void
  */
 	public function unzip() {
+		if (! $this->request->is(array('post', 'put'))) {
+			return $this->throwBadRequest();
+		}
+
 		$key = $this->request->params['key'];
 
 		$options = [
@@ -645,6 +649,14 @@ class CabinetFilesEditController extends CabinetsAppController {
 					]
 				);
 			}
+			$this->NetCommons->setFlashNotification(
+				__d('cabinets', 'Unzip success.'),
+				array(
+					'class' => 'success',
+					//'ajax' => !$cabinetFile['CabinetFile']['is_folder']
+				)
+			);
+
 			//$parentCabinetFolder = $this->CabinetFile->getParent($cabinetFile);
 			//$this->redirect(
 			//	NetCommonsUrl::actionUrl(

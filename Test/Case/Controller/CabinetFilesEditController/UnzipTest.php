@@ -9,7 +9,8 @@
  * @copyright Copyright 2014, NetCommons Project
  */
 
-App::uses('WorkflowControllerAddTest', 'Workflow.TestSuite');
+App::uses('NetCommonsControllerTestCase', 'NetCommons.TestSuite');
+App::uses('WorkflowComponent', 'Workflow.Controller/Component');
 
 /**
  * CabinetFilesEditController::unzip()のテスト
@@ -17,7 +18,7 @@ App::uses('WorkflowControllerAddTest', 'Workflow.TestSuite');
  * @author Ryuji AMANO <ryuji@ryus.co.jp>
  * @package NetCommons\Cabinets\Test\Case\Controller\CabinetFilesEditController
  */
-class CabinetFilesEditControllerUnzipTest extends WorkflowControllerAddTest {
+class CabinetFilesEditControllerUnzipTest extends NetCommonsControllerTestCase {
 
 /**
  * Fixtures
@@ -29,6 +30,7 @@ class CabinetFilesEditControllerUnzipTest extends WorkflowControllerAddTest {
 		'plugin.cabinets.cabinet_file',
 		'plugin.cabinets.cabinet_file_tree',
 		'plugin.workflow.workflow_comment',
+		'plugin.authorization_keys.authorization_keys',
 	);
 
 /**
@@ -45,15 +47,25 @@ class CabinetFilesEditControllerUnzipTest extends WorkflowControllerAddTest {
  */
 	protected $_controller = 'cabinet_files_edit';
 
+	protected $_action = 'unzip';
+
 /**
  * テストDataの取得
  *
+ * @param string $role ロール
  * @return array
  */
-	private function __data() {
+	private function __data($role = null) {
 		$frameId = '6';
 		$blockId = '2';
 		$blockKey = 'block_1';
+		if ($role === Role::ROOM_ROLE_KEY_GENERAL_USER) {
+			$contentId = '3';
+			$contentKey = 'content_key_2';
+		} else {
+			$contentId = '2';
+			$contentKey = 'content_key_1';
+		}
 
 		$data = array(
 			'save_' . WorkflowComponent::STATUS_IN_DRAFT => null,
@@ -68,13 +80,13 @@ class CabinetFilesEditControllerUnzipTest extends WorkflowControllerAddTest {
 				'plugin_key' => $this->plugin,
 			),
 
-			//TODO:必要のデータセットをここに書く
-			'' => array(
-				'id' => null,
-				'key' => null,
-				'language_id' => '2',
-				'status' => null,
-			),
+			//必要のデータセットをここに書く
+			//'' => array(
+			//	'id' => $contentId,
+			//	'key' => $contentKey,
+			//	'language_id' => '2',
+			//	'status' => null,
+			//),
 
 			'WorkflowComment' => array(
 				'comment' => 'WorkflowComment save test',
@@ -85,224 +97,104 @@ class CabinetFilesEditControllerUnzipTest extends WorkflowControllerAddTest {
 	}
 
 /**
- * addアクションのGETテスト(ログインなし)用DataProvider
- *
- * ### 戻り値
- *  - urlOptions: URLオプション
- *  - assert: テストの期待値
- *  - exception: Exception
- *  - return: testActionの実行後の結果
- *
- * @return array
- */
-	public function dataProviderAddGet() {
-		$data = $this->__data();
-
-		//テストデータ
-		$results = array();
-		// * ログインなし
-		$results[0] = array(
-			'urlOptions' => array(
-				'frame_id' => $data['Frame']['id'],
-				'block_id' => $data['Block']['id']
-			),
-			'assert' => null, 'exception' => 'ForbiddenException',
-		);
-
-		return $results;
-	}
-
-/**
- * addアクションのGETテスト(作成権限あり)用DataProvider
- *
- * ### 戻り値
- *  - urlOptions: URLオプション
- *  - assert: テストの期待値
- *  - exception: Exception
- *  - return: testActionの実行後の結果
- *
- * @return array
- */
-	public function dataProviderAddGetByCreatable() {
-		$data = $this->__data();
-
-		//テストデータ
-		$results = array();
-		$results[0] = array(
-			'urlOptions' => array(
-				'frame_id' => $data['Frame']['id'],
-				'block_id' => $data['Block']['id'],
-			),
-			'assert' => array('method' => 'assertNotEmpty'),
-		);
-
-		// * フレームID指定なしテスト
-		array_push($results, Hash::merge($results[0], array(
-			'urlOptions' => array('frame_id' => null, 'block_id' => $data['Block']['id']),
-			'assert' => array('method' => 'assertNotEmpty'),
-		)));
-
-		return $results;
-	}
-
-/**
- * addアクションのPOSTテスト用DataProvider
- *
- * ### 戻り値
- *  - data: 登録データ
- *  - role: ロール
- *  - urlOptions: URLオプション
- *  - exception: Exception
- *  - return: testActionの実行後の結果
- *
- * @return array
- */
-	public function dataProviderAddPost() {
-		$data = $this->__data();
-
-		//テストデータ
-		$results = array();
-		// * ログインなし
-		$results[0] = array(
-			'data' => $data, 'role' => null,
-			'urlOptions' => array(
-				'frame_id' => $data['Frame']['id'],
-				'block_id' => $data['Block']['id']
-			),
-			'exception' => 'ForbiddenException'
-		);
-		// * 作成権限あり
-		$results[1] = array(
-			'data' => $data, 'role' => Role::ROOM_ROLE_KEY_GENERAL_USER,
-			'urlOptions' => array(
-				'frame_id' => $data['Frame']['id'],
-				'block_id' => $data['Block']['id']
-			),
-		);
-		// * フレームID指定なしテスト
-		$results[2] = array(
-			'data' => $data, 'role' => Role::ROOM_ROLE_KEY_ROOM_ADMINISTRATOR,
-			'urlOptions' => array(
-				'frame_id' => null,
-				'block_id' => $data['Block']['id']),
-		);
-
-		return $results;
-	}
-
-/**
- * addアクションのValidationErrorテスト用DataProvider
- *
- * ### 戻り値
- *  - data: 登録データ
- *  - urlOptions: URLオプション
- *  - validationError: バリデーションエラー
- *
- * @return array
- */
-	public function dataProviderAddValidationError() {
-		$data = $this->__data();
-		$result = array(
-			'data' => $data,
-			'urlOptions' => array(
-				'frame_id' => $data['Frame']['id'],
-				'block_id' => $data['Block']['id']
-			),
-			'validationError' => array(),
-		);
-
-		//テストデータ
-		$results = array();
-		array_push($results, Hash::merge($result, array(
-			'validationError' => array(
-				'field' => '', //TODO:エラーにするフィールド指定
-				'value' => '',
-				'message' => '' //TODO:エラーメッセージ指定
-			)
-		)));
-
-		//TODO:必要なテストデータ追加
-
-		return $results;
-	}
-
-/**
- * Viewのアサーション
- *
- * @param array $data テストデータ
- * @return void
- */
-	private function __assertAddGet($data) {
-		$this->assertInput(
-			'input', 'data[Frame][id]', $data['Frame']['id'], $this->view
-		);
-		$this->assertInput(
-			'input', 'data[Block][id]', $data['Block']['id'], $this->view
-		);
-
-		//TODO:上記以外に必要なassert追加
-	}
-
-/**
- * view(ctp)ファイルのテスト(公開権限なし)
+ * test get
  *
  * @return void
  */
-	public function testViewFileByCreatable() {
-		TestAuthGeneral::login($this, Role::ROOM_ROLE_KEY_GENERAL_USER);
-
-		//テスト実行
-		$data = $this->__data();
-		$this->_testGetAction(
-			array(
-				'action' => 'add',
-				'frame_id' => $data['Frame']['id'],
-				'block_id' => $data['Block']['id'],
-			),
-			array('method' => 'assertNotEmpty')
-		);
-
-		//チェック
-		$this->__assertAddGet($data);
-		$this->assertInput('button', 'save_' . WorkflowComponent::STATUS_IN_DRAFT, null, $this->view);
-		$this->assertInput('button', 'save_' . WorkflowComponent::STATUS_APPROVED, null, $this->view);
-
-		//TODO:上記以外に必要なassert追加
-		debug($this->view);
-
-		TestAuthGeneral::logout($this);
-	}
-
-/**
- * view(ctp)ファイルのテスト(公開権限あり)
- *
- * @return void
- */
-	public function testViewFileByPublishable() {
-		//ログイン
+	public function testGet() {
 		TestAuthGeneral::login($this);
 
 		//テスト実行
 		$data = $this->__data();
 		$this->_testGetAction(
 			array(
-				'action' => 'add',
+				'action' => 'edit',
 				'frame_id' => $data['Frame']['id'],
 				'block_id' => $data['Block']['id'],
+				'key' => 'content_key_1',
+				'action' => 'unzip'
+
 			),
-			array('method' => 'assertNotEmpty')
+			null,
+			'BadRequestException',
+			'vars'
 		);
 
 		//チェック
-		$this->__assertAddGet($data);
-		$this->assertInput('button', 'save_' . WorkflowComponent::STATUS_IN_DRAFT, null, $this->view);
-		$this->assertInput('button', 'save_' . WorkflowComponent::STATUS_PUBLISHED, null, $this->view);
 
-		//TODO:上記以外に必要なassert追加
-		debug($this->view);
-
-		//ログアウト
 		TestAuthGeneral::logout($this);
+	}
+
+/**
+ * test post
+ *
+ * @param string $role Role
+ * @param string $exception 例外
+ * @param string $message setFlashNotificationにセットされるメッセージ
+ * @dataProvider dataProviderPost
+ */
+	public function testPost($role, $exception, $message = null) {
+		TestAuthGeneral::login($this, $role);
+
+		$this->generateNc(
+			'Cabinets.CabinetFilesEdit',
+			[
+				'components' => [
+					'NetCommons' => [
+						'setFlashNotification'
+					]
+				]
+			]
+		);
+
+		if ($message) {
+
+			$this->controller->NetCommons->expects($this->once())
+				->method('setFlashNotification')
+				->with($this->equalTo($message));
+		}
+
+
+		//テスト実行
+		$data = $this->__data();
+		$data['action'] = 'unzip';
+		$this->_testPostAction(
+			'put',
+			$data,
+			array(
+				'frame_id' => $data['Frame']['id'],
+				'block_id' => $data['Block']['id'],
+				'key' => 'content_key_1',
+				'action' => 'unzip',
+				//'parent_id' => 17,
+			),
+			$exception
+		);
+
+		//チェック
+
+		TestAuthGeneral::logout($this);
+	}
+
+	public function dataProviderPost() {
+		//$data = $this->__data();
+		$results = array();
+		$results[0] = [
+			Role::ROOM_ROLE_KEY_GENERAL_USER,
+			'ForbiddenException'
+		];
+		$results[1] = [
+			Role::ROOM_ROLE_KEY_EDITOR,
+			'ForbiddenException'
+		];
+		// ε(　　　　 v ﾟωﾟ)　＜ ファイルとFixuture用意してから
+		//$results[2] = [
+		//	Role::ROOM_ROLE_KEY_ROOM_ADMINISTRATOR,
+		//	null,
+		//	__d('cabinets', 'Unzip success.')
+		//];
+
+		return $results;
 	}
 
 }
