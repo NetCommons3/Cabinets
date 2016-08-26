@@ -167,7 +167,6 @@ class CabinetFilesEditController extends CabinetsAppController {
  */
 	public function edit() {
 		$this->set('isEdit', true);
-		//$key = $this->request->params['named']['key'];
 		$key = Hash::get($this->request->params, 'key');
 
 		//  keyのis_latstを元に編集を開始
@@ -255,9 +254,6 @@ class CabinetFilesEditController extends CabinetsAppController {
 			);
 			$this->request->data['CabinetFile']['withOutExtFileName'] = $withOutExtFileName;
 			$this->request->data['CabinetFile']['extension'] = $ext;
-			if ($this->CabinetFile->canEditWorkflowContent($cabinetFile) === false) {
-				throw new ForbiddenException(__d('net_commons', 'Permission denied'));
-			}
 
 		}
 
@@ -357,6 +353,9 @@ class CabinetFilesEditController extends CabinetsAppController {
 		if ($cabinetFile['CabinetFile']['is_folder'] == false) {
 			throw new InternalErrorException();
 		}
+		if ($this->CabinetFile->canEditWorkflowContent($cabinetFile) === false) {
+			throw new ForbiddenException(__d('net_commons', 'Permission denied'));
+		}
 
 		$treeId = $cabinetFile['CabinetFileTree']['id'];
 		$folderPath = $this->CabinetFileTree->getPath($treeId, null, 0);
@@ -399,9 +398,6 @@ class CabinetFilesEditController extends CabinetsAppController {
 		} else {
 
 			$this->request->data = $cabinetFile;
-			if ($this->CabinetFile->canEditWorkflowContent($cabinetFile) === false) {
-				throw new ForbiddenException(__d('net_commons', 'Permission denied'));
-			}
 
 		}
 
@@ -492,67 +488,65 @@ class CabinetFilesEditController extends CabinetsAppController {
  * @throws ForbiddenException
  */
 	public function move() {
-		if ($this->request->is(array('post', 'put'))) {
-			$key = $this->request->params['key'];
+		$this->request->allowMethod('post', 'put');
 
-			//  keyのis_latestを元に編集を開始
-			$cabinetFile = $this->CabinetFile->findByKeyAndIsLatest($key, 1);
-			$parentId = Hash::get($this->request->data, 'CabinetFileTree.parent_id', null);
+		$key = $this->request->params['key'];
 
-			$cabinetFile['CabinetFileTree']['parent_id'] = $parentId;
-			// フォルダの移動は公開権限が必要
-			if ($cabinetFile['CabinetFile']['is_folder']) {
-				if (!Current::permission('content_publishable')) {
-					throw new ForbiddenException(__d('net_commons', 'Permission denied'));
-				}
+		//  keyのis_latestを元に編集を開始
+		$cabinetFile = $this->CabinetFile->findByKeyAndIsLatest($key, 1);
+		$parentId = Hash::get($this->request->data, 'CabinetFileTree.parent_id', null);
+
+		$cabinetFile['CabinetFileTree']['parent_id'] = $parentId;
+		// フォルダの移動は公開権限が必要
+		if ($cabinetFile['CabinetFile']['is_folder']) {
+			if (!Current::permission('content_publishable')) {
+				throw new ForbiddenException(__d('net_commons', 'Permission denied'));
 			}
+		}
 
-			// 編集できるユーザかチェック
-			if ($this->CabinetFile->canEditWorkflowContent($cabinetFile) === false) {
-				return $this->throwBadRequest();
-			}
-
-			// 権限に応じたステータスをセット
-			// 公開されてるファイルを公開権限がないユーザが移動したら承認待ちにもどす
-			$isPublish =
-				($cabinetFile['CabinetFile']['status'] == WorkflowComponent::STATUS_PUBLISHED);
-			if ($isPublish && !Current::permission('content_publishable')) {
-				$cabinetFile['CabinetFile']['status'] = WorkflowComponent::STATUS_APPROVED;
-			}
-
-			$result = $this->CabinetFile->saveFile($cabinetFile);
-			//$result = $this->CabinetFileTree->save($cabinetFile);
-
-			if ($result) {
-				//正常の場合
-				//if($cabinetFile['CabinetFile']['is_folder']) {
-				// reloadするのでSession::flash
-				//$this->Flash->set(__d('cabinets', '移動しました'), );
-				//$this->Session->setFlash('移動しました');
-
-				//}else{
-				$this->NetCommons->setFlashNotification(
-					__d('cabinets', 'Moved.'),
-					array(
-						'class' => 'success',
-						'ajax' => !$cabinetFile['CabinetFile']['is_folder']
-					)
-				);
-				//}
-			} else {
-				$this->NetCommons->setFlashNotification(
-					__d('cabinets', 'Move failed'),
-					array(
-						'class' => 'danger',
-					)
-				);
-				//$this->NetCommons->handleValidationError($this->RolesRoomsUser->validationErrors);
-			}
-			//$this->set('_serialize', ['message']);
-			$this->emptyRender();
-		} else {
+		// 編集できるユーザかチェック
+		if ($this->CabinetFile->canEditWorkflowContent($cabinetFile) === false) {
 			return $this->throwBadRequest();
 		}
+
+		// 権限に応じたステータスをセット
+		// 公開されてるファイルを公開権限がないユーザが移動したら承認待ちにもどす
+		$isPublish =
+			($cabinetFile['CabinetFile']['status'] == WorkflowComponent::STATUS_PUBLISHED);
+		if ($isPublish && !Current::permission('content_publishable')) {
+			$cabinetFile['CabinetFile']['status'] = WorkflowComponent::STATUS_APPROVED;
+		}
+
+		$result = $this->CabinetFile->saveFile($cabinetFile);
+		//$result = $this->CabinetFileTree->save($cabinetFile);
+
+		if ($result) {
+			//正常の場合
+			//if($cabinetFile['CabinetFile']['is_folder']) {
+			// reloadするのでSession::flash
+			//$this->Flash->set(__d('cabinets', '移動しました'), );
+			//$this->Session->setFlash('移動しました');
+
+			//}else{
+			$this->NetCommons->setFlashNotification(
+				__d('cabinets', 'Moved.'),
+				array(
+					'class' => 'success',
+					'ajax' => !$cabinetFile['CabinetFile']['is_folder']
+				)
+			);
+			//}
+		} else {
+			$this->NetCommons->setFlashNotification(
+				__d('cabinets', 'Move failed'),
+				array(
+					'class' => 'danger',
+				)
+			);
+			//$this->NetCommons->handleValidationError($this->RolesRoomsUser->validationErrors);
+		}
+		//$this->set('_serialize', ['message']);
+		$this->emptyRender();
 	}
 
 /**
@@ -619,9 +613,7 @@ class CabinetFilesEditController extends CabinetsAppController {
  * @return void
  */
 	public function unzip() {
-		if (! $this->request->is(array('post', 'put'))) {
-			return $this->throwBadRequest();
-		}
+		$this->request->allowMethod('post', 'put');
 
 		$key = $this->request->params['key'];
 

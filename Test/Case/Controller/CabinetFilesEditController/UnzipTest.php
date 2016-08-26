@@ -116,7 +116,7 @@ class CabinetFilesEditControllerUnzipTest extends NetCommonsControllerTestCase {
 
 			),
 			null,
-			'BadRequestException',
+			'MethodNotAllowedException',
 			'vars'
 		);
 

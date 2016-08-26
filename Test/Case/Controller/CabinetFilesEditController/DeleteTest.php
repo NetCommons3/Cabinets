@@ -151,6 +151,10 @@ class CabinetFilesEditControllerDeleteTest extends WorkflowControllerDeleteTest 
 	public function dataProviderDeletePost() {
 		$data = $this->__data();
 
+		$urlOptions = array(
+			'frame_id' => $data['Frame']['id'],
+			'block_id' => $data['Block']['id'],
+		);
 		//テストデータ
 		$results = array();
 		// * ログインなし
@@ -158,11 +162,7 @@ class CabinetFilesEditControllerDeleteTest extends WorkflowControllerDeleteTest 
 		array_push($results, array(
 			'data' => $this->__data($contentKey),
 			'role' => null,
-			'urlOptions' => array(
-				'frame_id' => $data['Frame']['id'],
-				'block_id' => $data['Block']['id'],
-				'key' => $contentKey
-			),
+			'urlOptions' => Hash::insert($urlOptions, 'key', $contentKey),
 			'exception' => 'ForbiddenException'
 		));
 		// * 作成権限のみ
@@ -171,11 +171,7 @@ class CabinetFilesEditControllerDeleteTest extends WorkflowControllerDeleteTest 
 		array_push($results, array(
 			'data' => $this->__data($contentKey),
 			'role' => Role::ROOM_ROLE_KEY_GENERAL_USER,
-			'urlOptions' => array(
-				'frame_id' => $data['Frame']['id'],
-				'block_id' => $data['Block']['id'],
-				'key' => $contentKey
-			),
+			'urlOptions' => Hash::insert($urlOptions, 'key', $contentKey),
 			'exception' => 'BadRequestException'
 		));
 		// ** 自分の記事＆一度も公開されていない
@@ -183,22 +179,14 @@ class CabinetFilesEditControllerDeleteTest extends WorkflowControllerDeleteTest 
 		array_push($results, array(
 			'data' => $this->__data($contentKey),
 			'role' => Role::ROOM_ROLE_KEY_GENERAL_USER,
-			'urlOptions' => array(
-				'frame_id' => $data['Frame']['id'],
-				'block_id' => $data['Block']['id'],
-				'key' => $contentKey
-			),
+			'urlOptions' => Hash::insert($urlOptions, 'key', $contentKey),
 		));
 		// ** 自分の記事＆一度公開している
 		$contentKey = 'content_key_4';
 		array_push($results, array(
 			'data' => $this->__data($contentKey),
 			'role' => Role::ROOM_ROLE_KEY_GENERAL_USER,
-			'urlOptions' => array(
-				'frame_id' => $data['Frame']['id'],
-				'block_id' => $data['Block']['id'],
-				'key' => $contentKey
-			),
+			'urlOptions' => Hash::insert($urlOptions, 'key', $contentKey),
 			'exception' => 'BadRequestException'
 		));
 		// * 編集権限あり
@@ -207,22 +195,14 @@ class CabinetFilesEditControllerDeleteTest extends WorkflowControllerDeleteTest 
 		array_push($results, array(
 			'data' => $this->__data($contentKey),
 			'role' => Role::ROOM_ROLE_KEY_EDITOR,
-			'urlOptions' => array(
-				'frame_id' => $data['Frame']['id'],
-				'block_id' => $data['Block']['id'],
-				'key' => $contentKey
-			),
+			'urlOptions' => Hash::insert($urlOptions, 'key', $contentKey),
 		));
 		// ** 公開している
 		$contentKey = 'content_key_4';
 		array_push($results, array(
 			'data' => $this->__data($contentKey),
 			'role' => Role::ROOM_ROLE_KEY_EDITOR,
-			'urlOptions' => array(
-				'frame_id' => $data['Frame']['id'],
-				'block_id' => $data['Block']['id'],
-				'key' => $contentKey
-			),
+			'urlOptions' => Hash::insert($urlOptions, 'key', $contentKey),
 			'exception' => 'BadRequestException'
 		));
 		// * 公開権限あり
@@ -231,11 +211,7 @@ class CabinetFilesEditControllerDeleteTest extends WorkflowControllerDeleteTest 
 		array_push($results, array(
 			'data' => $this->__data($contentKey),
 			'role' => Role::ROOM_ROLE_KEY_ROOM_ADMINISTRATOR,
-			'urlOptions' => array(
-				'frame_id' => null,
-				'block_id' => $data['Block']['id'],
-				'key' => $contentKey
-			),
+			'urlOptions' => Hash::insert($urlOptions, 'key', $contentKey),
 		));
 
 		// * 編集権限あり
@@ -244,11 +220,7 @@ class CabinetFilesEditControllerDeleteTest extends WorkflowControllerDeleteTest 
 		array_push($results, array(
 			'data' => $this->__data($contentKey, 12),
 			'role' => Role::ROOM_ROLE_KEY_EDITOR,
-			'urlOptions' => array(
-				'frame_id' => null,
-				'block_id' => $data['Block']['id'],
-				'key' => $contentKey
-			),
+			'urlOptions' => Hash::insert($urlOptions, 'key', $contentKey),
 			'exception' => 'BadRequestException'
 		));
 
@@ -258,11 +230,7 @@ class CabinetFilesEditControllerDeleteTest extends WorkflowControllerDeleteTest 
 		array_push($results, array(
 			'data' => $this->__data($contentKey, 12),
 			'role' => Role::ROOM_ROLE_KEY_ROOM_ADMINISTRATOR,
-			'urlOptions' => array(
-				'frame_id' => null,
-				'block_id' => $data['Block']['id'],
-				'key' => $contentKey
-			),
+			'urlOptions' => Hash::insert($urlOptions, 'key', $contentKey),
 		));
 
 		return $results;
