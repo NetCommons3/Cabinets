@@ -47,8 +47,6 @@ class CabinetFilesEditControllerUnzipTest extends NetCommonsControllerTestCase {
  */
 	protected $_controller = 'cabinet_files_edit';
 
-	protected $_action = 'unzip';
-
 /**
  * テストDataの取得
  *
@@ -175,6 +173,11 @@ class CabinetFilesEditControllerUnzipTest extends NetCommonsControllerTestCase {
 		TestAuthGeneral::logout($this);
 	}
 
+/**
+ * unzip postのテスト用データ
+ *
+ * @return array テストデータ
+ */
 	public function dataProviderPost() {
 		//$data = $this->__data();
 		$results = array();

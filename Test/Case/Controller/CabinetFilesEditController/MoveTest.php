@@ -47,8 +47,6 @@ class CabinetFilesEditControllerMoveTest extends NetCommonsControllerTestCase {
  */
 	protected $_controller = 'cabinet_files_edit';
 
-	protected $_action = 'move';
-
 /**
  * テストDataの取得
  *
@@ -175,6 +173,11 @@ class CabinetFilesEditControllerMoveTest extends NetCommonsControllerTestCase {
 		TestAuthGeneral::logout($this);
 	}
 
+/**
+ * move postのテスト用データ
+ *
+ * @return array テストデータ
+ */
 	public function dataProviderPost() {
 		//$data = $this->__data();
 		$results = array();

@@ -50,6 +50,7 @@ class CabinetFilesEditControllerDeleteTest extends WorkflowControllerDeleteTest 
  * テストDataの取得
  *
  * @param string $contentKey キー
+ * @param int $contentId コンテンツID
  * @return array
  */
 	private function __data($contentKey = null, $contentId = null) {
