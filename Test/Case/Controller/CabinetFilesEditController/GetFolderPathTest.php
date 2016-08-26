@@ -119,7 +119,6 @@ class CabinetFilesEditControllerGetFolderPathTest extends WorkflowControllerView
 		//チェック
 		//$this->__assertView($urlOptions['key'], false);
 		TestAuthGeneral::logout($this);
-
 	}
 
 /**

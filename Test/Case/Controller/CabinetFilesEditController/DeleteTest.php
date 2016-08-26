@@ -56,7 +56,7 @@ class CabinetFilesEditControllerDeleteTest extends WorkflowControllerDeleteTest 
 		$frameId = '6';
 		$blockId = '2';
 		$blockKey = 'block_1';
-		if ($contentId === null){
+		if ($contentId === null) {
 			if ($contentKey === 'content_key_2') {
 				$contentId = '3';
 			} elseif ($contentKey === 'content_key_4') {

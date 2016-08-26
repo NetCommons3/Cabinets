@@ -162,9 +162,7 @@ class CabinetFilesEditController extends CabinetsAppController {
 /**
  * edit method
  *
- * @throws NotFoundException
  * @throws ForbiddenException
- * @throws InternalErrorException
  * @return void
  */
 	public function edit() {
@@ -576,7 +574,6 @@ class CabinetFilesEditController extends CabinetsAppController {
 /**
  * delete method
  *
- * @throws ForbiddenException
  * @throws InternalErrorException
  * @return void
  */

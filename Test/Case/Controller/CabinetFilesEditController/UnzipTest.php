@@ -154,7 +154,6 @@ class CabinetFilesEditControllerUnzipTest extends NetCommonsControllerTestCase {
 				->with($this->equalTo($message));
 		}
 
-
 		//テスト実行
 		$data = $this->__data();
 		$data['action'] = 'unzip';

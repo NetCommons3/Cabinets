@@ -240,7 +240,6 @@ class CabinetFilesEditControllerAddFolderTest extends WorkflowControllerAddTest 
 			)
 		)));
 
-
 		return $results;
 	}
 
@@ -257,7 +256,6 @@ class CabinetFilesEditControllerAddFolderTest extends WorkflowControllerAddTest 
 		$this->assertInput(
 			'input', 'data[Block][id]', $data['Block']['id'], $this->view
 		);
-
 	}
 
 /**

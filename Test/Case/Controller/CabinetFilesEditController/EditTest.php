@@ -97,7 +97,6 @@ class CabinetFilesEditControllerEditTest extends WorkflowControllerEditTest {
 				'parent_id' => 11,
 			],
 
-
 			'WorkflowComment' => array(
 				'comment' => 'WorkflowComment save test',
 			),

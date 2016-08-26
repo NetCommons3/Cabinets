@@ -92,7 +92,7 @@
 				<a href="#"
 					ng-click="moveFile('<?php echo $cabinetFile['CabinetFile']['key'] ?>', true,
 					<?php echo h(json_encode($data)) ?>
-)"><?php echo __d(
+					)"><?php echo __d(
 						'net_commons',
 						'Move'
 					); ?></a>

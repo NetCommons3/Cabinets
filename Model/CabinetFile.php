@@ -157,12 +157,18 @@ class CabinetFile extends CabinetsAppModel {
 		}
 	}
 
+/**
+ * ファイル編集時のファイル名チェック
+ *
+ * @param array $check 検査対象
+ * @return bool
+ */
 	public function validateWithOutExtFileName($check) {
 		if ($this->data[$this->alias]['is_folder']) {
 			return true;
 		}
 		// ファイルの編集時だけ拡張子抜きのファイル名が空でないかチェックする
-		if ($this->data[$this->alias]['key']){
+		if ($this->data[$this->alias]['key']) {
 			$withOutExtFileName = $this->data[$this->alias]['withOutExtFileName'];
 			return (strlen($withOutExtFileName) > 0);
 		}
