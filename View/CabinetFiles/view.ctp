@@ -13,9 +13,9 @@ echo $this->Html->script(
 	 <?php echo Current::read('Frame.id') ?>
 	 )">
 
-	<div class="clearfix">
+	<header class="clearfix">
 		<div class="pull-left">
-			<?php echo $this->Workflow->label($cabinetFile['CabinetFile']['status']); ?>
+			<?php echo $this->LinkButton->toList(__d('cabinets', 'Go to List')); ?>
 		</div>
 		<?php if ($this->Workflow->canEdit('CabinetFile', $cabinetFile)) : ?>
 			<div class="pull-right">
@@ -32,56 +32,58 @@ echo $this->Html->script(
 				); ?>
 			</div>
 		<?php endif ?>
+	</header>
+	<article>
+		<dl class="cabinets__detail">
+			<dt><?php echo __d('cabinets', 'File name'); ?></dt>
+			<dd class="form-control nc-data-label">
+				<?php echo h($cabinetFile['CabinetFile']['filename']); ?>
+				<?php echo $this->Workflow->label($cabinetFile['CabinetFile']['status']); ?>
+			</dd>
 
-	</div>
-	<dl class="cabinets__detail">
-		<dt><?php echo __d('cabinets', 'File name'); ?></dt>
-		<dd class="form-control nc-data-label">
-			<?php echo $cabinetFile['CabinetFile']['filename']; ?>
-		</dd>
+			<dt><?php echo __d('cabinets', 'Path'); ?></dt>
+			<dd class="form-control nc-data-label"><?php echo $this->element('file_path'); ?></dd>
 
-		<dt><?php echo __d('cabinets', 'Path'); ?></dt>
-		<dd class="form-control nc-data-label"><?php echo $this->element('file_path'); ?></dd>
+			<dt><?php echo __d('cabinets', 'Size'); ?></dt>
+			<dd class="form-control nc-data-label"><?php echo $this->Number->toReadableSize(
+					$cabinetFile['UploadFile']['file']['size']
+				); ?></dd>
 
-		<dt><?php echo __d('cabinets', 'Size'); ?></dt>
-		<dd class="form-control nc-data-label"><?php echo $this->Number->toReadableSize(
-				$cabinetFile['UploadFile']['file']['size']
-			); ?></dd>
+			<dt><?php echo __d('cabinets', 'Download count'); ?></dt>
+			<dd class="form-control nc-data-label"><?php echo $cabinetFile['UploadFile']['file']['download_count']; ?></dd>
 
-		<dt><?php echo __d('cabinets', 'Download count'); ?></dt>
-		<dd class="form-control nc-data-label"><?php echo $cabinetFile['UploadFile']['file']['download_count']; ?></dd>
+			<dt><?php echo __d('cabinets', 'Description'); ?></dt>
+			<dd class="form-control nc-data-label"><?php echo h(
+					$cabinetFile['CabinetFile']['description']
+				); ?></dd>
 
-		<dt><?php echo __d('cabinets', 'Description'); ?></dt>
-		<dd class="form-control nc-data-label"><?php echo h(
-				$cabinetFile['CabinetFile']['description']
-			); ?></dd>
+			<dt><?php echo __d('net_commons', 'Created user'); ?></dt>
+			<dd class="form-control nc-data-label"><?php echo $this->DisplayUser->handleLink(
+					$cabinetFile,
+					array('avatar' => true)
+				); ?></dd>
 
-		<dt><?php echo __d('net_commons', 'Created user'); ?></dt>
-		<dd class="form-control nc-data-label"><?php echo $this->DisplayUser->handleLink(
-				$cabinetFile,
-				array('avatar' => true)
-			); ?></dd>
+			<dt><?php echo __d('net_commons', 'Created datetime'); ?></dt>
+			<dd class="form-control nc-data-label"><?php echo $this->Date->dateFormat(
+					$cabinetFile['CabinetFile']['created']
+				); ?></dd>
 
-		<dt><?php echo __d('net_commons', 'Created datetime'); ?></dt>
-		<dd class="form-control nc-data-label"><?php echo $this->Date->dateFormat(
-				$cabinetFile['CabinetFile']['created']
-			); ?></dd>
+			<dt><?php echo __d('net_commons', 'Modified user'); ?></dt>
+			<dd class="form-control nc-data-label"><?php echo $this->DisplayUser->handleLink(
+					$cabinetFile,
+					array('avatar' => true),
+					[],
+					'TrackableUpdater'
+				); ?></dd>
 
-		<dt><?php echo __d('net_commons', 'Modified user'); ?></dt>
-		<dd class="form-control nc-data-label"><?php echo $this->DisplayUser->handleLink(
-				$cabinetFile,
-				array('avatar' => true),
-				[],
-				'TrackableUpdater'
-			); ?></dd>
+			<dt><?php echo __d('net_commons', 'Modified datetime'); ?></dt>
+			<dd class="form-control nc-data-label"><?php echo $this->Date->dateFormat(
+					$cabinetFile['CabinetFile']['modified']
+				); ?></dd>
+		</dl>
+	</article>
 
-		<dt><?php echo __d('net_commons', 'Modified datetime'); ?></dt>
-		<dd class="form-control nc-data-label"><?php echo $this->Date->dateFormat(
-				$cabinetFile['CabinetFile']['modified']
-			); ?></dd>
-	</dl>
-
-	<div class="text-center">
+	<footer class="text-center">
 		<?php
 		//  ひとつ上の一覧へ戻す
 		if (count($folderPath) > 1) {
@@ -105,11 +107,11 @@ echo $this->Html->script(
 		//	['class' => 'btn btn-default']
 		//);
 
-		echo $this->NetCommonsHtml->link(
-			__d('cabinets', 'Go to List'),
-			$url,
-			['class' => 'btn btn-default']
-		)
+		//echo $this->NetCommonsHtml->link(
+		//	__d('cabinets', 'Go to List'),
+		//	$url,
+		//	['class' => 'btn btn-default']
+		//)
 		?>
 		<?php
 		echo $this->NetCommonsHtml->link(
@@ -118,5 +120,5 @@ echo $this->Html->script(
 			['class' => 'btn btn-primary']
 		)
 		?>
-	</div>
+	</footer>
 </div>

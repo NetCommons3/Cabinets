@@ -22,25 +22,32 @@ echo $this->Html->script(
 	 <?php echo Current::read('Frame.id') ?>
 	 )">
 
-	<?php if ($this->Workflow->canEdit('CabinetFile', $cabinetFile)) : ?>
-		<div class="text-right">
-			<?php
-			if (Current::permission('content_editable')) {
-				echo $this->Button->editLink(
-					'',
-					array(
-						'controller' => 'cabinet_files_edit',
-						'action' => 'edit_folder',
-						'key' => $cabinetFile['CabinetFile']['key']
-					),
-					array(
-						'tooltip' => true,
-					)
-				);
-			}
-			?>
+	<header class="clearfix">
+		<div class="pull-left">
+			<?php echo $this->LinkButton->toList(__d('cabinets', 'Go to List')); ?>
 		</div>
-	<?php endif ?>
+
+		<?php if ($this->Workflow->canEdit('CabinetFile', $cabinetFile)) : ?>
+			<div class="pull-right">
+				<?php
+				if (Current::permission('content_editable')) {
+					echo $this->Button->editLink(
+						'',
+						array(
+							'controller' => 'cabinet_files_edit',
+							'action' => 'edit_folder',
+							'key' => $cabinetFile['CabinetFile']['key']
+						),
+						array(
+							'tooltip' => true,
+						)
+					);
+				}
+				?>
+			</div>
+		<?php endif ?>
+	</header>
+
 	<dl class="cabinets__detail">
 		<dt><?php echo __d('cabinets', 'Folder name'); ?></dt>
 		<dd class="form-control nc-data-label"><?php echo $cabinetFile['CabinetFile']['filename']; ?></dd>
@@ -52,7 +59,6 @@ echo $this->Html->script(
 		<dd class="form-control nc-data-label"><?php echo $this->Number->toReadableSize(
 				$cabinetFile['CabinetFile']['size']
 			); ?></dd>
-
 
 		<dt><?php echo __d('cabinets', 'Description'); ?></dt>
 		<dd class="form-control nc-data-label"><?php echo h(
@@ -101,11 +107,11 @@ echo $this->Html->script(
 				'action' => 'index'
 			];
 		}
-		echo $this->NetCommonsHtml->link(
-			__d('cabinets', 'Go to List'),
-			$url,
-			['class' => 'btn btn-default']
-		)
+		//echo $this->NetCommonsHtml->link(
+		//	__d('cabinets', 'Go to List'),
+		//	$url,
+		//	['class' => 'btn btn-default']
+		//)
 		?>
 		<?php
 		echo $this->NetCommonsHtml->link(
