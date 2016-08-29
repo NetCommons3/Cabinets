@@ -92,7 +92,11 @@ class AddRecord extends NetCommonsMigration {
  * @return bool Should process continue
  */
 	public function after($direction) {
+		$this->loadModels([
+			'Plugin' => 'PluginManager.Plugin',
+		]);
 		if ($direction === 'down') {
+			$this->Plugin->uninstallPlugin($this->records['Plugin'][0]['key']);
 			return true;
 		}
 		foreach ($this->records as $model => $records) {
