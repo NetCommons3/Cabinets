@@ -26,7 +26,7 @@ class CabinetFile extends CabinetsAppModel {
  *
  * @var bool
  */
-	public $useFileNameValidation = true;
+	public $useNameValidation = true;
 
 /**
  * use behaviors
@@ -137,7 +137,7 @@ class CabinetFile extends CabinetsAppModel {
 				),
 			),
 		);
-		if ($this->useFileNameValidation) {
+		if ($this->useNameValidation) {
 			$validate['filename']['filename'] = [
 				'rule' => ['validateFilename'],
 				'message' => __d('cabinets', 'Invalid character for file/folder name.'),

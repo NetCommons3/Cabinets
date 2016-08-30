@@ -78,9 +78,9 @@ class CabinetFolderBehavior extends ModelBehavior {
 			}
 			$rootFolder['CabinetFile']['filename'] = $cabinet['Cabinet']['name'];
 			$model->Behaviors->disable('Topics');
-			$model->useFileNameValidation = false;
+			$model->useNameValidation = false;
 			$result = ($model->save($rootFolder)) ? true : false;
-			$model->useFileNameValidation = true;
+			$model->useNameValidation = true;
 			$model->Behaviors->enable('Topics');
 			return $result;
 		} else {
@@ -103,7 +103,7 @@ class CabinetFolderBehavior extends ModelBehavior {
 		// $modelのTopicビヘイビアを停止
 		$model->Behaviors->disable('Topics');
 		$model->create();
-		$model->useFileNameValidation = false;
+		$model->useNameValidation = false;
 		$rootFolder = [
 			'CabinetFile' => [
 				'cabinet_id' => $cabinet['Cabinet']['id'],
@@ -122,7 +122,7 @@ class CabinetFolderBehavior extends ModelBehavior {
 				]
 			];
 			$result = $model->CabinetFileTree->save($tree);
-			$model->useFileNameValidation = true;
+			$model->useNameValidation = true;
 			$result = ($result) ? true : false;
 		} else {
 			$result = false;
