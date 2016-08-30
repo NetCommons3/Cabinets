@@ -22,6 +22,13 @@ class CabinetFile extends CabinetsAppModel {
 	public $recursive = 0;
 
 /**
+ * RootFolder作成時はfalseにセットしてfilenameを自由につけられるようにする
+ *
+ * @var bool
+ */
+	public $useFileNameValidation = true;
+
+/**
  * use behaviors
  *
  * @var array
@@ -101,12 +108,6 @@ class CabinetFile extends CabinetsAppModel {
 					//'last' => false, // Stop validation after this rule
 					//'on' => 'create', // Limit validation to 'create' or 'update' operations
 				],
-				'filename' => [
-					// is_folder falseのときは . ひとつはOK
-					'rule' => ['validateFilename'],
-					//'rule' => '/[^' . preg_quote('\'./?|:\<>\*"') . ']/',
-					'message' => __d('cabinets', 'Invalid character for file/folder name.'),
-				],
 			),
 			'withOutExtFileName' => [
 				'rule' => ['validateWithOutExtFileName'],
@@ -136,6 +137,12 @@ class CabinetFile extends CabinetsAppModel {
 				),
 			),
 		);
+		if ($this->useFileNameValidation) {
+			$validate['filename']['filename'] = [
+				'rule' => ['validateFilename'],
+				'message' => __d('cabinets', 'Invalid character for file/folder name.'),
+			];
+		}
 
 		$this->validate = Hash::merge($this->validate, $validate);
 
