@@ -15,7 +15,25 @@ echo $this->Html->script(
 
 	<header class="clearfix">
 		<div class="pull-left">
-			<?php echo $this->LinkButton->toList(__d('cabinets', 'Go to List')); ?>
+			<?php
+			//  ひとつ上の一覧へ戻す
+			if (count($folderPath) > 1) {
+				// 上の階層はフォルダ
+				$parentFolder = $folderPath[count($folderPath) - 2];
+				$url = [
+					'action' => 'index',
+					'key' => $parentFolder['CabinetFile']['key']
+				];
+
+			} else {
+				// 上の階層はキャビネット
+				$url = [
+					'action' => 'index'
+				];
+			}
+			?>
+
+			<?php echo $this->LinkButton->toList(__d('cabinets', 'Go to List'), $url); ?>
 		</div>
 		<?php if ($this->Workflow->canEdit('CabinetFile', $cabinetFile)) : ?>
 			<div class="pull-right">
@@ -84,35 +102,6 @@ echo $this->Html->script(
 	</article>
 
 	<footer class="text-center">
-		<?php
-		//  ひとつ上の一覧へ戻す
-		if (count($folderPath) > 1) {
-			// 上の階層はフォルダ
-			$parentFolder = $folderPath[count($folderPath) - 2];
-			$url = [
-				'action' => 'index',
-				'key' => $parentFolder['CabinetFile']['key']
-			];
-
-		} else {
-			// 上の階層はキャビネット
-			$url = [
-				'action' => 'index'
-			];
-		}
-
-		//echo $this->BackTo->linkButton(
-		//	__d('net_commons', 'Go to List'),
-		//	$this->NetCommonsHtml->url($url),
-		//	['class' => 'btn btn-default']
-		//);
-
-		//echo $this->NetCommonsHtml->link(
-		//	__d('cabinets', 'Go to List'),
-		//	$url,
-		//	['class' => 'btn btn-default']
-		//)
-		?>
 		<?php
 		echo $this->NetCommonsHtml->link(
 			__d('cabinets', 'Download'),

@@ -5,7 +5,7 @@ echo $this->NetCommonsHtml->script(
 ?>
 
 <?php $this->start('title_for_modal'); ?>
-<?php echo $cabinet['Cabinet']['name'] ?>
+<?php echo h($cabinet['Cabinet']['name']) ?>
 <?php $this->end(); ?>
 
 <div ng-controller="Cabinets" ng-init="init(

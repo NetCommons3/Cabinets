@@ -15,7 +15,7 @@ echo $this->NetCommonsHtml->script(
 		id="cabinetFileForm_<?php echo Current::read('Frame.id') ?>"
 	>
 		<article>
-			<h1><?php echo $cabinet['Cabinet']['name'] ?></h1>
+			<h1><?php echo h($cabinet['Cabinet']['name']) ?></h1>
 			<div class="panel panel-default">
 
 				<?php echo $this->NetCommonsForm->create(
