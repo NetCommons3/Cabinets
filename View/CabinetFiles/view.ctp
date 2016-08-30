@@ -17,7 +17,7 @@ echo $this->Html->script(
 		<div class="pull-left">
 			<?php
 			//  ひとつ上の一覧へ戻す
-			if (count($folderPath) > 1) {
+			if (count($folderPath) > 2) {
 				// 上の階層はフォルダ
 				$parentFolder = $folderPath[count($folderPath) - 2];
 				$url = [
@@ -27,9 +27,7 @@ echo $this->Html->script(
 
 			} else {
 				// 上の階層はキャビネット
-				$url = [
-					'action' => 'index'
-				];
+				$url = NetCommonsUrl::backToPageUrl();
 			}
 			?>
 
