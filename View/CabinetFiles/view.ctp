@@ -66,7 +66,7 @@ echo $this->Html->script(
 				); ?></dd>
 
 			<dt><?php echo __d('cabinets', 'Download count'); ?></dt>
-			<dd class="form-control nc-data-label"><?php echo $cabinetFile['UploadFile']['file']['download_count']; ?></dd>
+			<dd class="form-control nc-data-label"><?php echo $cabinetFile['UploadFile']['file']['total_download_count']; ?></dd>
 
 			<dt><?php echo __d('cabinets', 'Description'); ?></dt>
 			<dd class="form-control nc-data-label"><?php echo h(

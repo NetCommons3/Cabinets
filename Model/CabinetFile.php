@@ -183,6 +183,25 @@ class CabinetFile extends CabinetsAppModel {
 	}
 
 /**
+ * modifiedを常に更新
+ *
+ * @param null $data 登録データ
+ * @param bool $validate バリデートを実行するか
+ * @param array $fieldList フィールド
+ * @return mixed
+ *
+ * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
+ */
+	public function save($data = null, $validate = true, $fieldList = array()) {
+		// 保存前に modified フィールドをクリアする
+		$this->set($data);
+		if (isset($this->data[$this->alias]['modified'])) {
+			unset($this->data[$this->alias]['modified']);
+		}
+		return parent::save($this->data, $validate, $fieldList);
+	}
+
+/**
  * save ファイル
  *
  * @param array $data CabinetFileデータ
