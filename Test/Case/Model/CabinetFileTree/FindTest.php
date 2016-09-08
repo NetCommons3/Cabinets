@@ -74,12 +74,9 @@ class CabinetFileTreeFindTest extends NetCommonsModelTestCase {
 		$result = $this->$model->$methodName('all', $options);
 
 		// ゲストでFindしたらCabinetFile.is_active = 1のデータしか取得できないはず
-		debug($result);
-		foreach($result as $cabinetFileTree) {
+		foreach ($result as $cabinetFileTree) {
 			$this->assertEquals($cabinetFileTree['CabinetFile']['is_active'], 1);
 		}
-		//チェック
-		//TODO:Assertを書く
 	}
 
 }
