@@ -62,9 +62,6 @@ class CabinetFileTreeFindTest extends NetCommonsModelTestCase {
 		$model = $this->_modelName;
 		$methodName = $this->_methodName;
 
-		//データ生成
-		//$data['CabinetFileTree'] = (new CabinetFileTreeFixture())->records[0];
-
 		$options = [
 			'conditions' => [
 				//'1' => '1'
