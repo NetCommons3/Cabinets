@@ -53,7 +53,7 @@ class CabinetFileTree extends CabinetsAppModel {
  * beforeFind
  *
  * @param array $query クエリ
- * @return bool;
+ * @return array クエリ
  */
 	public function beforeFind($query) {
 		// workflow連動でアソシエーションさせる！
@@ -77,7 +77,10 @@ class CabinetFileTree extends CabinetsAppModel {
 				]
 			]
 		);
-		return parent::beforeFind($query);
+		// CabinetFileがLEFT JOIN されるが、
+		// JOINできないTreeレコードを切り捨てるためにCabinetFile.id NOT NULLを条件に入れる
+		$query['conditions']['NOT']['CabinetFile.id'] = null;
+		return $query;
 	}
 
 /**
