@@ -127,14 +127,7 @@ echo $this->NetCommonsHtml->script(
 							array('type' => 'hidden')
 						); ?>
 
-						<span class="nc-tooltip"
-							tooltip="<?php echo __d('net_commons', 'Delete'); ?>">
-						<button class="btn btn-danger" onClick="return confirm('<?php echo __d(
-							'net_commons',
-							'Deleting the %s. Are you sure to proceed?',
-							__d('cabinets', 'Folder')
-						) ?>')"><span class="glyphicon glyphicon-trash"> </span></button>
-
+						<?php echo $this->Button->delete('', __d('net_commons', 'Deleting the %s. Are you sure to proceed?', __d('cabinets', 'Folder')));?>
 
 					</span>
 						<?php echo $this->NetCommonsForm->end() ?>

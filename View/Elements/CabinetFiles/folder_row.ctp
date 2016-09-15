@@ -108,25 +108,24 @@
 				); ?>
 			</li>
 			<?php endif ?>
-			<?php
-			$zipDisabled = '';
-			if ($cabinetFile['CabinetFile']['has_children'] === false) {
-				$zipDisabled = 'class="disabled"';
-			}
-			?>
-			<li <?php echo $zipDisabled; ?>>
-				<?php
-				echo $this->NetCommonsHtml->link(
-					__d('cabinets', 'Zip download'),
-					[
-						'action' => 'download_folder',
-						'key' => $cabinetFile['CabinetFile']['key']
-					]
-				);
-				?>
-			</li>
+			<?php if ($cabinetFile['CabinetFile']['has_children'] === false):?>
+				<li class="disabled">
+					<a href="#"><?php echo __d('cabinets', 'Zip download'); ?></a>
+				</li>
+			<?php else: ?>
+				<li>
+					<?php
+					echo $this->NetCommonsHtml->link(
+						__d('cabinets', 'Zip download'),
+						[
+							'action' => 'download_folder',
+							'key' => $cabinetFile['CabinetFile']['key']
+						]
+					);
+					?>
+				</li>
+			<?php endif ?>
 		</ul>
-
 	</div>
 
 </td>

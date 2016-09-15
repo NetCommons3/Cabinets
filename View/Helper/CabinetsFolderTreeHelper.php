@@ -94,7 +94,7 @@ class CabinetsFolderTreeHelper extends AppHelper {
 			if ($isActiveFolder) {
 				echo $this->Html->tag(
 					'li',
-					$tree . $folderIcon . $folder['CabinetFile']['filename'],
+					$tree . $folderIcon . h($folder['CabinetFile']['filename']),
 					$options
 				);
 			} else {
@@ -108,7 +108,7 @@ class CabinetsFolderTreeHelper extends AppHelper {
 					];
 				}
 				$link = $this->NetCommonsHtml->link(
-					$folder['CabinetFile']['filename'],
+					h($folder['CabinetFile']['filename']),
 					$url,
 					['ng-click' => 'select(' . $folder['CabinetFileTree']['id'] . ')']
 				);
