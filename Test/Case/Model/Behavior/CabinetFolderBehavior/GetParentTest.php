@@ -87,6 +87,7 @@ class CabinetFolderBehaviorGetParentTest extends NetCommonsModelTestCase {
  * getParent()のテスト
  *
  * @param array $cabinetFile cabinetFile data
+ * @param array $expects 親フォルダのCabinetFile.id
  * @dataProvider dataProvider
  * @return void
  */
