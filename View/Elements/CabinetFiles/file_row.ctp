@@ -143,12 +143,14 @@
 
 			<?php if (Current::permission('content_publishable')): ?>
 
-				<?php
-				$unzipDisabled = '';
-				if ($cabinetFile['UploadFile']['file']['extension'] !== 'zip') {
+				<?php if ($cabinetFile['UploadFile']['file']['extension'] !== 'zip'):?>
+					<?php
 					$unzipDisabled = 'class="disabled"';
 					$ngClick = '';
-				} else {
+					?>
+				<?php else : ?>
+					<?php
+					$unzipDisabled = '';
 					$data = [
 						'Frame' => [
 							'id' => Current::read('Frame.id'),
@@ -185,8 +187,8 @@
 						$cabinetFile['CabinetFile']['key'],
 						h(json_encode($data))
 					);
-				}
-				?>
+					?>
+				<?php endif ?>
 
 				<li <?php echo $unzipDisabled ?>>
 					<a href="#" <?php echo $ngClick ?> ><?php echo __d(
