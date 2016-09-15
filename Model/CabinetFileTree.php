@@ -77,9 +77,13 @@ class CabinetFileTree extends CabinetsAppModel {
 				]
 			]
 		);
-		// CabinetFileがLEFT JOIN されるが、
-		// JOINできないTreeレコードを切り捨てるためにCabinetFile.id NOT NULLを条件に入れる
-		$query['conditions']['NOT']['CabinetFile.id'] = null;
+		// recursive 0以上の時だけにする NOT NULL 条件を追加する
+		$recursive = Hash::get($query, 'recursive', $this->recursive);
+		if ($recursive >= 0) {
+			// CabinetFileがLEFT JOIN されるが、
+			// JOINできないTreeレコードを切り捨てるためにCabinetFile.id NOT NULLを条件に入れる
+			$query['conditions']['NOT']['CabinetFile.id'] = null;
+		}
 		return $query;
 	}
 
