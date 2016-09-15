@@ -106,6 +106,15 @@ echo $this->Html->script(
 	</dl>
 
 	<div class="text-center">
+		<?php if ($cabinetFile['CabinetFile']['has_children'] === false):?>
+			<?php
+			echo $this->NetCommonsHtml->link(
+				__d('cabinets', 'Download'),
+				'#',
+				['class' => 'btn btn-primary disabled']
+			)
+			?>
+		<?php else: ?>
 		<?php
 		echo $this->NetCommonsHtml->link(
 			__d('cabinets', 'Download'),
@@ -113,5 +122,6 @@ echo $this->Html->script(
 			['class' => 'btn btn-primary']
 		)
 		?>
+		<?php endif ?>
 	</div>
 </div>
