@@ -35,6 +35,7 @@ class CabinetFileFixture extends CakeTestFixture {
 		'modified' => array('type' => 'datetime', 'null' => true, 'default' => null, 'comment' => 'modified datetime | 更新日時 |  | '),
 		'key' => array('type' => 'string', 'null' => false, 'default' => null, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
 		'is_folder' => array('type' => 'boolean', 'null' => false, 'default' => '0'),
+		'size' => array('type' => 'integer', 'null' => true, 'default' => null, 'unsigned' => false),
 		'indexes' => array(
 			'PRIMARY' => array('column' => 'id', 'unique' => 1)
 		),
@@ -64,6 +65,7 @@ class CabinetFileFixture extends CakeTestFixture {
 			'modified' => '2016-04-14 02:48:11',
 			'key' => 'content_key_1',
 			'is_folder' => false,
+			'size' => '1',
 		),
 		array(
 			'id' => '2',
@@ -80,6 +82,7 @@ class CabinetFileFixture extends CakeTestFixture {
 			'modified' => '2016-04-14 02:48:11',
 			'key' => 'content_key_1',
 			'is_folder' => false,
+			'size' => '1',
 		),
 		// * 一般が書いたコンテンツ＆一度も公開していない（承認待ち）
 		array(
@@ -97,6 +100,7 @@ class CabinetFileFixture extends CakeTestFixture {
 			'modified' => '2016-04-14 02:48:11',
 			'key' => 'content_key_2',
 			'is_folder' => false,
+			'size' => '1',
 		),
 		// * 一般が書いたコンテンツ＆公開して、一時保存
 		//   (id=4とid=5で区別できるものをセットする)
@@ -115,6 +119,7 @@ class CabinetFileFixture extends CakeTestFixture {
 			'modified' => '2016-04-14 02:48:11',
 			'key' => 'content_key_3',
 			'is_folder' => false,
+			'size' => '1',
 		),
 		array(
 			'id' => '5',
@@ -131,6 +136,7 @@ class CabinetFileFixture extends CakeTestFixture {
 			'modified' => '2016-04-14 02:48:11',
 			'key' => 'content_key_3',
 			'is_folder' => false,
+			'size' => '1',
 		),
 		// * 編集者が書いたコンテンツ＆一度公開して、差し戻し
 		//   (id=6とid=7で区別できるものをセットする)
@@ -149,6 +155,7 @@ class CabinetFileFixture extends CakeTestFixture {
 			'modified' => '2016-04-14 02:48:11',
 			'key' => 'content_key_4',
 			'is_folder' => false,
+			'size' => '1',
 		),
 		array(
 			'id' => '7',
@@ -165,6 +172,7 @@ class CabinetFileFixture extends CakeTestFixture {
 			'modified' => '2016-04-14 02:48:11',
 			'key' => 'content_key_4',
 			'is_folder' => false,
+			'size' => '1',
 		),
 		// * 編集長が書いたコンテンツ＆一度も公開していない（下書き中）
 		array(
@@ -182,6 +190,7 @@ class CabinetFileFixture extends CakeTestFixture {
 			'modified' => '2016-04-14 02:48:11',
 			'key' => 'content_key_5',
 			'is_folder' => false,
+			'size' => '1',
 		),
 		array(
 			'id' => 10, // CabinetId3のRootFolder
@@ -197,7 +206,8 @@ class CabinetFileFixture extends CakeTestFixture {
 			'modified_user' => 1,
 			'modified' => '2016-04-14 02:48:11',
 			'key' => 'content_key_10',
-			'is_folder' => 1
+			'is_folder' => 1,
+			'size' => '0',
 		),
 		array(
 			'id' => 11, // CabinetId2のRootFolder
@@ -213,7 +223,8 @@ class CabinetFileFixture extends CakeTestFixture {
 			'modified_user' => 1,
 			'modified' => '2016-04-14 02:48:11',
 			'key' => 'content_key_11',
-			'is_folder' => 1
+			'is_folder' => 1,
+			'size' => '0',
 		),
 		// DownloadFolderTest Folder
 		array(
@@ -231,11 +242,15 @@ class CabinetFileFixture extends CakeTestFixture {
 			'modified' => '2016-04-14 02:48:11',
 			'key' => 'content_key_12',
 			'is_folder' => true,
+			'size' => '0',
 		),
 		// DownloadFolderTest File
 		// Folder1 id:13
 		// +-Folder1-1 id:15
 		//   +-File13 id:14
+		//+- id 12	content_key_12	tree.id 15
+		// +- id 14	content_key_14	tree.id 17
+		//  +- id 13 content_key_13 tree.id 16
 		array(
 			'id' => '13',
 			'cabinet_id' => '2',
@@ -251,6 +266,7 @@ class CabinetFileFixture extends CakeTestFixture {
 			'modified' => '2016-04-14 02:48:11',
 			'key' => 'content_key_13',
 			'is_folder' => false,
+			'size' => '1000'
 		),
 		array(
 			'id' => '14',
@@ -267,6 +283,7 @@ class CabinetFileFixture extends CakeTestFixture {
 			'modified' => '2016-04-14 02:48:11',
 			'key' => 'content_key_14',
 			'is_folder' => true,
+			'size' => '0',
 		),
 	);
 

@@ -77,6 +77,7 @@ class CabinetsSchema extends CakeSchema {
 		'key' => array('type' => 'string', 'null' => false, 'default' => null, 'key' => 'index', 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
 		'is_folder' => array('type' => 'boolean', 'null' => false, 'default' => '0'),
 		'use_auth_key' => array('type' => 'boolean', 'null' => false, 'default' => '0'),
+		'size' => array('type' => 'integer', 'null' => true, 'default' => null, 'unsigned' => false),
 		'indexes' => array(
 			'PRIMARY' => array('column' => 'id', 'unique' => 1),
 			'key' => array('column' => array('key', 'language_id'), 'unique' => 0)

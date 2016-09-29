@@ -43,6 +43,7 @@ class CabinetFile extends CabinetsAppModel {
 		'Files.Attachment' => [
 			'file' => [
 				//'thumbnails' => false,
+				'sizeFieldName' => 'size',
 			]
 		],
 		'AuthorizationKeys.AuthorizationKey',

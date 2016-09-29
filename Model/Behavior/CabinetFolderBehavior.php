@@ -154,9 +154,6 @@ class CabinetFolderBehavior extends ModelBehavior {
  * @return int 合計サイズ
  */
 	public function getTotalSizeByFolder(Model $model, $folder) {
-		// ベタパターン
-		// 配下全てのファイルを取得する
-		//$this->CabinetFileTree->setup(]);
 		$cabinetKey = $folder['Cabinet']['key'];
 		$conditions = [
 			'CabinetFileTree.cabinet_key' => $cabinetKey,
@@ -164,14 +161,22 @@ class CabinetFolderBehavior extends ModelBehavior {
 			'CabinetFileTree.rght <' => $folder['CabinetFileTree']['rght'],
 			'CabinetFile.is_folder' => false,
 		];
-		$files = $model->find('all', ['conditions' => $conditions]);
-		$total = 0;
-		foreach ($files as $file) {
+		$conditions = $model->getWorkflowConditions($conditions);
 
-			$total += Hash::get($file, 'UploadFile.file.size', 0);
-		}
+		$model->virtualFields['total'] = 0; // バーチャルフィールドを追加
+		$options = [
+			'fields' => [
+				'sum(CabinetFile.size) AS ' . $model->alias . '__total'
+			],
+			'conditions' => $conditions
+		];
+		$result = $model->find('all', $options);
+		unset($model->virtualFields['total']); // バーチャルフィールド削除
+
+		$total = $result[0][$model->alias]['total'];
+		$total = is_null($total) ? 0 : $total;
 		return $total;
-		// sumパターンはUploadFileの構造をしらないと厳しい… がんばってsumするより合計サイズをキャッシュした方がいいかも
+
 	}
 
 /**
