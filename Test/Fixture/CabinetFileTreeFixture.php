@@ -207,7 +207,7 @@ class CabinetFileTreeFixture extends CakeTestFixture {
 			'cabinet_key' => 'content_block_1',
 			'cabinet_file_key' => 'content_key_13',
 			'cabinet_file_id' => '13',
-			'parent_id' => 15,
+			'parent_id' => 17,
 			'lft' => 12,
 			'rght' => 13,
 			'created_user' => 1,
