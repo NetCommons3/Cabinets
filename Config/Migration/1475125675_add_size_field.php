@@ -1,4 +1,15 @@
 <?php
+/**
+ * AddSizeField
+ *
+ * @author   Ryuji AMANO <ryuji@ryus.co.jp>
+ * @link http://www.netcommons.org NetCommons Project
+ * @license http://www.netcommons.org/license.txt NetCommons License
+ */
+
+/**
+ * Class AddSizeField
+ */
 class AddSizeField extends CakeMigration {
 
 /**
@@ -40,6 +51,8 @@ class AddSizeField extends CakeMigration {
 
 /**
  * After migration callback
+ *
+ * sizeフィールドに既存のUploadFileデータからファイルサイズを取得して保存する
  *
  * @param string $direction Direction of migration process (up or down)
  * @return bool Should process continue
