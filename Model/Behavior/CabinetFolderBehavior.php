@@ -176,7 +176,6 @@ class CabinetFolderBehavior extends ModelBehavior {
 		$total = $result[0][$model->alias]['total'];
 		$total = is_null($total) ? 0 : $total;
 		return $total;
-
 	}
 
 /**
