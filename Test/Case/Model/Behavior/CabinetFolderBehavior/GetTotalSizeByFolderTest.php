@@ -63,6 +63,9 @@ class CabinetFolderBehaviorGetTotalSizeByFolderTest extends NetCommonsModelTestC
  * @return array データ
  */
 	public function dataProvider() {
+		// +- id 12	content_key_12	tree.id 15
+		//   +- id 14	content_key_14	tree.id 17
+		//     +- id 13 content_key_13 tree.id 16
 		$records = (new CabinetFileFixture())->records;
 		$treeRecords = (new CabinetFileTreeFixture())->records;
 
