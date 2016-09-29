@@ -118,7 +118,12 @@ NetCommonsApp.controller('CabinetFile.index',
                     }
                 )
                     .success(function(data) {
-                      location.reload();
+                      console.log(data);
+                      $scope.flashMessage(data.name, data.class, 0);
+                      // TODO エラーがなかったらリロードする
+                      if (data.class = 'success') {
+                        location.reload();
+                      }
                     })
                     .error(function(data, status) {
                       // エラー処理
