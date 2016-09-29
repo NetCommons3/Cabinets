@@ -635,13 +635,16 @@ class CabinetFilesEditController extends CabinetsAppController {
 					[
 						'class' => 'danger',
 						//'interval' => NetCommonsComponent::ALERT_VALIDATE_ERROR_INTERVAL,
+						//'ajax' => true,
 					]
 				);
+				return;
 			}
 			$this->NetCommons->setFlashNotification(
 				__d('cabinets', 'Unzip success.'),
 				array(
 					'class' => 'success',
+					//'ajax' => true,
 					//'ajax' => !$cabinetFile['CabinetFile']['is_folder']
 				)
 			);
