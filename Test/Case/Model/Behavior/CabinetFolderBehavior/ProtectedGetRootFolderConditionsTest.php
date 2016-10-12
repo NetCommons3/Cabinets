@@ -63,7 +63,7 @@ class CabinetFolderBehaviorProtectedGetRootFolderConditionsTest extends NetCommo
 			]
 		];
 		$result[0]['conditions'] = [
-			'cabinet_key' =>'cabinet_key_1',
+			'cabinet_key' => 'cabinet_key_1',
 			'parent_id' => null,
 		];
 
