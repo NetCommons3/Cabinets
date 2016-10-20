@@ -640,14 +640,24 @@ class CabinetFilesEditController extends CabinetsAppController {
 				);
 				return;
 			}
+			// 成功した場合はリダイレクトするので、ajax = falseにしてセッションにメッセージをつんでおく
+			$message = __d('cabinets', 'Unzip success.');
 			$this->NetCommons->setFlashNotification(
-				__d('cabinets', 'Unzip success.'),
+				$message,
 				array(
 					'class' => 'success',
-					//'ajax' => true,
-					//'ajax' => !$cabinetFile['CabinetFile']['is_folder']
+					'ajax' => false,
 				)
 			);
+			$this->NetCommons->renderJson(['class' => 'success'], $message, 200);
+
+			//$this->NetCommons->setFlashNotification(
+			//	__d('cabinets', 'Unzip success.'),
+			//	array(
+			//		'class' => 'success',
+			//		'ajax' => true,
+			//	)
+			//);
 
 			//$parentCabinetFolder = $this->CabinetFile->getParent($cabinetFile);
 			//$this->redirect(
