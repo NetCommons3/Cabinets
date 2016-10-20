@@ -117,8 +117,7 @@ NetCommonsApp.controller('CabinetFile.index',
                       {'Content-Type': 'application/x-www-form-urlencoded'}
                     }
                 )
-                    .success(function(data,status) {
-                      console.log(data);
+                    .success(function(data, status) {
                       if (data.class == 'success') {
                         // エラーがなかったらリロードする
                         location.reload();
