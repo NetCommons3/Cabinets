@@ -117,22 +117,24 @@ NetCommonsApp.controller('CabinetFile.index',
                       {'Content-Type': 'application/x-www-form-urlencoded'}
                     }
                 )
-                    .success(function(data) {
-                      $scope.flashMessage(data.name, data.class, 0);
-                      // エラーがなかったらリロードする
-                      if (data.class = 'success') {
+                    .success(function(data,status) {
+                      console.log(data);
+                      if (data.class == 'success') {
+                        // エラーがなかったらリロードする
                         location.reload();
+                      } else {
+                        $scope.flashMessage(data.name, data.class, 0);
                       }
                     })
                     .error(function(data, status) {
                       // エラー処理
-                      $scope.flashMessage(data.name, 'danger', 0);
+                      $scope.flashMessage(data.name, data.class, 0);
                     });
               })
               .error(function(data, status) {
                 //Token error condition
                 // エラー処理
-                $scope.flashMessage(data.name, 'danger', 0);
+                $scope.flashMessage(data.name, 'danger', 3);
               });
         };
       }]
