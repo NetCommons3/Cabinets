@@ -649,7 +649,7 @@ class CabinetFilesEditController extends CabinetsAppController {
 					'ajax' => false,
 				)
 			);
-			$this->NetCommons->renderJson(['class' => 'success'], 'ajax'.$message, 200);
+			$this->NetCommons->renderJson(['class' => 'success'], $message, 200);
 
 			//$this->NetCommons->setFlashNotification(
 			//	__d('cabinets', 'Unzip success.'),
