@@ -212,21 +212,21 @@ class Cabinet extends CabinetsAppModel {
 		$cabinet = $this->find(
 			'all',
 			array(
-				'recursive' => -1,
-				'fields' => array(
-					$this->alias . '.*',
-					$this->Block->alias . '.*',
-				),
-				'joins' => array(
-					array(
-						'table' => $this->Block->table,
-						'alias' => $this->Block->alias,
-						'type' => 'INNER',
-						'conditions' => array(
-							$this->alias . '.block_id' . ' = ' . $this->Block->alias . ' .id',
-						),
-					),
-				),
+				'recursive' => 0,
+				//'fields' => array(
+				//	$this->alias . '.*',
+				//	$this->Block->alias . '.*',
+				//),
+				//'joins' => array(
+				//	array(
+				//		'table' => $this->Block->table,
+				//		'alias' => $this->Block->alias,
+				//		'type' => 'INNER',
+				//		'conditions' => array(
+				//			$this->alias . '.block_id' . ' = ' . $this->Block->alias . ' .id',
+				//		),
+				//	),
+				//),
 				'conditions' => $this->getBlockConditionById(),
 			)
 		);
