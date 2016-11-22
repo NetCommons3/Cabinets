@@ -26,7 +26,7 @@ class CabinetFixture extends CakeTestFixture {
 			'default' => null,
 			'unsigned' => false,
 			'key' => 'primary',
-			'comment' => 'ID | | | '
+			'comment' => 'ID'
 		),
 		'block_id' => array(
 			'type' => 'integer',
@@ -39,7 +39,7 @@ class CabinetFixture extends CakeTestFixture {
 			'null' => false,
 			'default' => null,
 			'collate' => 'utf8_general_ci',
-			'comment' => 'CABINET name | CABINET名称 | | ',
+			'comment' => 'CABINET名',
 			'charset' => 'utf8'
 		),
 		'key' => array(
@@ -47,7 +47,7 @@ class CabinetFixture extends CakeTestFixture {
 			'null' => false,
 			'default' => null,
 			'collate' => 'utf8_general_ci',
-			'comment' => 'cabinet key | CABINETキー | Hash値 | ',
+			'comment' => 'キャビネットキー',
 			'charset' => 'utf8'
 		),
 		'created_user' => array(
@@ -55,26 +55,26 @@ class CabinetFixture extends CakeTestFixture {
 			'null' => true,
 			'default' => '0',
 			'unsigned' => false,
-			'comment' => 'created user | 作成者 | users.id | '
+			'comment' => '作成者'
 		),
 		'created' => array(
 			'type' => 'datetime',
 			'null' => true,
 			'default' => null,
-			'comment' => 'created datetime | 作成日時 | | '
+			'comment' => '作成日時'
 		),
 		'modified_user' => array(
 			'type' => 'integer',
 			'null' => true,
 			'default' => '0',
 			'unsigned' => false,
-			'comment' => 'modified user | 更新者 | users.id | '
+			'comment' => '更新者'
 		),
 		'modified' => array(
 			'type' => 'datetime',
 			'null' => true,
 			'default' => null,
-			'comment' => 'modified datetime | 更新日時 | | '
+			'comment' => '更新日時'
 		),
 		'total_size' => array(
 			'type' => 'float',

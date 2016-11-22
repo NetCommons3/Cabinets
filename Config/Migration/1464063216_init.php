@@ -35,14 +35,14 @@ class Init extends CakeMigration {
 						'default' => null,
 						'unsigned' => false,
 						'key' => 'primary',
-						'comment' => 'ID | | | '
+						'comment' => 'ID'
 					),
 					'cabinet_key' => array(
 						'type' => 'string',
 						'null' => false,
 						'default' => null,
 						'collate' => 'utf8_general_ci',
-						'comment' => 'bbs key | キャビネットキー | Hash値 | ',
+						'comment' => 'キャビネットキー',
 						'charset' => 'utf8'
 					),
 					'cabinet_file_key' => array(
@@ -50,7 +50,7 @@ class Init extends CakeMigration {
 						'null' => false,
 						'default' => null,
 						'collate' => 'utf8_general_ci',
-						'comment' => 'bbs articles key | ファイルキー | Hash値 | ',
+						'comment' => 'ファイルキー',
 						'charset' => 'utf8'
 					),
 					'cabinet_file_id' => array(
@@ -64,47 +64,47 @@ class Init extends CakeMigration {
 						'null' => true,
 						'default' => null,
 						'unsigned' => false,
-						'comment' => 'parent id | 親フォルダのID treeビヘイビア必須カラム | | '
+						'comment' => '親フォルダのID treeビヘイビア必須カラム'
 					),
 					'lft' => array(
 						'type' => 'integer',
 						'null' => false,
 						'default' => null,
 						'unsigned' => false,
-						'comment' => 'lft | treeビヘイビア必須カラム | | '
+						'comment' => 'lft  treeビヘイビア必須カラム'
 					),
 					'rght' => array(
 						'type' => 'integer',
 						'null' => false,
 						'default' => null,
 						'unsigned' => false,
-						'comment' => 'rght | treeビヘイビア必須カラム | | '
+						'comment' => 'rght  treeビヘイビア必須カラム'
 					),
 					'created_user' => array(
 						'type' => 'integer',
 						'null' => true,
 						'default' => '0',
 						'unsigned' => false,
-						'comment' => 'created user | 作成者 | users.id | '
+						'comment' => '作成者'
 					),
 					'created' => array(
 						'type' => 'datetime',
 						'null' => true,
 						'default' => null,
-						'comment' => 'created datetime | 作成日時 | | '
+						'comment' => '作成日時'
 					),
 					'modified_user' => array(
 						'type' => 'integer',
 						'null' => true,
 						'default' => '0',
 						'unsigned' => false,
-						'comment' => 'modified user | 更新者 | users.id | '
+						'comment' => '更新者'
 					),
 					'modified' => array(
 						'type' => 'datetime',
 						'null' => true,
 						'default' => null,
-						'comment' => 'modified datetime | 更新日時 | | '
+						'comment' => '更新日時'
 					),
 					'indexes' => array(
 						'PRIMARY' => array('column' => 'id', 'unique' => 1),
@@ -122,7 +122,7 @@ class Init extends CakeMigration {
 						'default' => null,
 						'unsigned' => false,
 						'key' => 'primary',
-						'comment' => 'ID |  |  | '
+						'comment' => 'ID'
 					),
 					'cabinet_id' => array(
 						'type' => 'integer',
@@ -142,7 +142,7 @@ class Init extends CakeMigration {
 						'default' => null,
 						'length' => 4,
 						'unsigned' => false,
-						'comment' => 'public status, 1: public, 2: public pending, 3: draft during 4: remand | 公開状況  1:公開中、2:公開申請中、3:下書き中、4:差し戻し |  | '
+						'comment' => '公開状況  1:公開中、2:公開申請中、3:下書き中、4:差し戻し'
 					),
 					'is_active' => array('type' => 'boolean', 'null' => false, 'default' => '0'),
 					'is_latest' => array('type' => 'boolean', 'null' => true, 'default' => null),
@@ -157,7 +157,7 @@ class Init extends CakeMigration {
 						'null' => true,
 						'default' => null,
 						'collate' => 'utf8_general_ci',
-						'comment' => 'title | タイトル |  | ',
+						'comment' => 'タイトル',
 						'charset' => 'utf8'
 					),
 					'description' => array(
@@ -165,7 +165,7 @@ class Init extends CakeMigration {
 						'null' => true,
 						'default' => null,
 						'collate' => 'utf8_general_ci',
-						'comment' => 'file body1 | 本文1 |  | ',
+						'comment' => '概要',
 						'charset' => 'utf8'
 					),
 					'created_user' => array(
@@ -173,26 +173,26 @@ class Init extends CakeMigration {
 						'null' => true,
 						'default' => '0',
 						'unsigned' => false,
-						'comment' => 'created user | 作成者 | users.id | '
+						'comment' => '作成者'
 					),
 					'created' => array(
 						'type' => 'datetime',
 						'null' => true,
 						'default' => null,
-						'comment' => 'created datetime | 作成日時 |  | '
+						'comment' => '作成日時'
 					),
 					'modified_user' => array(
 						'type' => 'integer',
 						'null' => true,
 						'default' => '0',
 						'unsigned' => false,
-						'comment' => 'modified user | 更新者 | users.id | '
+						'comment' => '更新者'
 					),
 					'modified' => array(
 						'type' => 'datetime',
 						'null' => true,
 						'default' => null,
-						'comment' => 'modified datetime | 更新日時 |  | '
+						'comment' => '更新日時'
 					),
 					'key' => array(
 						'type' => 'string',
@@ -218,14 +218,14 @@ class Init extends CakeMigration {
 						'default' => null,
 						'unsigned' => false,
 						'key' => 'primary',
-						'comment' => 'ID | | | '
+						'comment' => 'ID'
 					),
 					'cabinet_key' => array(
 						'type' => 'string',
 						'null' => false,
 						'default' => null,
 						'collate' => 'utf8_general_ci',
-						'comment' => 'Cabinet key | CABINETキー | Hash値 | ',
+						'comment' => 'キャビネットキー',
 						'charset' => 'utf8'
 					),
 					'use_workflow' => array(
@@ -239,26 +239,26 @@ class Init extends CakeMigration {
 						'null' => true,
 						'default' => '0',
 						'unsigned' => false,
-						'comment' => 'created user | 作成者 | users.id | '
+						'comment' => '作成者'
 					),
 					'created' => array(
 						'type' => 'datetime',
 						'null' => true,
 						'default' => null,
-						'comment' => 'created datetime | 作成日時 | | '
+						'comment' => '作成日時'
 					),
 					'modified_user' => array(
 						'type' => 'integer',
 						'null' => true,
 						'default' => '0',
 						'unsigned' => false,
-						'comment' => 'modified user | 更新者 | users.id | '
+						'comment' => '更新者'
 					),
 					'modified' => array(
 						'type' => 'datetime',
 						'null' => true,
 						'default' => null,
-						'comment' => 'modified datetime | 更新日時 | | '
+						'comment' => '更新日時'
 					),
 					'indexes' => array(
 						'PRIMARY' => array('column' => 'id', 'unique' => 1),
@@ -276,7 +276,7 @@ class Init extends CakeMigration {
 						'default' => null,
 						'unsigned' => false,
 						'key' => 'primary',
-						'comment' => 'ID | | | '
+						'comment' => 'ID'
 					),
 					'block_id' => array(
 						'type' => 'integer',
@@ -289,7 +289,7 @@ class Init extends CakeMigration {
 						'null' => false,
 						'default' => null,
 						'collate' => 'utf8_general_ci',
-						'comment' => 'CABINET name | CABINET名称 | | ',
+						'comment' => 'CABINET名',
 						'charset' => 'utf8'
 					),
 					'key' => array(
@@ -297,7 +297,7 @@ class Init extends CakeMigration {
 						'null' => false,
 						'default' => null,
 						'collate' => 'utf8_general_ci',
-						'comment' => 'cabinet key | CABINETキー | Hash値 | ',
+						'comment' => 'キャビネットキー',
 						'charset' => 'utf8'
 					),
 					'created_user' => array(
@@ -305,26 +305,26 @@ class Init extends CakeMigration {
 						'null' => true,
 						'default' => '0',
 						'unsigned' => false,
-						'comment' => 'created user | 作成者 | users.id | '
+						'comment' => '作成者'
 					),
 					'created' => array(
 						'type' => 'datetime',
 						'null' => true,
 						'default' => null,
-						'comment' => 'created datetime | 作成日時 | | '
+						'comment' => '作成日時'
 					),
 					'modified_user' => array(
 						'type' => 'integer',
 						'null' => true,
 						'default' => '0',
 						'unsigned' => false,
-						'comment' => 'modified user | 更新者 | users.id | '
+						'comment' => '更新者'
 					),
 					'modified' => array(
 						'type' => 'datetime',
 						'null' => true,
 						'default' => null,
-						'comment' => 'modified datetime | 更新日時 | | '
+						'comment' => '更新日時'
 					),
 					'total_size' => array(
 						'type' => 'float',
