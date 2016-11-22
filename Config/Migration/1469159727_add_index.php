@@ -28,16 +28,16 @@ class AddIndex extends CakeMigration {
 		'up' => array(
 			'alter_field' => array(
 				'cabinet_file_trees' => array(
-					'cabinet_key' => array('type' => 'string', 'null' => false, 'default' => null, 'key' => 'index', 'collate' => 'utf8_general_ci', 'comment' => 'bbs key | キャビネットキー | Hash値 | ', 'charset' => 'utf8'),
+					'cabinet_key' => array('type' => 'string', 'null' => false, 'default' => null, 'key' => 'index', 'collate' => 'utf8_general_ci', 'comment' => 'キャビネットキー', 'charset' => 'utf8'),
 					'cabinet_file_id' => array('type' => 'integer', 'null' => false, 'default' => null, 'unsigned' => false, 'key' => 'index'),
-					'parent_id' => array('type' => 'integer', 'null' => true, 'default' => null, 'unsigned' => false, 'key' => 'index', 'comment' => 'parent id | 親フォルダのID treeビヘイビア必須カラム | | '),
-					'lft' => array('type' => 'integer', 'null' => false, 'default' => null, 'unsigned' => false, 'key' => 'index', 'comment' => 'lft | treeビヘイビア必須カラム | | '),
+					'parent_id' => array('type' => 'integer', 'null' => true, 'default' => null, 'unsigned' => false, 'key' => 'index', 'comment' => '親フォルダのID treeビヘイビア必須カラム'),
+					'lft' => array('type' => 'integer', 'null' => false, 'default' => null, 'unsigned' => false, 'key' => 'index', 'comment' => 'lft  treeビヘイビア必須カラム'),
 				),
 				'cabinet_files' => array(
 					'key' => array('type' => 'string', 'null' => false, 'default' => null, 'key' => 'index', 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
 				),
 				'cabinet_settings' => array(
-					'cabinet_key' => array('type' => 'string', 'null' => false, 'default' => null, 'key' => 'index', 'collate' => 'utf8_general_ci', 'comment' => 'Cabinet key | CABINETキー | Hash値 | ', 'charset' => 'utf8'),
+					'cabinet_key' => array('type' => 'string', 'null' => false, 'default' => null, 'key' => 'index', 'collate' => 'utf8_general_ci', 'comment' => 'キャビネットキー', 'charset' => 'utf8'),
 				),
 				'cabinets' => array(
 					'block_id' => array('type' => 'integer', 'null' => false, 'default' => null, 'unsigned' => false, 'key' => 'index'),
@@ -72,16 +72,16 @@ class AddIndex extends CakeMigration {
 		'down' => array(
 			'alter_field' => array(
 				'cabinet_file_trees' => array(
-					'cabinet_key' => array('type' => 'string', 'null' => false, 'default' => null, 'collate' => 'utf8_general_ci', 'comment' => 'bbs key | キャビネットキー | Hash値 | ', 'charset' => 'utf8'),
+					'cabinet_key' => array('type' => 'string', 'null' => false, 'default' => null, 'collate' => 'utf8_general_ci', 'comment' => 'キャビネットキー', 'charset' => 'utf8'),
 					'cabinet_file_id' => array('type' => 'integer', 'null' => false, 'default' => null, 'unsigned' => false),
-					'parent_id' => array('type' => 'integer', 'null' => true, 'default' => null, 'unsigned' => false, 'comment' => 'parent id | 親フォルダのID treeビヘイビア必須カラム | | '),
-					'lft' => array('type' => 'integer', 'null' => false, 'default' => null, 'unsigned' => false, 'comment' => 'lft | treeビヘイビア必須カラム | | '),
+					'parent_id' => array('type' => 'integer', 'null' => true, 'default' => null, 'unsigned' => false, 'comment' => '親フォルダのID treeビヘイビア必須カラム'),
+					'lft' => array('type' => 'integer', 'null' => false, 'default' => null, 'unsigned' => false, 'comment' => 'lft  treeビヘイビア必須カラム'),
 				),
 				'cabinet_files' => array(
 					'key' => array('type' => 'string', 'null' => false, 'default' => null, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
 				),
 				'cabinet_settings' => array(
-					'cabinet_key' => array('type' => 'string', 'null' => false, 'default' => null, 'collate' => 'utf8_general_ci', 'comment' => 'Cabinet key | CABINETキー | Hash値 | ', 'charset' => 'utf8'),
+					'cabinet_key' => array('type' => 'string', 'null' => false, 'default' => null, 'collate' => 'utf8_general_ci', 'comment' => 'キャビネットキー', 'charset' => 'utf8'),
 				),
 				'cabinets' => array(
 					'block_id' => array('type' => 'integer', 'null' => false, 'default' => null, 'unsigned' => false),
