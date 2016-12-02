@@ -18,6 +18,10 @@ msgstr ""
 msgid "MailSetting.mail_fixed_phrase_body.popover"
 msgstr ""
 
+#: Cabinets/Controller/CabinetFilesController.php:287
+msgid "Invalid cabinet file"
+msgstr ""
+
 #: Cabinets/Controller/CabinetFilesController.php:359
 msgid "Folder that contains the files that are password is set can not be downloaded ZIP."
 msgstr ""
