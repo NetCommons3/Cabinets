@@ -284,7 +284,7 @@ class CabinetFilesController extends CabinetsAppController {
 			);
 		} else {
 			// 表示できないファイルへのアクセスなら404
-			throw new NotFoundException(__('Invalid cabinet file'));
+			throw new NotFoundException(__d('cabinets', 'Invalid cabinet file'));
 		}
 	}
 
