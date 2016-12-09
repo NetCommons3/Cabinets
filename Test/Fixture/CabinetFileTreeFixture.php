@@ -26,14 +26,14 @@ class CabinetFileTreeFixture extends CakeTestFixture {
 			'default' => null,
 			'unsigned' => false,
 			'key' => 'primary',
-			'comment' => 'ID | | | '
+			'comment' => 'ID'
 		),
 		'cabinet_key' => array(
 			'type' => 'string',
 			'null' => false,
 			'default' => null,
 			'collate' => 'utf8_general_ci',
-			'comment' => 'bbs key | キャビネットキー | Hash値 | ',
+			'comment' => 'キャビネットキー',
 			'charset' => 'utf8'
 		),
 		'cabinet_file_key' => array(
@@ -41,7 +41,7 @@ class CabinetFileTreeFixture extends CakeTestFixture {
 			'null' => false,
 			'default' => null,
 			'collate' => 'utf8_general_ci',
-			'comment' => 'bbs articles key | ファイルキー | Hash値 | ',
+			'comment' => 'ファイルキー',
 			'charset' => 'utf8'
 		),
 		'cabinet_file_id' => array('type' => 'integer', 'null' => false, 'default' => null, 'unsigned' => false),
@@ -50,47 +50,47 @@ class CabinetFileTreeFixture extends CakeTestFixture {
 			'null' => true,
 			'default' => null,
 			'unsigned' => false,
-			'comment' => 'parent id | 親フォルダのID treeビヘイビア必須カラム | | '
+			'comment' => '親フォルダのID treeビヘイビア必須カラム'
 		),
 		'lft' => array(
 			'type' => 'integer',
 			'null' => false,
 			'default' => null,
 			'unsigned' => false,
-			'comment' => 'lft | treeビヘイビア必須カラム | | '
+			'comment' => 'lft  treeビヘイビア必須カラム'
 		),
 		'rght' => array(
 			'type' => 'integer',
 			'null' => false,
 			'default' => null,
 			'unsigned' => false,
-			'comment' => 'rght | treeビヘイビア必須カラム | | '
+			'comment' => 'rght  treeビヘイビア必須カラム'
 		),
 		'created_user' => array(
 			'type' => 'integer',
 			'null' => true,
 			'default' => '0',
 			'unsigned' => false,
-			'comment' => 'created user | 作成者 | users.id | '
+			'comment' => '作成者'
 		),
 		'created' => array(
 			'type' => 'datetime',
 			'null' => true,
 			'default' => null,
-			'comment' => 'created datetime | 作成日時 | | '
+			'comment' => '作成日時'
 		),
 		'modified_user' => array(
 			'type' => 'integer',
 			'null' => true,
 			'default' => '0',
 			'unsigned' => false,
-			'comment' => 'modified user | 更新者 | users.id | '
+			'comment' => '更新者'
 		),
 		'modified' => array(
 			'type' => 'datetime',
 			'null' => true,
 			'default' => null,
-			'comment' => 'modified datetime | 更新日時 | | '
+			'comment' => '更新日時'
 		),
 		'indexes' => array(
 			'PRIMARY' => array('column' => 'id', 'unique' => 1)

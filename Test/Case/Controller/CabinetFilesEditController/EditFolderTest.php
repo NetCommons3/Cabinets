@@ -378,7 +378,7 @@ class CabinetFilesEditControllerEditFolderTest extends WorkflowControllerEditTes
  */
 	private function __assertEditGet($data) {
 		//必要に応じてassert書く
-		debug($this->view);
+		//debug($this->view);
 
 		$this->assertInput(
 			'input', 'data[Frame][id]', $data['Frame']['id'], $this->view
