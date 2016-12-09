@@ -40,8 +40,8 @@ NetCommonsApp.controller('Cabinets',
 
 
 NetCommonsApp.controller('CabinetFile.index',
-    ['$scope', '$filter', 'NetCommonsModal', '$http', 'NC3_URL',
-      function($scope, $filter, NetCommonsModal, $http, NC3_URL) {
+    ['$scope', 'NetCommonsModal', '$http', 'NC3_URL',
+      function($scope, NetCommonsModal, $http, NC3_URL) {
         $scope.moved = {};
         $scope.init = function(parentId) {
           $scope.parent_id = parentId;
@@ -58,7 +58,8 @@ NetCommonsApp.controller('CabinetFile.index',
               // 移動を裏で呼び出す
               // get token
               $http.get(NC3_URL + '/net_commons/net_commons/csrfToken.json')
-                  .success(function(token) {
+                  .then(function(response) {
+                    var token = response.data;
                     var post = data;
                     post._Token.key = token.data._Token.key;
 
@@ -73,8 +74,9 @@ NetCommonsApp.controller('CabinetFile.index',
                           headers:
                           {'Content-Type': 'application/x-www-form-urlencoded'}
                         }
-                    )
-                        .success(function(data) {
+                    ).then(
+                        function(response) {
+                          var data = response.data;
                           if (isFolder) {
                             // フォルダを動かしたらリロード
                             location.reload();
@@ -83,15 +85,17 @@ NetCommonsApp.controller('CabinetFile.index',
                             // 違うフォルダへ移動なので、今のフォルダ内ファイル一覧から非表示にする
                             $scope.moved[cabinetFileKey] = true;
                           }
-                        })
-                        .error(function(data, status) {
+                        },
+                        function(response) {
+                          var data = response.data;
                           // エラー処理
                           $scope.flashMessage(data.name, 'danger', 0);
                         });
-                  })
-                  .error(function(data, status) {
+                  },
+                  function(response) {
                     //Token error condition
                     // エラー処理
+                    var data = response.data;
                     $scope.flashMessage(data.name, 'danger', 0);
                   });
             }
@@ -102,7 +106,8 @@ NetCommonsApp.controller('CabinetFile.index',
           // unzipを裏で呼び出す
           // get token
           $http.get(NC3_URL + '/net_commons/net_commons/csrfToken.json')
-              .success(function(token) {
+              .then(function(response) {
+                var token = response.data;
                 var post = data;
                 post._Token.key = token.data._Token.key;
 
@@ -116,23 +121,26 @@ NetCommonsApp.controller('CabinetFile.index',
                       headers:
                       {'Content-Type': 'application/x-www-form-urlencoded'}
                     }
-                )
-                    .success(function(data, status) {
+                ).then(
+                    function(response) {
+                      var data = response.data;
                       if (data.class == 'success') {
                         // エラーがなかったらリロードする
                         location.reload();
                       } else {
                         $scope.flashMessage(data.name, data.class, 0);
                       }
-                    })
-                    .error(function(data, status) {
+                    },
+                    function(response) {
                       // エラー処理
+                      var data = response.data;
                       $scope.flashMessage(data.name, data.class, 0);
                     });
-              })
-              .error(function(data, status) {
+              },
+              function(response) {
                 //Token error condition
                 // エラー処理
+                var data = response.data;
                 $scope.flashMessage(data.name, 'danger', 3);
               });
         };
