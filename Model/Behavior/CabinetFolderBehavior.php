@@ -53,7 +53,15 @@ class CabinetFolderBehavior extends ModelBehavior {
  * @return array|null
  */
 	public function getRootFolder(Model $model, $cabinet) {
-		return $model->find('first', ['conditions' => $this->_getRootFolderConditions($cabinet)]);
+		$conditions = [
+			'CabinetFileTree.cabinet_key' => $cabinet['Cabinet']['key'],
+			'CabinetFileTree.parent_id' => null,
+			'OR' => array(
+				'CabinetFile.language_id' => Current::read('Language.id'),
+				'CabinetFile.is_translation' => false,
+			)
+		];
+		return $model->find('first', ['conditions' => $conditions]);
 	}
 
 /**
@@ -99,31 +107,36 @@ class CabinetFolderBehavior extends ModelBehavior {
 		if ($this->rootFolderExist($model, $cabinet)) {
 			return true;
 		}
-		//
+
 		// $modelのTopicビヘイビアを停止
 		$model->Behaviors->disable('Topics');
 		$model->create();
 		$model->useNameValidation = false;
+
+		$result = $model->getRootFolder($cabinet);
 		$rootFolder = [
 			'CabinetFile' => [
 				'cabinet_id' => $cabinet['Cabinet']['id'],
 				'status' => WorkflowComponent::STATUS_PUBLISHED,
 				'filename' => $cabinet['Cabinet']['name'],
 				'is_folder' => 1,
+				'key' => Hash::get($result, 'CabinetFile.key')
 			]
 		];
 
-		if ($rootFolder = $model->save($rootFolder)) {
+		$rootFolder = $model->save($rootFolder);
+		if ($rootFolder) {
 			$tree = [
 				'CabinetFileTree' => [
 					'cabinet_key' => $cabinet['Cabinet']['key'],
 					'cabinet_file_key' => $rootFolder['CabinetFile']['key'],
 					'cabinet_file_id' => $rootFolder['CabinetFile']['id'],
+					'lft' => Hash::get($result, 'CabinetFileTree.lft'),
+					'rght' => Hash::get($result, 'CabinetFileTree.rght'),
 				]
 			];
-			$result = $model->CabinetFileTree->save($tree);
+			$result = (bool)$model->CabinetFileTree->save($tree);
 			$model->useNameValidation = true;
-			$result = ($result) ? true : false;
 		} else {
 			$result = false;
 		}
@@ -165,9 +178,9 @@ class CabinetFolderBehavior extends ModelBehavior {
 			'CabinetFile.is_folder' => false,
 		];
 		$files = $model->find('all', ['conditions' => $conditions]);
+
 		$total = 0;
 		foreach ($files as $file) {
-
 			$total += Hash::get($file, 'UploadFile.file.size', 0);
 		}
 		return $total;
@@ -182,8 +195,9 @@ class CabinetFolderBehavior extends ModelBehavior {
  */
 	protected function _getRootFolderConditions($cabinet) {
 		$conditions = [
-			'cabinet_key' => $cabinet['Cabinet']['key'],
-			'parent_id' => null,
+			'CabinetFileTree.cabinet_key' => $cabinet['Cabinet']['key'],
+			'CabinetFileTree.parent_id' => null,
+			'CabinetFile.language_id' => Current::read('Language.id'),
 		];
 		return $conditions;
 	}
@@ -196,15 +210,28 @@ class CabinetFolderBehavior extends ModelBehavior {
  * @return void
  */
 	public function updateCabinetTotalSize(Model $model, $cabinetId) {
-		$cabinet = $model->Cabinet->findById($cabinetId);
+		$cabinet = $model->Cabinet->find('first', array(
+			'recursive' => -1,
+			'conditions' => array('id' => $cabinetId),
+		));
+
 		// トータルサイズ取得
 		$rootFolder = $model->getRootFolder($cabinet);
 		$totalSize = $model->getTotalSizeByFolder(
 			$rootFolder
 		);
 		// キャビネット更新
-		$cabinet['Cabinet']['total_size'] = $totalSize;
-		$model->Cabinet->save($cabinet, ['callbacks' => false]);
+		$update = array(
+			'Cabinet.total_size' => $totalSize
+		);
+		$conditions = array(
+			'Cabinet.block_id' => $cabinet['Cabinet']['block_id']
+		);
+		if (! $model->Cabinet->updateAll($update, $conditions)) {
+			throw new InternalErrorException(__d('net_commons', 'Internal Server Error'));
+		}
+		//$cabinet['Cabinet']['total_size'] = $totalSize;
+		//$model->Cabinet->save($cabinet, ['callbacks' => false]);
 		//$model->Cabinet->id = $cabinetId;
 		//$model->Cabinet->saveField('total_size', $totalSize, ['callbacks' => false]);
 	}

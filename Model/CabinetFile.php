@@ -60,7 +60,14 @@ class CabinetFile extends CabinetsAppModel {
 				'X-BODY' => 'CabinetFile.description',
 			),
 		),
-
+		//多言語
+		'M17n.M17n' => array(
+			'commonFields' => array(
+				'cabinet_file_tree_parent_id',
+				'is_folder',
+				'use_auth_key'
+			),
+		),
 	);
 
 /**

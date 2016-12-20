@@ -102,8 +102,10 @@ class CabinetFilesController extends CabinetsAppController {
 			'download_folder'
 		);
 		parent::beforeFilter();
-		$blockId = Current::read('Block.id');
-		$this->_cabinet = $this->Cabinet->findByBlockId($blockId);
+		$this->_cabinet = $this->Cabinet->find('first', array(
+			'recursive' => 0,
+			'conditions' => $this->Cabinet->getBlockConditionById(),
+		));
 		$this->set('cabinet', $this->_cabinet);
 	}
 
@@ -130,8 +132,8 @@ class CabinetFilesController extends CabinetsAppController {
 
 		// 全フォルダツリーを得る
 		$conditions = [
-			'is_folder' => 1,
-			'cabinet_key' => $this->viewVars['cabinet']['Cabinet']['key']
+			'CabinetFile.is_folder' => 1,
+			'CabinetFileTree.cabinet_key' => $this->viewVars['cabinet']['Cabinet']['key']
 		];
 		$folders = $this->CabinetFileTree->find(
 			'threaded',
@@ -394,7 +396,11 @@ class CabinetFilesController extends CabinetsAppController {
 				[
 					'conditions' => [
 						'CabinetFile.key' => $folderKey,
-						'CabinetFile.language_id' => Current::read('Language.id'),
+						//'CabinetFile.language_id' => Current::read('Language.id'),
+						'OR' => array(
+							'CabinetFile.is_translation' => false,
+							'CabinetFile.language_id' => Current::read('Language.id'),
+						),
 						'CabinetFile.is_latest' => true,
 					]
 				]
@@ -467,8 +473,9 @@ class CabinetFilesController extends CabinetsAppController {
 	protected function _getCurrentFolderFiles($currentTreeId) {
 		// カレントフォルダのファイル・フォルダリストを得る。
 		$conditions = [
-			'parent_id' => $currentTreeId,
-			'cabinet_id' => $this->viewVars['cabinet']['Cabinet']['id']
+			'CabinetFileTree.parent_id' => $currentTreeId,
+			//'cabinet_id' => $this->viewVars['cabinet']['Cabinet']['id']
+			'CabinetFileTree.cabinet_key' => $this->viewVars['cabinet']['Cabinet']['key']
 		];
 		//  workflowコンディションを混ぜ込む
 		$conditions = $this->CabinetFile->getWorkflowConditions($conditions);

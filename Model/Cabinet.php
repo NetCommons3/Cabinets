@@ -49,6 +49,10 @@ class Cabinet extends CabinetsAppModel {
 			)
 		),
 		'NetCommons.OriginalKey',
+		//多言語
+		'M17n.M17n' => array(
+			'keyField' => 'block_id'
+		),
 	);
 
 /**

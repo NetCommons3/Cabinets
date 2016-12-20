@@ -69,7 +69,10 @@ class CabinetFilesEditController extends CabinetsAppController {
 	public function beforeFilter() {
 		parent::beforeFilter();
 		$blockId = Current::read('Block.id');
-		$this->_cabinet = $this->Cabinet->findByBlockId($blockId);
+		$this->_cabinet = $this->Cabinet->find('first', array(
+			'recursive' => 0,
+			'conditions' => $this->Cabinet->getBlockConditionById(),
+		));
 		$this->set('cabinet', $this->_cabinet);
 	}
 
@@ -320,6 +323,8 @@ class CabinetFilesEditController extends CabinetsAppController {
 		} else {
 			$folderPath = [];
 		}
+//debug($folderPath);
+//debug($parentId);
 
 		$folderPath[] = [
 			'CabinetFile' => [
@@ -359,6 +364,8 @@ class CabinetFilesEditController extends CabinetsAppController {
 
 		$treeId = $cabinetFile['CabinetFileTree']['id'];
 		$folderPath = $this->CabinetFileTree->getPath($treeId, null, 0);
+debug($folderPath);
+
 		$this->set('folderPath', $folderPath);
 
 		if ($this->request->is(array('post', 'put'))) {

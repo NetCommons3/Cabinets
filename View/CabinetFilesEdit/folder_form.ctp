@@ -63,13 +63,10 @@ echo $this->NetCommonsHtml->script(
 							<div>
 								<?php echo $this->element('file_path'); ?>
 
-								<a href="#" class="btn btn-default"
-									ng-click="showFolderTree()"><span
-										class="glyphicon glyphicon-move"
-										aria-hidden="true"></span><?php echo __d(
-										'net_commons',
-										'Move'
-									); ?></a>
+								<a href="#" class="btn btn-default" ng-click="showFolderTree()">
+									<span class="glyphicon glyphicon-move" aria-hidden="true"></span>
+									<?php echo __d('net_commons', 'Move'); ?>
+								</a>
 
 								<?php
 								$this->NetCommonsForm->unlockField('CabinetFileTree.parent_id');
