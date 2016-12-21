@@ -30,7 +30,7 @@ class CabinetFileTree extends CabinetsAppModel {
  * @var array
  */
 	public $actsAs = array(
-		'Cabinets.CabinetTree'
+		'Tree'
 	);
 
 /**
@@ -43,43 +43,11 @@ class CabinetFileTree extends CabinetsAppModel {
 			'className' => 'Cabinets.CabinetFile',
 			'foreignKey' => false,
 			//'conditions' => 'CabinetFileTree.cabinet_file_key=CabinetFile.key  ',
-			'conditions' => 'CabinetFileTree.cabinet_file_id = CabinetFile.id',
+			'conditions' => 'CabinetFileTree.cabinet_file_id=CabinetFile.id  ',
 			'fields' => '',
 			'order' => ''
 		),
-		'ParentCabinetFileTree' => array(
-			'className' => 'Cabinets.CabinetFileTree',
-			'foreignKey' => 'parent_id',
-			'conditions' => '',
-			'fields' => '',
-			'order' => ''
-		)
 	);
-
-/**
- * In the event of ambiguous results returned (multiple top level results, with different parent_ids)
- * top level results with different parent_ids to the first result will be dropped
- *
- * @param string $state Either "before" or "after".
- * @param array $query Query.
- * @param array $results Results.
- * @return array Threaded results
- */
-	protected function _findThreaded($state, $query, $results = array()) {
-		if ($state === 'before') {
-			return $query;
-		}
-
-		$parent = 'parent_id';
-		if (isset($query['parent'])) {
-			$parent = $query['parent'];
-		}
-
-		return Hash::nest($results, array(
-			'idPath' => '{n}.' . $this->alias . '.cabinet_file_key',
-			'parentPath' => '{n}.ParentCabinetFileTree.cabinet_file_key'
-		));
-	}
 
 /**
  * beforeFind
@@ -88,14 +56,18 @@ class CabinetFileTree extends CabinetsAppModel {
  * @return array クエリ
  */
 	public function beforeFind($query) {
+		$this->loadModels([
+			'CabinetFilesLanguage' => 'Cabinets.CabinetFilesLanguage',
+		]);
+
 		// workflow連動でアソシエーションさせる！
 		$association = [
-			'CabinetFileTree.cabinet_file_key = CabinetFile.key'
-			//'CabinetFileTree.cabinet_file_id = CabinetFile.id'
+			//'CabinetFileTree.cabinet_file_key = CabinetFile.key'
+			'CabinetFileTree.cabinet_file_id = CabinetFile.id'
 		];
 		$cabinetFileCondition = $this->CabinetFile->getWorkflowConditions($association);
 
-		$this->bindModel(
+		$belongsTo = Hash::merge(
 			[
 				'belongsTo' => [
 					'CabinetFile' => array(
@@ -105,10 +77,12 @@ class CabinetFileTree extends CabinetsAppModel {
 						'fields' => '',
 						'order' => ''
 					),
-
 				]
-			]
+			],
+			$this->CabinetFilesLanguage->bindModelCabinetFilesLang()
 		);
+		$this->bindModel($belongsTo, true);
+
 		// recursive 0以上の時だけにする NOT NULL 条件を追加する
 		$recursive = Hash::get($query, 'recursive', $this->recursive);
 		if ($recursive >= 0) {
@@ -116,7 +90,6 @@ class CabinetFileTree extends CabinetsAppModel {
 			// JOINできないTreeレコードを切り捨てるためにCabinetFile.id NOT NULLを条件に入れる
 			$query['conditions']['NOT']['CabinetFile.id'] = null;
 		}
-
 		return $query;
 	}
 

@@ -323,8 +323,6 @@ class CabinetFilesEditController extends CabinetsAppController {
 		} else {
 			$folderPath = [];
 		}
-//debug($folderPath);
-//debug($parentId);
 
 		$folderPath[] = [
 			'CabinetFile' => [
@@ -364,8 +362,6 @@ class CabinetFilesEditController extends CabinetsAppController {
 
 		$treeId = $cabinetFile['CabinetFileTree']['id'];
 		$folderPath = $this->CabinetFileTree->getPath($treeId, null, 0);
-debug($folderPath);
-
 		$this->set('folderPath', $folderPath);
 
 		if ($this->request->is(array('post', 'put'))) {

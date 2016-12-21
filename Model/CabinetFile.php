@@ -60,14 +60,7 @@ class CabinetFile extends CabinetsAppModel {
 				'X-BODY' => 'CabinetFile.description',
 			),
 		),
-		//多言語
-		'M17n.M17n' => array(
-			'commonFields' => array(
-				'cabinet_file_tree_parent_id',
-				'is_folder',
-				'use_auth_key'
-			),
-		),
+
 	);
 
 /**
@@ -94,6 +87,47 @@ class CabinetFile extends CabinetsAppModel {
 			'order' => ''
 		),
 	);
+
+/**
+ * Array of virtual fields this model has. Virtual fields are aliased
+ * SQL expressions. Fields added to this property will be read as other fields in a model
+ * but will not be saveable.
+ *
+ * `public $virtualFields = array('two' => '1 + 1');`
+ *
+ * Is a simplistic example of how to set virtualFields
+ *
+ * @var array
+ * @link http://book.cakephp.org/2.0/ja/models/model-attributes.html#virtualfields
+ */
+	public $virtualFields = array(
+		'filename' => 'CabinetFilesLanguage.filename',
+		'description' => 'CabinetFilesLanguage.description',
+		'is_origin' => 'CabinetFilesLanguage.is_origin',
+		'is_translation' => 'CabinetFilesLanguage.is_translation',
+	);
+
+/**
+ * Called before each find operation. Return false if you want to halt the find
+ * call, otherwise return the (modified) query data.
+ *
+ * @param array $query Data used to execute this query, i.e. conditions, order, etc.
+ * @return mixed true if the operation should continue, false if it should abort; or, modified
+ *  $query to continue with new $query
+ * @link http://book.cakephp.org/2.0/en/models/callback-methods.html#beforefind
+ */
+	public function beforeFind($query) {
+		$this->loadModels([
+			'CabinetFilesLanguage' => 'Cabinets.CabinetFilesLanguage',
+		]);
+
+		$belongsTo = $this->CabinetFilesLanguage->bindModelCabinetFilesLang();
+		$this->bindModel($belongsTo, true);
+
+		$query['recursive'] = $this->recursive;
+
+		return true;
+	}
 
 /**
  * beforeValidate

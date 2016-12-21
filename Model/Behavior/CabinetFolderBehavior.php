@@ -53,15 +53,7 @@ class CabinetFolderBehavior extends ModelBehavior {
  * @return array|null
  */
 	public function getRootFolder(Model $model, $cabinet) {
-		$conditions = [
-			'CabinetFileTree.cabinet_key' => $cabinet['Cabinet']['key'],
-			'CabinetFileTree.parent_id' => null,
-			'OR' => array(
-				'CabinetFile.language_id' => Current::read('Language.id'),
-				'CabinetFile.is_translation' => false,
-			)
-		];
-		return $model->find('first', ['conditions' => $conditions]);
+		return $model->find('first', ['conditions' => $this->_getRootFolderConditions($cabinet)]);
 	}
 
 /**
@@ -112,27 +104,21 @@ class CabinetFolderBehavior extends ModelBehavior {
 		$model->Behaviors->disable('Topics');
 		$model->create();
 		$model->useNameValidation = false;
-
-		$result = $model->getRootFolder($cabinet);
 		$rootFolder = [
 			'CabinetFile' => [
 				'cabinet_id' => $cabinet['Cabinet']['id'],
 				'status' => WorkflowComponent::STATUS_PUBLISHED,
 				'filename' => $cabinet['Cabinet']['name'],
 				'is_folder' => 1,
-				'key' => Hash::get($result, 'CabinetFile.key')
 			]
 		];
 
-		$rootFolder = $model->save($rootFolder);
-		if ($rootFolder) {
+		if ($rootFolder = $model->save($rootFolder)) {
 			$tree = [
 				'CabinetFileTree' => [
 					'cabinet_key' => $cabinet['Cabinet']['key'],
 					'cabinet_file_key' => $rootFolder['CabinetFile']['key'],
 					'cabinet_file_id' => $rootFolder['CabinetFile']['id'],
-					'lft' => Hash::get($result, 'CabinetFileTree.lft'),
-					'rght' => Hash::get($result, 'CabinetFileTree.rght'),
 				]
 			];
 			$result = (bool)$model->CabinetFileTree->save($tree);
@@ -178,7 +164,6 @@ class CabinetFolderBehavior extends ModelBehavior {
 			'CabinetFile.is_folder' => false,
 		];
 		$files = $model->find('all', ['conditions' => $conditions]);
-
 		$total = 0;
 		foreach ($files as $file) {
 			$total += Hash::get($file, 'UploadFile.file.size', 0);
@@ -197,7 +182,6 @@ class CabinetFolderBehavior extends ModelBehavior {
 		$conditions = [
 			'CabinetFileTree.cabinet_key' => $cabinet['Cabinet']['key'],
 			'CabinetFileTree.parent_id' => null,
-			'CabinetFile.language_id' => Current::read('Language.id'),
 		];
 		return $conditions;
 	}

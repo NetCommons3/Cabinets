@@ -396,11 +396,7 @@ class CabinetFilesController extends CabinetsAppController {
 				[
 					'conditions' => [
 						'CabinetFile.key' => $folderKey,
-						//'CabinetFile.language_id' => Current::read('Language.id'),
-						'OR' => array(
-							'CabinetFile.is_translation' => false,
-							'CabinetFile.language_id' => Current::read('Language.id'),
-						),
+						'CabinetFile.language_id' => Current::read('Language.id'),
 						'CabinetFile.is_latest' => true,
 					]
 				]
@@ -473,9 +469,8 @@ class CabinetFilesController extends CabinetsAppController {
 	protected function _getCurrentFolderFiles($currentTreeId) {
 		// カレントフォルダのファイル・フォルダリストを得る。
 		$conditions = [
-			'CabinetFileTree.parent_id' => $currentTreeId,
-			//'cabinet_id' => $this->viewVars['cabinet']['Cabinet']['id']
-			'CabinetFileTree.cabinet_key' => $this->viewVars['cabinet']['Cabinet']['key']
+			'parent_id' => $currentTreeId,
+			'cabinet_id' => $this->viewVars['cabinet']['Cabinet']['id']
 		];
 		//  workflowコンディションを混ぜ込む
 		$conditions = $this->CabinetFile->getWorkflowConditions($conditions);
