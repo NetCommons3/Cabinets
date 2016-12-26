@@ -38,6 +38,7 @@ class CabinetFile extends CabinetsAppModel {
 		'NetCommons.OriginalKey',
 		'Workflow.Workflow',
 		'Workflow.WorkflowComment',
+		'Cabinets.CabinetFile',
 		'Cabinets.CabinetFolder',
 		'Cabinets.CabinetUnzip',
 		'Files.Attachment' => [
@@ -60,7 +61,23 @@ class CabinetFile extends CabinetsAppModel {
 				'X-BODY' => 'CabinetFile.description',
 			),
 		),
-
+		//多言語
+		'M17n.M17n' => array(
+			'commonFields' => array(
+				'cabinet_file_tree_parent_id',
+				'cabinet_file_tree_id',
+				'is_folder',
+				'use_auth_key',
+			),
+			'associations' => array(
+				'UploadFilesContent' => array(
+					'class' => 'Files.UploadFilesContent',
+					'foreignKey' => 'content_id',
+					'isM17n' => true
+				),
+			),
+			'afterCallback' => false,
+		),
 	);
 
 /**
@@ -72,17 +89,9 @@ class CabinetFile extends CabinetsAppModel {
 		'CabinetFileTree' => array(
 			'type' => 'LEFT',
 			'className' => 'Cabinets.CabinetFileTree',
-			'foreignKey' => false,
+			'foreignKey' => 'cabinet_file_tree_id',
 			//'conditions' => 'CabinetFileTree.cabinet_file_key=CabinetFile.key',
-			'conditions' => 'CabinetFileTree.cabinet_file_id=CabinetFile.id',
-			'fields' => '',
-			'order' => ''
-		),
-		'Cabinet' => array(
-			'type' => 'LEFT',
-			'className' => 'Cabinets.Cabinet',
-			'foreignKey' => false,
-			'conditions' => 'CabinetFile.cabinet_id=Cabinet.id',
+			//'conditions' => 'CabinetFileTree.cabinet_file_id=CabinetFile.id',
 			'fields' => '',
 			'order' => ''
 		),
@@ -150,36 +159,98 @@ class CabinetFile extends CabinetsAppModel {
 	}
 
 /**
- * ファイル名検査
+ * Called before each find operation. Return false if you want to halt the find
+ * call, otherwise return the (modified) query data.
  *
- * @param array $check 検査対象
- * @return bool
+ * @param array $query Data used to execute this query, i.e. conditions, order, etc.
+ * @return mixed true if the operation should continue, false if it should abort; or, modified
+ *  $query to continue with new $query
+ * @link http://book.cakephp.org/2.0/en/models/callback-methods.html#beforefind
  */
-	public function validateFilename($check) {
-		$filename = $check['filename'];
-		if ($this->data[$this->alias]['is_folder']) {
-			return !preg_match('/[' . preg_quote('\'./?|:\<>\*"', '/') . ']/', $filename);
-		} else {
-			return !preg_match('/[' . preg_quote('\'/?|:\<>\*"', '/') . ']/', $filename);
+	public function beforeFind($query) {
+		if (Hash::get($query, 'recursive', $this->recursive) > -1) {
+			$belongsTo = array(
+				'belongsTo' => array(
+					'Cabinet' => array(
+						'className' => 'Cabinets.Cabinet',
+						'foreignKey' => false,
+						'conditions' => array(
+							'CabinetFile.cabinet_key = Cabinet.key',
+							'OR' => array(
+								'Cabinet.is_translation' => false,
+								'Cabinet.language_id' => Current::read('Language.id', '0'),
+							),
+						),
+						'order' => ''
+					),
+				)
+			);
+
+			$this->bindModel($belongsTo, true);
 		}
+		return true;
 	}
 
 /**
- * ファイル編集時のファイル名チェック
+ * Called before each save operation, after validation. Return a non-true result
+ * to halt the save.
  *
- * @param array $check 検査対象
- * @return bool
+ * @param array $options Options passed from Model::save().
+ * @return bool True if the operation should continue, false if it should abort
+ * @link http://book.cakephp.org/2.0/en/models/callback-methods.html#beforesave
+ * @see Model::save()
+ * @throws InternalErrorException
  */
-	public function validateWithOutExtFileName($check) {
-		if ($this->data[$this->alias]['is_folder']) {
-			return true;
+	public function beforeSave($options = array()) {
+		if (isset($this->data['CabinetFileTree'])) {
+			// treeはファイルなら常に新規INSERT フォルダだったらアップデート
+			if ($this->data['CabinetFile']['is_folder']) {
+				// フォルダは treeをupdate
+				//if(isset($data['CabinetFileTree']['id']) === false){
+				//	$data['CabinetFileTree']['id'] = null;
+				//}
+			} else {
+				// ファイルは treeを常にinsert
+				$this->data['CabinetFileTree']['id'] = null;
+			}
+
+			$this->CabinetFileTree->create();
+			$treeData = $this->CabinetFileTree->save($this->data['CabinetFileTree']);
+			if (! $treeData) {
+				throw new InternalErrorException(__d('net_commons', 'Internal Server Error'));
+			}
+			$this->data['CabinetFileTree'] = $treeData['CabinetFileTree'];
+			$this->data[$this->alias]['cabinet_file_tree_id'] = $this->data['CabinetFileTree']['id'];
 		}
-		// ファイルの編集時だけ拡張子抜きのファイル名が空でないかチェックする
-		if ($this->data[$this->alias]['key']) {
-			$withOutExtFileName = $this->data[$this->alias]['withOutExtFileName'];
-			return (strlen($withOutExtFileName) > 0);
+
+		return parent::beforeSave($options);
+	}
+
+/**
+ * Called after each successful save operation.
+ *
+ * @param bool $created True if this save created a new record
+ * @param array $options Options passed from Model::save().
+ * @return void
+ * @link http://book.cakephp.org/2.0/en/models/callback-methods.html#aftersave
+ * @see Model::save()
+ * @throws InternalErrorException
+ */
+	public function afterSave($created, $options = array()) {
+		if (isset($this->data['CabinetFileTree'])) {
+			$update = array(
+				'CabinetFileTree.cabinet_file_key' => '\'' . $this->data[$this->alias]['key'] . '\'',
+			);
+			$conditions = array(
+				'CabinetFileTree.id' => $this->data['CabinetFileTree']['id']
+			);
+			if (! $this->CabinetFileTree->updateAll($update, $conditions)) {
+				throw new InternalErrorException(__d('net_commons', 'Internal Server Error'));
+			}
+			$this->data['CabinetFileTree']['cabinet_file_key'] = $this->data[$this->alias]['key'];
 		}
-		return true;
+
+		parent::afterSave($created, $options);
 	}
 
 /**
@@ -189,7 +260,6 @@ class CabinetFile extends CabinetsAppModel {
  * @param bool $validate バリデートを実行するか
  * @param array $fieldList フィールド
  * @return mixed
- *
  * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
  */
 	public function save($data = null, $validate = true, $fieldList = array()) {
@@ -217,6 +287,7 @@ class CabinetFile extends CabinetsAppModel {
 			unset($data[$this->alias]['id']);
 
 			$data['CabinetFile']['cabinet_file_tree_parent_id'] = $data['CabinetFileTree']['parent_id'];
+
 			// 先にvalidate 失敗したらfalse返す
 			$this->set($data);
 			if (!$this->validates($data)) {
@@ -233,27 +304,12 @@ class CabinetFile extends CabinetsAppModel {
 			}
 			$this->Behaviors->enable('Topics');
 
-			// treeはファイルなら常に新規INSERT フォルダだったらアップデート
-			if ($data['CabinetFile']['is_folder']) {
-				// フォルダは treeをupdate
-				//if(isset($data['CabinetFileTree']['id']) === false){
-				//	$data['CabinetFileTree']['id'] = null;
-				//}
-			} else {
-				// ファイルは treeを常にinsert
-				$data['CabinetFileTree']['id'] = null;
-			}
-			$data['CabinetFileTree']['cabinet_file_key'] = $savedData[$this->alias]['key'];
-			$data['CabinetFileTree']['cabinet_file_id'] = $savedData[$this->alias]['id'];
-
-			$this->CabinetFileTree->create();
-			if (($treeData = $this->CabinetFileTree->save($data)) === false) {
-				throw new InternalErrorException(__d('net_commons', 'Internal Server Error'));
-			}
-			$savedData['CabinetFileTree'] = $treeData['CabinetFileTree'];
-
 			// Cabinet.total_size同期
-			$this->updateCabinetTotalSize($data['CabinetFile']['cabinet_id']);
+			$this->updateCabinetTotalSize($data['CabinetFile']['cabinet_key']);
+
+			//多言語化の処理
+			$this->set($savedData);
+			$this->saveM17nData();
 
 			$this->commit();
 			return $savedData;
@@ -274,14 +330,19 @@ class CabinetFile extends CabinetsAppModel {
 	public function deleteFileByKey($key) {
 		$this->begin();
 		try {
-			$deleteFile = $this->findByKey($key);
+			$deleteFile = $this->find('first', array(
+				'recursive' => 0,
+				'conditions' => array(
+					'CabinetFile.key' => $key
+				)
+			));
 
 			if ($deleteFile['CabinetFile']['is_folder']) {
 				$this->_deleteFolder($deleteFile);
 			} else {
 				$this->_deleteFile($deleteFile);
 			}
-			$this->updateCabinetTotalSize($deleteFile['CabinetFile']['cabinet_id']);
+			$this->updateCabinetTotalSize($deleteFile['CabinetFile']['cabinet_key']);
 
 			$this->commit();
 			return;

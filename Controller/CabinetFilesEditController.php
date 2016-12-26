@@ -1,6 +1,12 @@
 <?php
 /**
  * CabinetFilesEdit
+ *
+ * @property NetCommonsWorkflow $NetCommonsWorkflow
+ * @property PaginatorComponent $Paginator
+ * @property CabinetFile $CabinetFile
+ * @property CabinetCategory $CabinetCategory
+ * @property NetCommonsComponent $NetCommons
  */
 App::uses('CabinetsAppController', 'Cabinets.Controller');
 
@@ -11,11 +17,7 @@ App::uses('CabinetsAppController', 'Cabinets.Controller');
  * @author   Ryuji AMANO <ryuji@ryus.co.jp>
  * @link     http://www.netcommons.org NetCommons Project
  * @license  http://www.netcommons.org/license.txt NetCommons License
- * @property NetCommonsWorkflow $NetCommonsWorkflow
- * @property PaginatorComponent $Paginator
- * @property CabinetFile $CabinetFile
- * @property CabinetCategory $CabinetCategory
- * @property NetCommonsComponent $NetCommons
+ * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
  */
 class CabinetFilesEditController extends CabinetsAppController {
 
@@ -68,9 +70,36 @@ class CabinetFilesEditController extends CabinetsAppController {
  */
 	public function beforeFilter() {
 		parent::beforeFilter();
-		$blockId = Current::read('Block.id');
-		$this->_cabinet = $this->Cabinet->findByBlockId($blockId);
+		$this->_cabinet = $this->Cabinet->find('first', array(
+			'recursive' => 0,
+			'conditions' => $this->Cabinet->getBlockConditionById(),
+		));
 		$this->set('cabinet', $this->_cabinet);
+	}
+
+/**
+ * 親フォルダのURLを取得
+ *
+ * @param int $parentId 親ID
+ * @return string
+ */
+	private function __getParentFolderUrl($parentId) {
+		$parentFolder = $this->CabinetFileTree->find('first', array(
+			'recursive' => 0,
+			'conditions' => array(
+				'CabinetFileTree.id' => $parentId
+			)
+		));
+		$url = NetCommonsUrl::actionUrl(
+			array(
+				'controller' => 'cabinet_files',
+				'action' => 'index',
+				'block_id' => Current::read('Block.id'),
+				'frame_id' => Current::read('Frame.id'),
+				'key' => Hash::get($parentFolder, 'CabinetFile.key', null)
+			)
+		);
+		return $url;
 	}
 
 /**
@@ -101,8 +130,8 @@ class CabinetFilesEditController extends CabinetsAppController {
 			$status = $this->Workflow->parseStatus();
 			$this->request->data['CabinetFile']['status'] = $status;
 
-			// set cabinet_id
-			$this->request->data['CabinetFile']['cabinet_id'] = $this->_cabinet['Cabinet']['id'];
+			// set cabinet_key
+			$this->request->data['CabinetFile']['cabinet_key'] = $this->_cabinet['Cabinet']['key'];
 			// set language_id
 			$this->request->data['CabinetFile']['language_id'] = Current::read('Language.id');
 			// is_folderセット
@@ -114,20 +143,9 @@ class CabinetFilesEditController extends CabinetsAppController {
 			$filename = $this->request->data['CabinetFile']['file']['name'];
 			$this->request->data['CabinetFile']['filename'] = $filename;
 			if (($this->CabinetFile->saveFile($this->request->data))) {
-
-				$parentFolder = $this->CabinetFileTree->findById(
+				$url = $this->__getParentFolderUrl(
 					$this->request->data['CabinetFileTree']['parent_id']
 				);
-				$url = NetCommonsUrl::actionUrl(
-					array(
-						'controller' => 'cabinet_files',
-						'action' => 'index',
-						'block_id' => Current::read('Block.id'),
-						'frame_id' => Current::read('Frame.id'),
-						'key' => Hash::get($parentFolder, 'CabinetFile.key', null)
-					)
-				);
-
 				return $this->redirect($url);
 			}
 
@@ -170,10 +188,15 @@ class CabinetFilesEditController extends CabinetsAppController {
 		$key = Hash::get($this->request->params, 'key');
 
 		//  keyのis_latstを元に編集を開始
-		$cabinetFile = $this->CabinetFile->findByKeyAndIsLatest($key, 1);
+		$conditions = $this->CabinetFile->getWorkflowConditions([
+			'CabinetFile.key' => $key,
+			'CabinetFile.cabinet_key' => Hash::get($this->_cabinet, 'Cabinet.key'),
+		]);
+		$cabinetFile = $this->CabinetFile->find('first', ['conditions' => $conditions]);
 		if (empty($cabinetFile)) {
 			return $this->throwBadRequest();
 		}
+
 		// フォルダならエラー
 		if ($cabinetFile['CabinetFile']['is_folder'] == true) {
 			return $this->throwBadRequest();
@@ -187,9 +210,7 @@ class CabinetFilesEditController extends CabinetsAppController {
 		$this->set('folderPath', $folderPath);
 
 		if ($this->request->is(array('post', 'put'))) {
-
 			$this->CabinetFile->create();
-
 			$status = $this->Workflow->parseStatus();
 
 			// ファイル名変更
@@ -213,9 +234,8 @@ class CabinetFilesEditController extends CabinetsAppController {
 			}
 
 			$this->request->data['CabinetFile']['status'] = $status;
-
-			// set cabinet_id
-			$this->request->data['CabinetFile']['cabinet_id'] = $this->_cabinet['Cabinet']['id'];
+			// set cabinet_key
+			$this->request->data['CabinetFile']['cabinet_key'] = $this->_cabinet['Cabinet']['key'];
 			// set language_id
 			$this->request->data['CabinetFile']['language_id'] = Current::read('Language.id');
 
@@ -227,19 +247,9 @@ class CabinetFilesEditController extends CabinetsAppController {
 			}
 
 			if ($this->CabinetFile->saveFile($data)) {
-				$parentFolder = $this->CabinetFileTree->findById(
+				$url = $this->__getParentFolderUrl(
 					$this->request->data['CabinetFileTree']['parent_id']
 				);
-				$url = NetCommonsUrl::actionUrl(
-					array(
-						'controller' => 'cabinet_files',
-						'action' => 'index',
-						'block_id' => Current::read('Block.id'),
-						'frame_id' => Current::read('Frame.id'),
-						'key' => Hash::get($parentFolder, 'CabinetFile.key', null)
-					)
-				);
-
 				return $this->redirect($url);
 			}
 
@@ -254,7 +264,6 @@ class CabinetFilesEditController extends CabinetsAppController {
 			);
 			$this->request->data['CabinetFile']['withOutExtFileName'] = $withOutExtFileName;
 			$this->request->data['CabinetFile']['extension'] = $ext;
-
 		}
 
 		$this->set('cabinetFile', $cabinetFile);
@@ -281,8 +290,8 @@ class CabinetFilesEditController extends CabinetsAppController {
 			$status = WorkflowComponent::STATUS_PUBLISHED;
 			$this->request->data['CabinetFile']['status'] = $status;
 
-			// set cabinet_id
-			$this->request->data['CabinetFile']['cabinet_id'] = $this->_cabinet['Cabinet']['id'];
+			// set cabinet_key
+			$this->request->data['CabinetFile']['cabinet_key'] = $this->_cabinet['Cabinet']['key'];
 			// set language_id
 			$this->request->data['CabinetFile']['language_id'] = Current::read('Language.id');
 			// is_folderセット
@@ -345,7 +354,11 @@ class CabinetFilesEditController extends CabinetsAppController {
 		$key = $this->request->params['key'];
 
 		//  keyのis_latstを元に編集を開始
-		$cabinetFile = $this->CabinetFile->findByKeyAndIsLatest($key, 1);
+		$conditions = $this->CabinetFile->getWorkflowConditions([
+			'CabinetFile.key' => $key,
+			'CabinetFile.cabinet_key' => $this->_cabinet['Cabinet']['key']
+		]);
+		$cabinetFile = $this->CabinetFile->find('first', ['conditions' => $conditions]);
 		if (empty($cabinetFile)) {
 			//  404 NotFound
 			throw new NotFoundException();
@@ -370,8 +383,8 @@ class CabinetFilesEditController extends CabinetsAppController {
 			$status = WorkflowComponent::STATUS_PUBLISHED;
 			$this->request->data['CabinetFile']['status'] = $status;
 
-			// set cabinet_id
-			$this->request->data['CabinetFile']['cabinet_id'] = $this->_cabinet['Cabinet']['id'];
+			// set cabinet_key
+			$this->request->data['CabinetFile']['cabinet_key'] = $this->_cabinet['Cabinet']['key'];
 			// set language_id
 			$this->request->data['CabinetFile']['language_id'] = Current::read('Language.id');
 
@@ -417,7 +430,7 @@ class CabinetFilesEditController extends CabinetsAppController {
 		$key = isset($this->request->params['key']) ? $this->request->params['key'] : null;
 		$conditions = [
 			'CabinetFile.key' => $key,
-			'CabinetFile.cabinet_id' => $this->_cabinet['Cabinet']['id']
+			'CabinetFile.cabinet_key' => $this->_cabinet['Cabinet']['key']
 		];
 		$conditions = $this->CabinetFile->getWorkflowConditions($conditions);
 		$cabinetFile = $this->CabinetFile->find('first', ['conditions' => $conditions]);
@@ -435,8 +448,8 @@ class CabinetFilesEditController extends CabinetsAppController {
 
 		// 全フォルダツリーを得る
 		$conditions = [
-			'is_folder' => 1,
-			'cabinet_key' => $this->_cabinet['Cabinet']['key'],
+			'CabinetFile.is_folder' => 1,
+			'CabinetFile.cabinet_key' => $this->_cabinet['Cabinet']['key'],
 		];
 		// 移動するのがフォルダだったら、下位フォルダを除外する
 		if (isset($cabinetFile) && Hash::get($cabinetFile, 'CabinetFile.is_folder')) {
@@ -492,8 +505,12 @@ class CabinetFilesEditController extends CabinetsAppController {
 
 		$key = $this->request->params['key'];
 
-		//  keyのis_latestを元に編集を開始
-		$cabinetFile = $this->CabinetFile->findByKeyAndIsLatest($key, 1);
+		// keyのis_latestを元に編集を開始
+		$conditions = $this->CabinetFile->getWorkflowConditions([
+			'CabinetFile.key' => $key,
+			'CabinetFile.cabinet_key' => $this->_cabinet['Cabinet']['key']
+		]);
+		$cabinetFile = $this->CabinetFile->find('first', ['conditions' => $conditions]);
 		$parentId = Hash::get($this->request->data, 'CabinetFileTree.parent_id', null);
 
 		$cabinetFile['CabinetFileTree']['parent_id'] = $parentId;
@@ -620,7 +637,7 @@ class CabinetFilesEditController extends CabinetsAppController {
 		$options = [
 			'conditions' => [
 				'CabinetFile.key' => $key,
-				'CabinetFile.cabinet_id' => $this->_cabinet['Cabinet']['id']
+				'CabinetFile.cabinet_key' => $this->_cabinet['Cabinet']['key']
 			]
 		];
 

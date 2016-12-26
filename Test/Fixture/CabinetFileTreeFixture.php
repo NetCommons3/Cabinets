@@ -15,94 +15,6 @@
 class CabinetFileTreeFixture extends CakeTestFixture {
 
 /**
- * Fields
- *
- * @var array
- */
-	public $fields = array(
-		'id' => array(
-			'type' => 'integer',
-			'null' => false,
-			'default' => null,
-			'unsigned' => false,
-			'key' => 'primary',
-			'comment' => 'ID'
-		),
-		'cabinet_key' => array(
-			'type' => 'string',
-			'null' => false,
-			'default' => null,
-			'collate' => 'utf8_general_ci',
-			'comment' => 'キャビネットキー',
-			'charset' => 'utf8'
-		),
-		'cabinet_file_key' => array(
-			'type' => 'string',
-			'null' => false,
-			'default' => null,
-			'collate' => 'utf8_general_ci',
-			'comment' => 'ファイルキー',
-			'charset' => 'utf8'
-		),
-		'cabinet_file_id' => array('type' => 'integer', 'null' => false, 'default' => null, 'unsigned' => false),
-		'parent_id' => array(
-			'type' => 'integer',
-			'null' => true,
-			'default' => null,
-			'unsigned' => false,
-			'comment' => '親フォルダのID treeビヘイビア必須カラム'
-		),
-		'lft' => array(
-			'type' => 'integer',
-			'null' => false,
-			'default' => null,
-			'unsigned' => false,
-			'comment' => 'lft  treeビヘイビア必須カラム'
-		),
-		'rght' => array(
-			'type' => 'integer',
-			'null' => false,
-			'default' => null,
-			'unsigned' => false,
-			'comment' => 'rght  treeビヘイビア必須カラム'
-		),
-		'created_user' => array(
-			'type' => 'integer',
-			'null' => true,
-			'default' => '0',
-			'unsigned' => false,
-			'comment' => '作成者'
-		),
-		'created' => array(
-			'type' => 'datetime',
-			'null' => true,
-			'default' => null,
-			'comment' => '作成日時'
-		),
-		'modified_user' => array(
-			'type' => 'integer',
-			'null' => true,
-			'default' => '0',
-			'unsigned' => false,
-			'comment' => '更新者'
-		),
-		'modified' => array(
-			'type' => 'datetime',
-			'null' => true,
-			'default' => null,
-			'comment' => '更新日時'
-		),
-		'indexes' => array(
-			'PRIMARY' => array('column' => 'id', 'unique' => 1)
-		),
-		'tableParameters' => array(
-			'charset' => 'utf8',
-			'collate' => 'utf8_general_ci',
-			'engine' => 'InnoDB'
-		)
-	);
-
-/**
  * Records CabinetFile.id 1-8に対応するレコードは予約
  *
  * @var array
@@ -112,7 +24,6 @@ class CabinetFileTreeFixture extends CakeTestFixture {
 			'id' => 1,
 			'cabinet_key' => 'Lorem ipsum dolor sit amet',
 			'cabinet_file_key' => 'Lorem ipsum dolor sit amet',
-			'cabinet_file_id' => '1',
 			'parent_id' => 1,
 			'lft' => 1,
 			'rght' => 1,
@@ -125,7 +36,6 @@ class CabinetFileTreeFixture extends CakeTestFixture {
 			'id' => 10,
 			'cabinet_key' => 'cabinet_3',
 			'cabinet_file_key' => 'content_key_10',
-			'cabinet_file_id' => '10',
 			'parent_id' => null,
 			'lft' => 1,
 			'rght' => 2,
@@ -138,7 +48,6 @@ class CabinetFileTreeFixture extends CakeTestFixture {
 			'id' => 11,
 			'cabinet_key' => 'content_block_1',
 			'cabinet_file_key' => 'content_key_11',
-			'cabinet_file_id' => '11',
 			'parent_id' => null,
 			'lft' => 3,
 			'rght' => 40,
@@ -151,7 +60,6 @@ class CabinetFileTreeFixture extends CakeTestFixture {
 			'id' => 12,
 			'cabinet_key' => 'content_block_1',
 			'cabinet_file_key' => 'content_key_1',
-			'cabinet_file_id' => '1',
 			'parent_id' => 11,
 			'lft' => 4,
 			'rght' => 5,
@@ -164,7 +72,6 @@ class CabinetFileTreeFixture extends CakeTestFixture {
 			'id' => 13,
 			'cabinet_key' => 'content_block_1',
 			'cabinet_file_key' => 'content_key_1',
-			'cabinet_file_id' => '2',
 			'parent_id' => 11,
 			'lft' => 6,
 			'rght' => 7,
@@ -177,7 +84,6 @@ class CabinetFileTreeFixture extends CakeTestFixture {
 			'id' => 14,
 			'cabinet_key' => 'content_block_1',
 			'cabinet_file_key' => 'content_key_2',
-			'cabinet_file_id' => '3',
 			'parent_id' => 11,
 			'lft' => 8,
 			'rght' => 9,
@@ -192,7 +98,6 @@ class CabinetFileTreeFixture extends CakeTestFixture {
 			'id' => 15,
 			'cabinet_key' => 'content_block_1',
 			'cabinet_file_key' => 'content_key_12',
-			'cabinet_file_id' => '12',
 			'parent_id' => 11,
 			'lft' => 10,
 			'rght' => 15,
@@ -206,7 +111,6 @@ class CabinetFileTreeFixture extends CakeTestFixture {
 			'id' => 16,
 			'cabinet_key' => 'content_block_1',
 			'cabinet_file_key' => 'content_key_13',
-			'cabinet_file_id' => '13',
 			'parent_id' => 15,
 			'lft' => 12,
 			'rght' => 13,
@@ -220,7 +124,6 @@ class CabinetFileTreeFixture extends CakeTestFixture {
 			'id' => 17,
 			'cabinet_key' => 'content_block_1',
 			'cabinet_file_key' => 'content_key_14',
-			'cabinet_file_id' => '14',
 			'parent_id' => 15,
 			'lft' => 11,
 			'rght' => 14,
@@ -229,7 +132,17 @@ class CabinetFileTreeFixture extends CakeTestFixture {
 			'modified_user' => 1,
 			'modified' => '2016-04-14 02:48:19'
 		),
-
 	);
+
+/**
+ * Initialize the fixture.
+ *
+ * @return void
+ */
+	public function init() {
+		require_once App::pluginPath('Cabinets') . 'Config' . DS . 'Schema' . DS . 'schema.php';
+		$this->fields = (new CabinetsSchema())->tables[Inflector::tableize($this->name)];
+		parent::init();
+	}
 
 }

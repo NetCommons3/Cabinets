@@ -136,6 +136,14 @@ class Init extends CakeMigration {
 						'default' => null,
 						'unsigned' => false
 					),
+					'key' => array(
+						'type' => 'string',
+						'null' => false,
+						'default' => null,
+						'collate' => 'utf8_general_ci',
+						'charset' => 'utf8'
+					),
+					'is_folder' => array('type' => 'boolean', 'null' => false, 'default' => '0'),
 					'status' => array(
 						'type' => 'integer',
 						'null' => false,
@@ -194,14 +202,6 @@ class Init extends CakeMigration {
 						'default' => null,
 						'comment' => '更新日時'
 					),
-					'key' => array(
-						'type' => 'string',
-						'null' => false,
-						'default' => null,
-						'collate' => 'utf8_general_ci',
-						'charset' => 'utf8'
-					),
-					'is_folder' => array('type' => 'boolean', 'null' => false, 'default' => '0'),
 					'indexes' => array(
 						'PRIMARY' => array('column' => 'id', 'unique' => 1),
 					),
@@ -300,6 +300,12 @@ class Init extends CakeMigration {
 						'comment' => 'キャビネットキー',
 						'charset' => 'utf8'
 					),
+					'total_size' => array(
+						'type' => 'float',
+						'null' => true,
+						'default' => null,
+						'unsigned' => false
+					),
 					'created_user' => array(
 						'type' => 'integer',
 						'null' => true,
@@ -325,12 +331,6 @@ class Init extends CakeMigration {
 						'null' => true,
 						'default' => null,
 						'comment' => '更新日時'
-					),
-					'total_size' => array(
-						'type' => 'float',
-						'null' => true,
-						'default' => null,
-						'unsigned' => false
 					),
 					'indexes' => array(
 						'PRIMARY' => array('column' => 'id', 'unique' => 1),

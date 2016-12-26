@@ -34,49 +34,36 @@ class CabinetFileTree extends CabinetsAppModel {
 	);
 
 /**
- * belongsTo associations
- *
- * @var array
- */
-	public $belongsTo = array(
-		'CabinetFile' => array(
-			'className' => 'Cabinets.CabinetFile',
-			'foreignKey' => false,
-			//'conditions' => 'CabinetFileTree.cabinet_file_key=CabinetFile.key  ',
-			'conditions' => 'CabinetFileTree.cabinet_file_id=CabinetFile.id  ',
-			'fields' => '',
-			'order' => ''
-		),
-	);
-
-/**
  * beforeFind
  *
  * @param array $query クエリ
  * @return array クエリ
  */
 	public function beforeFind($query) {
+		$this->loadModels([
+			'CabinetFile' => 'Cabinets.CabinetFile',
+		]);
+
 		// workflow連動でアソシエーションさせる！
 		$association = [
 			//'CabinetFileTree.cabinet_file_key = CabinetFile.key'
-			'CabinetFileTree.cabinet_file_id = CabinetFile.id'
+			'CabinetFileTree.id = CabinetFile.cabinet_file_tree_id'
 		];
 		$cabinetFileCondition = $this->CabinetFile->getWorkflowConditions($association);
 
-		$this->bindModel(
-			[
-				'belongsTo' => [
-					'CabinetFile' => array(
-						'className' => 'Cabinets.CabinetFile',
-						'foreignKey' => false,
-						'conditions' => $cabinetFileCondition,
-						'fields' => '',
-						'order' => ''
-					),
-
-				]
+		$belongsTo = [
+			'belongsTo' => [
+				'CabinetFile' => array(
+					'className' => 'Cabinets.CabinetFile',
+					'foreignKey' => false,
+					'conditions' => $cabinetFileCondition,
+					'fields' => '',
+					'order' => ''
+				),
 			]
-		);
+		];
+		$this->bindModel($belongsTo, true);
+
 		// recursive 0以上の時だけにする NOT NULL 条件を追加する
 		$recursive = Hash::get($query, 'recursive', $this->recursive);
 		if ($recursive >= 0) {

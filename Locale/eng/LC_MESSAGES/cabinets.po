@@ -13,11 +13,6 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
-#: Blogs/View/BlogMailSettings/edit.ctp:23
-#: Cabinets/View/CabinetMailSettings/edit.ctp:23
-msgid "MailSetting.mail_fixed_phrase_body.popover"
-msgstr ""
-
 #: Cabinets/Controller/CabinetFilesController.php:287
 msgid "Invalid cabinet file"
 msgstr ""
@@ -164,6 +159,10 @@ msgstr ""
 
 #: Cabinets/View/CabinetFilesEdit/folder_form.ctp:130
 msgid "Folder"
+msgstr ""
+
+#: Cabinets/View/CabinetMailSettings/edit.ctp:23
+msgid "MailSetting.mail_fixed_phrase_body.popover"
 msgstr ""
 
 #: Cabinets/View/Elements/CabinetBlockRolePermissions/edit_form.ctp:19

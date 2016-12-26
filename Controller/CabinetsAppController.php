@@ -88,8 +88,15 @@ class CabinetsAppController extends AppController {
  */
 	protected function _setupCabinetTitle() {
 		$this->loadModel('Blocks.Block');
-		$block = $this->Block->findById(Current::read('Block.id'));
-		$this->_cabinetTitle = $block['Block']['name'];
+
+		$block = $this->Block->find('first', array(
+			'recursive' => 0,
+			'conditions' => array(
+				'Block.id' => Current::read('Block.id')
+			)
+		));
+
+		$this->_cabinetTitle = $block['BlocksLanguage']['name'];
 	}
 
 /**
