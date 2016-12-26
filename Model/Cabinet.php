@@ -162,11 +162,9 @@ class Cabinet extends CabinetsAppModel {
  * @see Model::save()
  */
 	public function afterSave($created, $options = array()) {
-		$this->loadModels(
-			[
-				'CabinetFile' => 'Cabinet.CabinetFile',
-			]
-		);
+		$this->loadModels([
+			'CabinetFile' => 'Cabinets.CabinetFile',
+		]);
 		//CabinetSetting登録
 		if (isset($this->CabinetSetting->data['CabinetSetting'])) {
 			$this->CabinetSetting->set($this->CabinetSetting->data['CabinetSetting']);
@@ -301,18 +299,6 @@ class Cabinet extends CabinetsAppModel {
 		//トランザクションBegin
 		$this->begin();
 
-		$conditions = array(
-			$this->alias . '.key' => $data['Cabinet']['key']
-		);
-		$cabinets = $this->find(
-			'list',
-			array(
-				'recursive' => -1,
-				'conditions' => $conditions,
-			)
-		);
-		$cabinetIds = array_keys($cabinets);
-
 		try {
 			if (!$this->deleteAll(
 				array($this->alias . '.key' => $data['Cabinet']['key']),
@@ -325,7 +311,7 @@ class Cabinet extends CabinetsAppModel {
 
 			// アップロードファイルの削除をしたいのでコールバック有効にする
 			if (!$this->CabinetFile->deleteAll(
-				array($this->CabinetFile->alias . '.cabinet_id' => $cabinetIds),
+				array($this->CabinetFile->alias . '.cabinet_key' => $data['Cabinet']['key']),
 				true,
 				true
 			)

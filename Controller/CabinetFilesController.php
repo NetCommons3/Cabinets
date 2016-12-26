@@ -164,7 +164,7 @@ class CabinetFilesController extends CabinetsAppController {
 
 		$conditions = [
 			'CabinetFile.key' => $folderKey,
-			'CabinetFile.cabinet_id' => $this->_cabinet['Cabinet']['id']
+			'CabinetFile.cabinet_key' => $this->_cabinet['Cabinet']['key']
 		];
 		$conditions = $this->CabinetFile->getWorkflowConditions($conditions);
 		$cabinetFile = $this->CabinetFile->find('first', ['conditions' => $conditions]);
@@ -230,7 +230,7 @@ class CabinetFilesController extends CabinetsAppController {
 		$folderKey = Hash::get($this->request->params, 'key', null);
 		$conditions = [
 			'CabinetFile.key' => $folderKey,
-			'CabinetFile.cabinet_id' => $this->_cabinet['Cabinet']['id']
+			'CabinetFile.cabinet_key' => $this->_cabinet['Cabinet']['key']
 		];
 		$conditions = $this->CabinetFile->getWorkflowConditions($conditions);
 		$cabinetFile = $this->CabinetFile->find('first', ['conditions' => $conditions]);
@@ -263,7 +263,7 @@ class CabinetFilesController extends CabinetsAppController {
 		$folderKey = Hash::get($this->request->params, 'key', null);
 		$conditions = [
 			'CabinetFile.key' => $folderKey,
-			'CabinetFile.cabinet_id' => $this->_cabinet['Cabinet']['id']
+			'CabinetFile.cabinet_key' => $this->_cabinet['Cabinet']['key']
 		];
 		$conditions = $this->CabinetFile->getWorkflowConditions($conditions);
 		$cabinetFile = $this->CabinetFile->find('first', ['conditions' => $conditions]);
@@ -300,7 +300,7 @@ class CabinetFilesController extends CabinetsAppController {
 		$folderKey = Hash::get($this->request->params, 'key', null);
 		$conditions = [
 			'CabinetFile.key' => $folderKey,
-			'CabinetFile.cabinet_id' => $this->_cabinet['Cabinet']['id']
+			'CabinetFile.cabinet_key' => $this->_cabinet['Cabinet']['key']
 		];
 		$conditions = $this->CabinetFile->getWorkflowConditions($conditions);
 		$cabinetFolder = $this->CabinetFile->find('first', ['conditions' => $conditions]);
@@ -396,7 +396,7 @@ class CabinetFilesController extends CabinetsAppController {
 				[
 					'conditions' => [
 						'CabinetFile.key' => $folderKey,
-						'CabinetFile.language_id' => Current::read('Language.id'),
+						//'CabinetFile.language_id' => Current::read('Language.id'),
 						'CabinetFile.is_latest' => true,
 					]
 				]
@@ -469,8 +469,8 @@ class CabinetFilesController extends CabinetsAppController {
 	protected function _getCurrentFolderFiles($currentTreeId) {
 		// カレントフォルダのファイル・フォルダリストを得る。
 		$conditions = [
-			'parent_id' => $currentTreeId,
-			'cabinet_id' => $this->viewVars['cabinet']['Cabinet']['id']
+			'CabinetFileTree.parent_id' => $currentTreeId,
+			'Cabinet.key' => $this->viewVars['cabinet']['Cabinet']['key']
 		];
 		//  workflowコンディションを混ぜ込む
 		$conditions = $this->CabinetFile->getWorkflowConditions($conditions);
@@ -529,6 +529,7 @@ class CabinetFilesController extends CabinetsAppController {
 		} else {
 			$files = array_merge($files, $folders);
 		}
+
 		return $files;
 	}
 

@@ -53,7 +53,17 @@ class CabinetFolderBehavior extends ModelBehavior {
  * @return array|null
  */
 	public function getRootFolder(Model $model, $cabinet) {
-		return $model->find('first', ['conditions' => $this->_getRootFolderConditions($cabinet)]);
+		return $model->find('first', [
+			'conditions' => $this->_getRootFolderConditions(
+				$cabinet,
+				array(
+					'OR' => array(
+						'CabinetFile.language_id' => Current::read('Language.id'),
+						'CabinetFile.is_translation' => false,
+					)
+				)
+			)
+		]);
 	}
 
 /**
@@ -63,13 +73,14 @@ class CabinetFolderBehavior extends ModelBehavior {
  * @param Model $model CabinetFile
  * @param array $cabinet Cabinet model data
  * @return bool
- * @throws Exception
  */
 	public function syncRootFolder(Model $model, $cabinet) {
 		if ($this->rootFolderExist($model, $cabinet)) {
 			// ファイル名同期
 			$options = [
-				'conditions' => $this->_getRootFolderConditions($cabinet)
+				'conditions' => $this->_getRootFolderConditions(
+					$cabinet, ['CabinetFile.language_id' => Current::read('Language.id')]
+				)
 			];
 			$rootFolder = $model->find('first', $options);
 			if ($rootFolder['CabinetFile']['filename'] == $cabinet['Cabinet']['name']) {
@@ -99,29 +110,36 @@ class CabinetFolderBehavior extends ModelBehavior {
 		if ($this->rootFolderExist($model, $cabinet)) {
 			return true;
 		}
+		$model->loadModels([
+			'CabinetFileTree' => 'Cabinets.CabinetFileTree',
+		]);
 
 		// $modelのTopicビヘイビアを停止
 		$model->Behaviors->disable('Topics');
 		$model->create();
 		$model->useNameValidation = false;
-		$rootFolder = [
+
+		$rootFolderTree = $model->CabinetFileTree->find('first', array(
+			'recursive' => -1,
+			'conditions' => $this->_getRootFolderConditions($cabinet),
+		));
+
+		$rootFolder = Hash::merge([
+			'CabinetFileTree' => [
+				'cabinet_key' => $cabinet['Cabinet']['key'],
+			],
 			'CabinetFile' => [
-				'cabinet_id' => $cabinet['Cabinet']['id'],
+				'cabinet_key' => $cabinet['Cabinet']['key'],
 				'status' => WorkflowComponent::STATUS_PUBLISHED,
 				'filename' => $cabinet['Cabinet']['name'],
 				'is_folder' => 1,
+				'key' => Hash::get($rootFolderTree, 'CabinetFileTree.cabinet_file_key'),
 			]
-		];
+		], $rootFolderTree);
 
-		if ($rootFolder = $model->save($rootFolder)) {
-			$tree = [
-				'CabinetFileTree' => [
-					'cabinet_key' => $cabinet['Cabinet']['key'],
-					'cabinet_file_key' => $rootFolder['CabinetFile']['key'],
-					'cabinet_file_id' => $rootFolder['CabinetFile']['id'],
-				]
-			];
-			$result = (bool)$model->CabinetFileTree->save($tree);
+		$result = $model->save($rootFolder);
+		if ($rootFolder) {
+			$result = (bool)$result;
 			$model->useNameValidation = true;
 		} else {
 			$result = false;
@@ -140,7 +158,9 @@ class CabinetFolderBehavior extends ModelBehavior {
  */
 	public function rootFolderExist(Model $model, $cabinet) {
 		// ルートフォルダが既に存在するかを探す
-		$conditions = $this->_getRootFolderConditions($cabinet);
+		$conditions = $this->_getRootFolderConditions(
+			$cabinet, ['CabinetFile.language_id' => Current::read('Language.id')]
+		);
 		$count = $model->find('count', ['conditions' => $conditions]);
 		return ($count > 0);
 	}
@@ -176,13 +196,15 @@ class CabinetFolderBehavior extends ModelBehavior {
  * ルートフォルダ（＝キャビネット）をFindするためのconditionsを返す
  *
  * @param array $cabinet Cabinetデータ
+ * @param array $addConditions 条件
  * @return array conditions
  */
-	protected function _getRootFolderConditions($cabinet) {
-		$conditions = [
+	protected function _getRootFolderConditions($cabinet, $addConditions = array()) {
+		$conditions = Hash::merge([
 			'CabinetFileTree.cabinet_key' => $cabinet['Cabinet']['key'],
 			'CabinetFileTree.parent_id' => null,
-		];
+		], $addConditions);
+
 		return $conditions;
 	}
 
@@ -190,13 +212,17 @@ class CabinetFolderBehavior extends ModelBehavior {
  * Cabinet.total_sizeに容量をキャッシュする
  *
  * @param Model $model モデル
- * @param int $cabinetId キャビネットID
+ * @param int $cabinetKey キャビネットKEY
  * @return void
+ * @throws InternalErrorException
  */
-	public function updateCabinetTotalSize(Model $model, $cabinetId) {
+	public function updateCabinetTotalSize(Model $model, $cabinetKey) {
+		$model->loadModels([
+			'Cabinet' => 'Cabinets.Cabinet',
+		]);
 		$cabinet = $model->Cabinet->find('first', array(
 			'recursive' => -1,
-			'conditions' => array('id' => $cabinetId),
+			'conditions' => array('key' => $cabinetKey),
 		));
 
 		// トータルサイズ取得

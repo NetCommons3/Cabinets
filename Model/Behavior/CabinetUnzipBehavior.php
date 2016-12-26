@@ -107,7 +107,7 @@ class CabinetUnzipBehavior extends ModelBehavior {
 	protected function _addFolderFromPath(Model $model, $parentCabinetFolder, $folderPath) {
 		$newFolder = [
 			'CabinetFile' => [
-				'cabinet_id' => $parentCabinetFolder['CabinetFile']['cabinet_id'],
+				'cabinet_key' => $parentCabinetFolder['CabinetFile']['cabinet_key'],
 				'is_folder' => true,
 				'filename' => $model->basename($folderPath),
 				'status' => WorkflowComponent::STATUS_PUBLISHED,
@@ -168,7 +168,7 @@ class CabinetUnzipBehavior extends ModelBehavior {
 
 		$newFile = [
 			'CabinetFile' => [
-				'cabinet_id' => $parentCabinetFolder['CabinetFile']['cabinet_id'],
+				'cabinet_key' => $parentCabinetFolder['CabinetFile']['cabinet_key'],
 				'is_folder' => false,
 				'filename' => $model->basename($filePath),
 				'status' => WorkflowComponent::STATUS_PUBLISHED,

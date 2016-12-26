@@ -148,10 +148,10 @@ echo $this->NetCommonsHtml->script(
 
 				</div>
 
-
 				<?php echo $this->Workflow->buttons('CabinetFile.status'); ?>
 
 				<?php echo $this->NetCommonsForm->end() ?>
+
 				<?php if ($isEdit && $isDeletable) : ?>
 					<div class="panel-footer" style="text-align: right;">
 						<?php echo $this->NetCommonsForm->create(

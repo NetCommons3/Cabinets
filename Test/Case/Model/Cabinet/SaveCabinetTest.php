@@ -95,8 +95,8 @@ class CabinetSaveCabinetTest extends NetCommonsSaveTest {
 			'first',
 			[
 				'conditions' => [
-					'cabinet_key' => $cabinetKey,
-					'parent_id' => null,
+					'CabinetFile.cabinet_key' => $cabinetKey,
+					'CabinetFileTree.parent_id' => null,
 				],
 				'recursive' => 0,
 			]
@@ -127,8 +127,8 @@ class CabinetSaveCabinetTest extends NetCommonsSaveTest {
 			'first',
 			[
 				'conditions' => [
-					'cabinet_key' => $cabinetKey,
-					'parent_id' => null,
+					'CabinetFile.cabinet_key' => $cabinetKey,
+					'CabinetFileTree.parent_id' => null,
 				],
 				'recursive' => 0,
 			]

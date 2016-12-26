@@ -54,43 +54,19 @@ class AddTableForM17n1 extends NetCommonsMigration {
  * @return bool Should process continue
  */
 	public function after($direction) {
-		$CabinetFilesLang = $this->generateModel('CabinetFilesLanguage');
+		$CabinetFile = $this->generateModel('CabinetFile');
 
-		$schema = $CabinetFilesLang->schema();
-		unset($schema['id']);
-		$schemaColumns = implode(', ', array_keys($schema));
-
-		$cabinetTable = $CabinetFilesLang->tablePrefix . 'cabinets Cabinet';
-		$cabFileTable = $CabinetFilesLang->tablePrefix . 'cabinet_files CabinetFile';
-		$cabFileLangTable = $CabinetFilesLang->tablePrefix . 'cabinet_files_languages CabinetFilesLanguage';
+		$cabFileTable = $CabinetFile->tablePrefix . 'cabinet_files CabinetFile';
+		$cabFileTreeTable = $CabinetFile->tablePrefix . 'cabinet_file_trees CabinetFileTree';
 
 		if ($direction === 'up') {
-			$sql = 'INSERT INTO ' .
-						$CabinetFilesLang->tablePrefix . 'cabinet_files_languages(' . $schemaColumns . ')' .
-					' SELECT' .
-						' CabinetFile.id' .
-						', Cabinet.key' .
-						', CabinetFile.key' .
-						', CabinetFile.language_id' .
-						', 1' .
-						', 0' .
-						', CabinetFile.filename' .
-						', CabinetFile.description' .
-						', CabinetFile.created_user' .
-						', CabinetFile.created' .
-						', CabinetFile.modified_user' .
-						', CabinetFile.modified' .
-					' FROM ' . $cabFileTable . ', ' . $cabinetTable .
-					' WHERE Cabinet.id = CabinetFile.cabinet_id';
-		} else {
-			$sql = 'UPDATE ' . $cabFileTable . ', ' . $cabFileLangTable .
-					' SET CabinetFile.language_id = CabinetFilesLanguage.language_id, ' .
-						'CabinetFile.filename = CabinetFilesLanguage.filename, ' .
-						'CabinetFile.description = CabinetFilesLanguage.description' .
-					' WHERE CabinetFile.id = CabinetFilesLanguage.cabinet_file_id' .
+			$sql = 'UPDATE ' . $cabFileTable . ', ' . $cabFileTreeTable .
+					' SET CabinetFile.cabinet_file_tree_id = CabinetFileTree.id' .
+					', CabinetFile.cabinet_key = CabinetFileTree.cabinet_key' .
+					' WHERE CabinetFile.id = CabinetFileTree.cabinet_file_id' .
 					'';
+			$CabinetFile->query($sql);
 		}
-		$CabinetFilesLang->query($sql);
 		return true;
 	}
 }

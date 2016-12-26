@@ -39,7 +39,6 @@ class CabinetsSchema extends CakeSchema {
 		'id' => array('type' => 'integer', 'null' => false, 'default' => null, 'unsigned' => false, 'key' => 'primary', 'comment' => 'ID'),
 		'cabinet_key' => array('type' => 'string', 'null' => false, 'default' => null, 'key' => 'index', 'collate' => 'utf8_general_ci', 'comment' => 'キャビネットキー', 'charset' => 'utf8'),
 		'cabinet_file_key' => array('type' => 'string', 'null' => false, 'default' => null, 'collate' => 'utf8_general_ci', 'comment' => 'ファイルキー', 'charset' => 'utf8'),
-		'cabinet_file_id' => array('type' => 'integer', 'null' => false, 'default' => null, 'unsigned' => false, 'key' => 'index'),
 		'parent_id' => array('type' => 'integer', 'null' => true, 'default' => null, 'unsigned' => false, 'key' => 'index', 'comment' => '親フォルダのID treeビヘイビア必須カラム'),
 		'lft' => array('type' => 'integer', 'null' => false, 'default' => null, 'unsigned' => false, 'key' => 'index', 'comment' => 'lft  treeビヘイビア必須カラム'),
 		'rght' => array('type' => 'integer', 'null' => false, 'default' => null, 'unsigned' => false, 'comment' => 'rght  treeビヘイビア必須カラム'),
@@ -51,8 +50,7 @@ class CabinetsSchema extends CakeSchema {
 			'PRIMARY' => array('column' => 'id', 'unique' => 1),
 			'parent_id' => array('column' => 'parent_id', 'unique' => 0),
 			'cabinet_key' => array('column' => array('cabinet_key', 'lft', 'rght'), 'unique' => 0),
-			'lft' => array('column' => array('lft', 'rght'), 'unique' => 0),
-			'cabinet_file_id' => array('column' => 'cabinet_file_id', 'unique' => 0)
+			'lft' => array('column' => array('lft', 'rght'), 'unique' => 0)
 		),
 		'tableParameters' => array('charset' => 'utf8', 'collate' => 'utf8_general_ci', 'engine' => 'InnoDB')
 	);
@@ -62,36 +60,15 @@ class CabinetsSchema extends CakeSchema {
  */
 	public $cabinet_files = array(
 		'id' => array('type' => 'integer', 'null' => false, 'default' => null, 'unsigned' => false, 'key' => 'primary', 'comment' => 'ID'),
-		'cabinet_id' => array('type' => 'integer', 'null' => false, 'default' => null, 'unsigned' => false),
+		'cabinet_key' => array('type' => 'string', 'null' => false, 'default' => null, 'collate' => 'utf8_general_ci', 'comment' => 'キャビネットキー', 'charset' => 'utf8'),
 		'cabinet_file_tree_parent_id' => array('type' => 'integer', 'null' => true, 'default' => null, 'unsigned' => false),
+		'cabinet_file_tree_id' => array('type' => 'integer', 'null' => true, 'default' => null, 'unsigned' => false),
 		'key' => array('type' => 'string', 'null' => false, 'default' => null, 'key' => 'index', 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
 		'is_folder' => array('type' => 'boolean', 'null' => false, 'default' => '0'),
 		'use_auth_key' => array('type' => 'boolean', 'null' => false, 'default' => '0'),
 		'status' => array('type' => 'integer', 'null' => false, 'default' => null, 'length' => 4, 'unsigned' => false, 'comment' => '公開状況  1:公開中、2:公開申請中、3:下書き中、4:差し戻し'),
 		'is_active' => array('type' => 'boolean', 'null' => false, 'default' => '0'),
 		'is_latest' => array('type' => 'boolean', 'null' => true, 'default' => null),
-		'language_id' => array('type' => 'integer', 'null' => true, 'default' => null, 'unsigned' => false),
-		'filename' => array('type' => 'string', 'null' => true, 'default' => null, 'collate' => 'utf8_general_ci', 'comment' => 'タイトル', 'charset' => 'utf8'),
-		'description' => array('type' => 'text', 'null' => true, 'default' => null, 'collate' => 'utf8_general_ci', 'comment' => '概要', 'charset' => 'utf8'),
-		'created_user' => array('type' => 'integer', 'null' => true, 'default' => '0', 'unsigned' => false, 'comment' => '作成者'),
-		'created' => array('type' => 'datetime', 'null' => true, 'default' => null, 'comment' => '作成日時'),
-		'modified_user' => array('type' => 'integer', 'null' => true, 'default' => '0', 'unsigned' => false, 'comment' => '更新者'),
-		'modified' => array('type' => 'datetime', 'null' => true, 'default' => null, 'comment' => '更新日時'),
-		'indexes' => array(
-			'PRIMARY' => array('column' => 'id', 'unique' => 1),
-			'key' => array('column' => array('key', 'language_id'), 'unique' => 0)
-		),
-		'tableParameters' => array('charset' => 'utf8', 'collate' => 'utf8_general_ci', 'engine' => 'InnoDB')
-	);
-
-/**
- * @var array cabinet_files_languages
- */
-	public $cabinet_files_languages = array(
-		'id' => array('type' => 'integer', 'null' => false, 'default' => null, 'unsigned' => false, 'key' => 'primary', 'comment' => 'ID'),
-		'cabinet_key' => array('type' => 'string', 'null' => false, 'default' => null, 'collate' => 'utf8_general_ci', 'comment' => 'キャビネットキー', 'charset' => 'utf8'),
-		'cabinet_file_id' => array('type' => 'integer', 'null' => true, 'default' => null, 'unsigned' => false, 'key' => 'index'),
-		'cabinet_file_key' => array('type' => 'string', 'null' => false, 'default' => null, 'key' => 'index', 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
 		'language_id' => array('type' => 'integer', 'null' => true, 'default' => null, 'unsigned' => false),
 		'is_origin' => array('type' => 'boolean', 'null' => false, 'default' => '1', 'comment' => 'オリジナルかどうか'),
 		'is_translation' => array('type' => 'boolean', 'null' => false, 'default' => '0', 'comment' => '翻訳したかどうか'),
@@ -103,8 +80,7 @@ class CabinetsSchema extends CakeSchema {
 		'modified' => array('type' => 'datetime', 'null' => true, 'default' => null, 'comment' => '更新日時'),
 		'indexes' => array(
 			'PRIMARY' => array('column' => 'id', 'unique' => 1),
-			'cabinet_file_id' => array('column' => array('cabinet_file_id', 'language_id', 'is_translation'), 'unique' => 0),
-			'cabinet_file_key' => array('column' => array('cabinet_file_key', 'language_id', 'is_translation'), 'unique' => 0)
+			'key' => array('column' => array('key', 'language_id'), 'unique' => 0)
 		),
 		'tableParameters' => array('charset' => 'utf8', 'collate' => 'utf8_general_ci', 'engine' => 'InnoDB')
 	);

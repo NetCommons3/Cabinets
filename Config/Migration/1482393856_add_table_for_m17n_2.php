@@ -33,14 +33,20 @@ class AddTableForM17n2 extends NetCommonsMigration {
 	public $migration = array(
 		'up' => array(
 			'drop_field' => array(
-				'cabinet_files' => array('filename', 'description'),
+				'cabinet_file_trees' => array('cabinet_file_id', 'indexes' => array('cabinet_file_id')),
+				'cabinet_files' => array('cabinet_id'),
 			),
 		),
 		'down' => array(
 			'create_field' => array(
+				'cabinet_file_trees' => array(
+					'cabinet_file_id' => array('type' => 'integer', 'null' => false, 'default' => null, 'unsigned' => false, 'key' => 'index'),
+					'indexes' => array(
+						'cabinet_file_id' => array('column' => 'cabinet_file_id', 'unique' => 0),
+					),
+				),
 				'cabinet_files' => array(
-					'filename' => array('type' => 'string', 'null' => true, 'default' => null, 'collate' => 'utf8_general_ci', 'comment' => 'タイトル', 'charset' => 'utf8'),
-					'description' => array('type' => 'text', 'null' => true, 'default' => null, 'collate' => 'utf8_general_ci', 'comment' => '概要', 'charset' => 'utf8'),
+					'cabinet_id' => array('type' => 'integer', 'null' => false, 'default' => null, 'unsigned' => false),
 				),
 			),
 		),
