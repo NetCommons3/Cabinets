@@ -531,7 +531,7 @@ class CabinetFilesEditController extends CabinetsAppController {
 		$isPublish =
 			($cabinetFile['CabinetFile']['status'] == WorkflowComponent::STATUS_PUBLISHED);
 		if ($isPublish && !Current::permission('content_publishable')) {
-			$cabinetFile['CabinetFile']['status'] = WorkflowComponent::STATUS_APPROVED;
+			$cabinetFile['CabinetFile']['status'] = WorkflowComponent::STATUS_APPROVAL_WAITING;
 		}
 
 		$result = $this->CabinetFile->saveFile($cabinetFile);

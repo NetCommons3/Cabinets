@@ -406,7 +406,7 @@ class CabinetFilesEditControllerEditTest extends WorkflowControllerEditTest {
 		//チェック
 		$this->__assertEditGet($data);
 		$this->assertInput('button', 'save_' . WorkflowComponent::STATUS_IN_DRAFT, null, $this->view);
-		$this->assertInput('button', 'save_' . WorkflowComponent::STATUS_APPROVED, null, $this->view);
+		$this->assertInput('button', 'save_' . WorkflowComponent::STATUS_APPROVAL_WAITING, null, $this->view);
 		$this->assertNotRegExp('/<input.*?name="_method" value="DELETE".*?>/', $this->view);
 
 		// 上記以外に必要なassert追加
