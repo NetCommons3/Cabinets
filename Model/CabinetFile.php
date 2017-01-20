@@ -75,6 +75,12 @@ class CabinetFile extends CabinetsAppModel {
 					'foreignKey' => 'content_id',
 					'isM17n' => true
 				),
+				'AuthorizationKey' => array(
+					'class' => 'AuthorizationKeys.AuthorizationKey',
+					'foreignKey' => 'content_id',
+					'fieldForIdentifyPlugin' => array('field' => 'model', 'value' => 'CabinetFile'),
+					'isM17n' => false
+				),
 			),
 			'afterCallback' => false,
 		),
