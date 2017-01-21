@@ -114,15 +114,21 @@
 				<tr>
 					<th class="cabinets__index__name">
 						<?php echo $this->Paginator->sort(
-							'filename', __d('cabinets', 'Filename'), ['direction' => 'desc', 'url' => $currentDirUrl]
+							'filename',
+							__d('cabinets', 'Filename'),
+							['direction' => 'desc', 'url' => $currentDirUrl]
 						); ?>
 					</th>
 					<th class="cabinets__index__size hidden-sm hidden-xs">
-						<?php echo $this->Paginator->sort('size', __d('cabinets', 'Size'), ['url' => $currentDirUrl]); ?>
+						<?php echo $this->Paginator->sort(
+							'size', __d('cabinets', 'Size'), ['url' => $currentDirUrl]
+						); ?>
 					</th>
 					<th class="cabinets__index__modified">
 						<?php echo $this->Paginator->sort(
-							'modified', __d('net_commons', 'Modified datetime'), ['url' => $currentDirUrl]
+							'modified',
+							__d('net_commons', 'Modified datetime'),
+							['url' => $currentDirUrl]
 						); ?>
 					</th>
 					<th class="cabinets__index__button"></th>
@@ -135,18 +141,15 @@
 						<td>
 							<?php
 							echo $this->NetCommonsHtml->link(
-								'<span class="glyphicon glyphicon-circle-arrow-up" aria-hidden="true"></span>' . __d(
-									'cabinets',
-									'Parent folder'
-								),
+								'<span class="glyphicon glyphicon-circle-arrow-up" aria-hidden="true"></span>' .
+									__d('cabinets', 'Parent folder'),
 								$parentUrl,
 								['escape' => false]
 							);
 							?>
 						</td>
 						<td class="hidden-sm hidden-xs"></td>
-						<!--<td></td>-->
-						<td colspan="2" style="text-align: right; ">
+						<td colspan="2" style="text-align: right;">
 							<?php
 							if (count($cabinetFiles) > 0) {
 								echo $this->NetCommonsHtml->link(
@@ -169,11 +172,7 @@
 				<?php if (count($cabinetFiles) == 0): ?>
 					<tr>
 						<td colspan="4">
-							<?php echo __d(
-								'net_commons',
-								'%s is not.',
-								__d('cabinets', 'File/Folder')
-							); ?>
+							<?php echo __d('net_commons', '%s is not.', __d('cabinets', 'File/Folder')); ?>
 						</td>
 					</tr>
 				<?php endif ?>
