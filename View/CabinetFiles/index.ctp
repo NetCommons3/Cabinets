@@ -1,43 +1,12 @@
 <?php echo $this->element('NetCommons.javascript_alert'); ?>
-<div ng-controller="Cabinets" ng-init="init(
-	 <?php echo Current::read('Block.id') ?>,
-	 <?php echo Current::read('Frame.id') ?>
-	 )"
-	class="nc-content-list"
->
+<div ng-controller="Cabinets"
+		ng-init="init(<?php echo Current::read('Block.id') . ', ' . Current::read('Frame.id'); ?>)"
+		class="nc-content-list">
 
-
-	<?php
-	echo $this->Html->css(
-		'/cabinets/css/cabinets.css',
-		array(
-			'plugin' => false,
-			'once' => true,
-			'inline' => false
-		)
-	); ?>
-	<?php
-	echo $this->Html->script(
-		'/cabinets/js/cabinets.js',
-		array(
-			'plugin' => false,
-			'once' => true,
-			'inline' => false
-		)
-	);
-	?>
-	<?php
-	echo $this->Html->script(
-		'/AuthorizationKeys/js/authorization_keys.js',
-		array(
-			'plugin' => false,
-			'once' => true,
-			'inline' => false
-		)
-	);
-
-	?>
-	<script>
+	<?php echo $this->NetCommonsHtml->css('/cabinets/css/cabinets.css'); ?>
+	<?php echo $this->NetCommonsHtml->script('/cabinets/js/cabinets.js'); ?>
+	<?php echo $this->NetCommonsHtml->script('/AuthorizationKeys/js/authorization_keys.js'); ?>
+	<?php echo $this->NetCommonsHtml->scriptStart(array('inline' => false)); ?>
 		$(function() {
 			$('.cabinets__index__description').popover({html: true})
 		})
@@ -51,11 +20,10 @@
 				}
 			});
 		});
+	<?php echo $this->Html->scriptEnd(); ?>
 
-	</script>
+	<?php echo $this->NetCommonsHtml->blockTitle($cabinet['Cabinet']['name'], null, ['class' => 'cabinets_cabinetTitle']); ?>
 
-
-	<h1 class="cabinets_cabinetTitle"><?php echo h($cabinet['Cabinet']['name']) ?></h1>
 	<div class="clearfix">
 		<div class="pull-left cabinets__index__file-path">
 			<?php echo $this->element('file_path', ['currentFile' => $currentFolder]); ?>
@@ -129,53 +97,59 @@
 		</div>
 		<?php endif ?>
 		<div class="<?php echo $listCol?>">
+			<?php
+				$currentDirUrl = NetCommonsUrl::actionUrlAsArray(array(
+					'block_id' => Current::read('Block.id'),
+					'key' => $currentFolder['CabinetFile']['key'],
+					'frame_id' => Current::read('Frame.id'),
+				));
+			?>
+
 			<table
 				class="table table-hover cabinets__index__file-list"
 				style="table-layout: fixed"
 				ng-controller="CabinetFile.index"
-				ng-init="init(<?php echo
-				$currentTreeId ?>)">
+				ng-init="init(<?php echo $currentTreeId; ?>)">
 				<thead>
 				<tr>
 					<th class="cabinets__index__name">
 						<?php echo $this->Paginator->sort(
 							'filename',
 							__d('cabinets', 'Filename'),
-							['direction' => 'desc']
+							['direction' => 'desc', 'url' => $currentDirUrl]
 						); ?>
 					</th>
 					<th class="cabinets__index__size hidden-sm hidden-xs">
-						<?php echo $this->Paginator->sort('size', __d('cabinets', 'Size')); ?>
+						<?php echo $this->Paginator->sort(
+							'size', __d('cabinets', 'Size'), ['url' => $currentDirUrl]
+						); ?>
 					</th>
 					<th class="cabinets__index__modified">
 						<?php echo $this->Paginator->sort(
 							'modified',
-							__d('net_commons', 'Modified datetime')
+							__d('net_commons', 'Modified datetime'),
+							['url' => $currentDirUrl]
 						); ?>
 					</th>
 					<th class="cabinets__index__button"></th>
-
 				</tr>
 				</thead>
-				<tbody>
 
+				<tbody>
 				<?php if ($parentUrl): ?>
 					<tr>
 						<td>
 							<?php
 							echo $this->NetCommonsHtml->link(
-								'<span class="glyphicon glyphicon-circle-arrow-up" aria-hidden="true"></span>' . __d(
-									'cabinets',
-									'Parent folder'
-								),
+								'<span class="glyphicon glyphicon-circle-arrow-up" aria-hidden="true"></span>' .
+									__d('cabinets', 'Parent folder'),
 								$parentUrl,
 								['escape' => false]
 							);
 							?>
 						</td>
 						<td class="hidden-sm hidden-xs"></td>
-						<!--<td></td>-->
-						<td colspan="2" style="text-align: right; ">
+						<td colspan="2" style="text-align: right;">
 							<?php
 							if (count($cabinetFiles) > 0) {
 								echo $this->NetCommonsHtml->link(
@@ -198,11 +172,7 @@
 				<?php if (count($cabinetFiles) == 0): ?>
 					<tr>
 						<td colspan="4">
-							<?php echo __d(
-								'net_commons',
-								'%s is not.',
-								__d('cabinets', 'File/Folder')
-							); ?>
+							<?php echo __d('net_commons', '%s is not.', __d('cabinets', 'File/Folder')); ?>
 						</td>
 					</tr>
 				<?php endif ?>

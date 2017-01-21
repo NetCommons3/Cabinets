@@ -369,20 +369,19 @@ class CabinetFile extends CabinetsAppModel {
 		//コメントの削除
 		$this->deleteCommentsByContentKey($cabinetFile['CabinetFile']['key']);
 
-		$conditions = array('CabinetFile.key' => $cabinetFile['CabinetFile']['key']);
-
-		if ($this->deleteAll($conditions, true, true)) {
-			// CabinetFileTreeも削除
-			$conditions = [
-				'cabinet_file_key' => $cabinetFile['CabinetFile']['key'],
-			];
-			if (!$this->CabinetFileTree->deleteAll($conditions, true, true)) {
-				throw new InternalErrorException(__d('net_commons', 'Internal Server Error'));
-			}
-			return true;
-		} else {
+		// CabinetFileTreeも削除
+		$conditions = [
+			'cabinet_file_key' => $cabinetFile['CabinetFile']['key'],
+		];
+		if (! $this->CabinetFileTree->deleteAll($conditions, true, true)) {
 			throw new InternalErrorException(__d('net_commons', 'Internal Server Error'));
 		}
+
+		$conditions = array('CabinetFile.key' => $cabinetFile['CabinetFile']['key']);
+		if (! $this->deleteAll($conditions, true, true)) {
+			throw new InternalErrorException(__d('net_commons', 'Internal Server Error'));
+		}
+		return true;
 	}
 
 /**
@@ -405,6 +404,15 @@ class CabinetFile extends CabinetsAppModel {
 			1,
 			0
 		);
+
+		// CabinetFileTreeも削除 Treeビヘイビアにより子ノードのTreeデータは自動的に削除される
+		$conditions = [
+			'cabinet_file_key' => $key,
+		];
+		if (!$this->CabinetFileTree->deleteAll($conditions, true, true)) {
+			throw new InternalErrorException(__d('net_commons', 'Internal Server Error'));
+		}
+
 		if ($children) {
 			foreach ($children as $child) {
 				if ($child['CabinetFile']['is_folder']) {
@@ -431,14 +439,6 @@ class CabinetFile extends CabinetsAppModel {
 		}
 		$conditions = array('CabinetFile.key' => $key);
 		if ($this->deleteAll($conditions, true, true)) {
-
-			// CabinetFileTreeも削除 Treeビヘイビアにより子ノードのTreeデータは自動的に削除される
-			$conditions = [
-				'cabinet_file_key' => $key,
-			];
-			if (!$this->CabinetFileTree->deleteAll($conditions, true, true)) {
-				throw new InternalErrorException(__d('net_commons', 'Internal Server Error'));
-			}
 			return true;
 		} else {
 			throw new InternalErrorException(__d('net_commons', 'Internal Server Error'));

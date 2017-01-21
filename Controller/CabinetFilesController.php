@@ -433,7 +433,7 @@ class CabinetFilesController extends CabinetsAppController {
 			);
 		} else {
 			// 親はキャビネット（ルートフォルダ）
-			$url = NetCommonsUrl::backToPageUrl();
+			$url = NetCommonsUrl::backToPageUrl(null, ['frame_id' => Current::read('Frame.id')]);
 
 		}
 		return $url;

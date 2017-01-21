@@ -76,9 +76,7 @@
 			id="cabinets__file-<?php echo $cabinetFile['CabinetFile']['id'] ?>"
 			data-toggle="dropdown" aria-haspopup="true"
 			aria-expanded="true">
-										<span class="glyphicon glyphicon-option-vertical"
-											aria-hidden="true"></span>
-			<!--<span class="caret"></span>-->
+				<span class="glyphicon glyphicon-option-vertical" aria-hidden="true"></span>
 		</button>
 		<ul class="dropdown-menu dropdown-menu-right"
 			aria-labelledby="cabinets__file-<?php echo $cabinetFile['CabinetFile']['id'] ?>">
@@ -95,29 +93,38 @@
 			<?php if ($this->Workflow->canEdit('Cabinets.CabinetFile', $cabinetFile)) : ?>
 			<li>
 				<?php
-				$data = [
-					'CabinetFileTree' => [
-						'parent_id' => $cabinetFile['CabinetFileTree']['parent_id'],
-						],
-					'Frame' => [
-						'id' => Current::read('Frame.id'),
-					]
-				];
-				$tokenFields = Hash::flatten($data);
-				//$hiddenFields = $tokenFields;
-				//unset($hiddenFields['LikesUser.is_liked']);
-				$hiddenFields = [
-					'Frame.id'
-				];
+					$data = [
+						'CabinetFileTree' => [
+							'parent_id' => $cabinetFile['CabinetFileTree']['parent_id'],
+							],
+						'Frame' => [
+							'id' => Current::read('Frame.id'),
+						]
+					];
+					$tokenFields = Hash::flatten($data);
+					//$hiddenFields = $tokenFields;
+					//unset($hiddenFields['LikesUser.is_liked']);
+					$hiddenFields = [
+						'Frame.id'
+					];
 
-				$this->request->data = Hash::merge($this->request->data, $data);
-				$this->request->data = $data;
-				$this->Token->unlockField('CabinetFileTree.parent_id');
-				//$tokens = $this->Token->getToken('CabinetFileTree', '/cabinets/cabinet_files_edit/move',
-				$tokens = $this->Token->getToken('CabinetFileTree', '/cabinets/cabinet_files_edit/move/' . Current::read('Block.id') . '/' . $cabinetFile['CabinetFile']['key'] . '?frame_id=' . Current::read('Frame.id'),
-					$tokenFields, $hiddenFields);
-				$data += $tokens;
-
+					$this->request->data = Hash::merge($this->request->data, $data);
+					$this->request->data = $data;
+					$this->Token->unlockField('CabinetFileTree.parent_id');
+					$tokens = $this->Token->getToken(
+						'CabinetFileTree',
+						NetCommonsUrl::actionUrl(array(
+							'plugin' => 'cabinets',
+							'controller' => 'cabinet_files_edit',
+							'action' => 'move',
+							'block_id' => Current::read('Block.id'),
+							'key' => $cabinetFile['CabinetFile']['key'],
+							'frame_id' => Current::read('Frame.id')
+						)),
+						$tokenFields,
+						$hiddenFields
+					);
+					$data += $tokens;
 				?>
 				<a href="#"
 					ng-click="moveFile('<?php echo $cabinetFile['CabinetFile']['key'] ?>', false,
@@ -172,11 +179,14 @@
 					//$tokens = $this->Token->getToken('CabinetFileTree', '/cabinets/cabinet_files_edit/move',
 					$tokens = $this->Token->getToken(
 						'CabinetFile',
-						'/cabinets/cabinet_files_edit/unzip/' . Current::read(
-							'Block.id'
-						) . '/' . $cabinetFile['CabinetFile']['key'] . '?frame_id=' . Current::read(
-							'Frame.id'
-						),
+						NetCommonsUrl::actionUrl(array(
+							'plugin' => 'cabinets',
+							'controller' => 'cabinet_files_edit',
+							'action' => 'unzip',
+							'block_id' => Current::read('Block.id'),
+							'key' => $cabinetFile['CabinetFile']['key'],
+							'frame_id' => Current::read('Frame.id')
+						)),
 						$tokenFields,
 						$hiddenFields
 					);

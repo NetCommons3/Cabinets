@@ -4,7 +4,7 @@ $currentFile = array_pop($tmpFolderPath); // 現在のファイルを後ろか�
 $encodedFolderPath = json_encode($tmpFolderPath);
 ?>
 <span ng-controller="Cabinets.path" ng-init='init(<?php echo h($encodedFolderPath) ?>,
- "<?php echo Router::url(NetCommonsUrl::backToPageUrl()); ?>")' ng-cloak>
+ "<?php echo Router::url(NetCommonsUrl::backToPageUrl(null, ['frame_id' => Current::read('Frame.id')])); ?>")' ng-cloak>
 
 <?php
 //// パンクズ
@@ -16,7 +16,7 @@ $encodedFolderPath = json_encode($tmpFolderPath);
 //?>
 	<?php
 	?>
-	<span ng-repeat="cabinetFile in folderPath"><a href="{{cabinetFile.url}}">{{cabinetFile.CabinetFile.filename}}</a><span>&nbsp;&gt;&nbsp;</span></span>
+	<span ng-repeat="cabinetFile in folderPath"><a ng-href="{{cabinetFile.url}}">{{cabinetFile.CabinetFile.filename}}</a><span>&nbsp;&gt;&nbsp;</span></span>
 	<?php
 	//foreach($_tmpFolderPath as $folder){
 	//	echo ' &gt; ';

@@ -428,11 +428,10 @@ class CabinetFilesEditController extends CabinetsAppController {
 	public function select_folder() {
 		// 移動するファイル・フォルダを取得
 		$key = isset($this->request->params['key']) ? $this->request->params['key'] : null;
-		$conditions = [
+		$conditions = $this->CabinetFile->getWorkflowConditions([
 			'CabinetFile.key' => $key,
 			'CabinetFile.cabinet_key' => $this->_cabinet['Cabinet']['key']
-		];
-		$conditions = $this->CabinetFile->getWorkflowConditions($conditions);
+		]);
 		$cabinetFile = $this->CabinetFile->find('first', ['conditions' => $conditions]);
 		if ($cabinetFile) {
 			$currentTreeId = $cabinetFile['CabinetFileTree']['parent_id'];
@@ -633,15 +632,11 @@ class CabinetFilesEditController extends CabinetsAppController {
 		$this->request->allowMethod('post', 'put');
 
 		$key = $this->request->params['key'];
-
-		$options = [
-			'conditions' => [
-				'CabinetFile.key' => $key,
-				'CabinetFile.cabinet_key' => $this->_cabinet['Cabinet']['key']
-			]
-		];
-
-		$cabinetFile = $this->CabinetFile->find('first', $options);
+		$conditions = $this->CabinetFile->getWorkflowConditions([
+			'CabinetFile.key' => $key,
+			'CabinetFile.cabinet_key' => $this->_cabinet['Cabinet']['key']
+		]);
+		$cabinetFile = $this->CabinetFile->find('first', ['conditions' => $conditions]);
 
 		if ($cabinetFile && $cabinetFile['UploadFile']['file']['extension'] == 'zip') {
 			if (!$this->CabinetFile->unzip($cabinetFile)) {
