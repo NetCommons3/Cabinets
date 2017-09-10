@@ -132,8 +132,6 @@ class CabinetFilesEditControllerUnzipTest extends NetCommonsControllerTestCase {
  * @dataProvider dataProviderPost
  */
 	public function testPost($role, $exception, $message = null) {
-		TestAuthGeneral::login($this, $role);
-
 		$this->generateNc(
 			'Cabinets.CabinetFilesEdit',
 			[
@@ -145,8 +143,9 @@ class CabinetFilesEditControllerUnzipTest extends NetCommonsControllerTestCase {
 			]
 		);
 
-		if ($message) {
+		TestAuthGeneral::login($this, $role);
 
+		if ($message) {
 			$this->controller->NetCommons->expects($this->once())
 				->method('setFlashNotification')
 				->with($this->equalTo($message));
