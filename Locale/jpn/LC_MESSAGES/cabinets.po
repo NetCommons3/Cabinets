@@ -13,155 +13,176 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
-#: Controller/CabinetFilesController.php:398
+#: Cabinets/Controller/CabinetFilesController.php:287
+msgid "Invalid cabinet file"
+msgstr ""
+
+#: Cabinets/Controller/CabinetFilesController.php:359
 msgid "Folder that contains the files that are password is set can not be downloaded ZIP."
 msgstr "ダウンロードパスワードが設定されてるファイルが存在するフォルダは圧縮ダウンロードできません。"
 
-#: Controller/CabinetFilesEditController.php:146
+#: Cabinets/Controller/CabinetFilesEditController.php:154
+#: Cabinets/Test/Case/Controller/CabinetFilesEditController/AddTest.php:277
+#: Cabinets/View/CabinetFiles/index.ctp:101
 msgid "Add File"
 msgstr "ファイル追加"
 
-#: Controller/CabinetFilesEditController.php:303
+#: Cabinets/Controller/CabinetFilesEditController.php:326
+#: Cabinets/View/CabinetFiles/index.ctp:78
 msgid "Add Folder"
 msgstr "フォルダ作成"
 
-#: Controller/CabinetFilesEditController.php:475
+#: Cabinets/Controller/CabinetFilesEditController.php:532
+#: Cabinets/Test/Case/Controller/CabinetFilesEditController/MoveTest.php:191;196
 msgid "Moved."
 msgstr "移動しました。"
 
-#: Controller/CabinetFilesEditController.php:481
+#: Cabinets/Controller/CabinetFilesEditController.php:541
 msgid "Move failed"
 msgstr "移動失敗"
 
-#: Model/Cabinet.php:122
-#: View/CabinetBlocks/index.ctp:32
-#: View/Elements/CabinetBlocks/edit_form.ctp:25
+#: Cabinets/Controller/CabinetFilesEditController.php:644
+msgid "Unzip success."
+msgstr "解凍しました。"
+
+#: Cabinets/Model/Cabinet.php:118
+#: Cabinets/Test/Case/Controller/CabinetBlocksController/EditTest.php:127;156
+#: Cabinets/View/CabinetBlocks/index.ctp:29
+#: Cabinets/View/Elements/CabinetBlocks/edit_form.ctp:27
 msgid "Cabinet name"
 msgstr "キャビネット名"
 
-#: Model/Cabinet.php:195
+#: Cabinets/Model/Cabinet.php:191
 msgid "New cabinet %s"
-msgstr ""
+msgstr "新しいキャビネット%s"
 
-#: View/CabinetBlocks/index.ctp:35
-msgid "Size"
-msgstr "サイズ"
-
-#: View/CabinetFiles/download_folder.ctp:13
-msgid "Download failed"
-msgstr "ダウンロード失敗"
-
-#: View/CabinetFiles/download_folder.ctp:24
-#: View/CabinetFiles/folder_detail.ctp:104
-#: View/CabinetFiles/view.ctp:80
-msgid "Go to List"
-msgstr "ファイル一覧へ"
-
-#: View/CabinetFiles/folder_detail.ctp:46
-#: View/CabinetFilesEdit/folder_form.ctp:58
-msgid "Folder name"
-msgstr "フォルダ名"
-
-#: View/CabinetFiles/folder_detail.ctp:49
-#: View/CabinetFiles/view.ctp:37
-#: View/CabinetFilesEdit/folder_form.ctp:64
-#: View/CabinetFilesEdit/form.ctp:85
-msgid "Path"
-msgstr "パス"
-
-#: View/CabinetFiles/folder_detail.ctp:52
-msgid "Total size"
-msgstr "合計サイズ"
-
-#: View/CabinetFiles/folder_detail.ctp:58
-#: View/CabinetFiles/view.ctp:46
-#: View/CabinetFilesEdit/folder_form.ctp:82
-#: View/CabinetFilesEdit/form.ctp:103
-msgid "Description"
-msgstr "説明"
-
-msgid "View"
-msgstr "詳細"
-
-#: View/CabinetFiles/folder_detail.ctp:111
-#: View/CabinetFiles/view.ctp:87
-msgid "Download"
-msgstr "ダウンロード"
-
-#: View/CabinetFiles/index.ctp:80
-msgid "Folder"
-msgstr "フォルダ"
-
-#: View/CabinetFiles/index.ctp:96
-#: View/CabinetFilesEdit/add.ctp:59
-#: View/CabinetFilesEdit/form.ctp:73
-msgid "File"
-msgstr "ファイル"
-
-#: View/CabinetFiles/index.ctp:129
-msgid "Parent folder"
-msgstr "一つ上へ"
-
-#: View/CabinetFiles/index.ctp:140;201
-msgid "Zip download"
-msgstr "圧縮ダウンロード"
-
-#: View/CabinetFiles/index.ctp:220
-msgid "Password is required to download."
-msgstr "ダウンロードにはパスワードが必要です。"
-
-#: View/CabinetFiles/index.ctp:260
-msgid "Unzip"
-msgstr "解凍"
-
-#: View/CabinetFiles/view.ctp:32
-#: View/CabinetFilesEdit/form.ctp:55
-msgid "File name"
-msgstr "ファイル名"
-
-#: View/CabinetFiles/view.ctp:43
-msgid "Download count"
-msgstr "ダウンロード回数"
-
-#: View/CabinetFilesEdit/add.ctp:62
-#: View/CabinetFilesEdit/form.ctp:76
-msgid "Set download password."
-msgstr "ダウンロードパスワードを設定する。"
-
-#: View/CabinetFilesEdit/add.ctp:65
-#: View/CabinetFilesEdit/form.ctp:79
-msgid "Password"
-msgstr "パスワード"
-
-
-#: View/Elements/CabinetBlockRolePermissions/edit_form.ctp:21
-msgid "File creatable roles"
-msgstr ""
-
-#: View/Elements/CabinetBlocks/delete_form.ctp:14;28
-msgid "Cabinet"
-msgstr ""
-
-msgid "MailSetting.mail_fixed_phrase_body.popover"
-msgstr "{X-SITE_NAME} : サイト名<br />{X-PLUGIN_NAME} : プラグイン名<br />{X-ROOM} : ルーム名<br />{X-BLOCK_NAME} : キャビネット名<br />{X-SUBJECT} : ファイル名<br />{X-USER} : 投稿者<br />{X-TO_DATE} : 投稿日時<br />{X-TAGS} : タグ<br />{X-BODY} : 投稿内容<br />{X-URL} : 投稿内容のURL"
-
-msgid "Failed to expand. The total size exceeds the limit.<br />The total size limit is %s (%s left)."
-msgstr "解凍後の合計サイズが大きすぎます。(解凍後の合計 %s)<br />合計 %sまでしか使用できません。"
-
-msgid "Unzip failed. Contains does not allow file format."
-msgstr "解凍失敗。許可されないファイルが含まれています。"
-
-msgid "File/Folder"
-msgstr "ファイル・フォルダ"
-
+#: Cabinets/Model/CabinetFile.php:104;116
+#: Cabinets/Test/Case/Controller/CabinetFilesEditController/AddFolderTest.php:238
+#: Cabinets/Test/Case/Controller/CabinetFilesEditController/EditFolderTest.php:365
+#: Cabinets/Test/Case/Controller/CabinetFilesEditController/EditTest.php:356
+#: Cabinets/View/CabinetFiles/index.ctp:143
 msgid "Filename"
 msgstr "名前"
 
-msgid "File creatable roles"
-msgstr "ファイルを投稿できる権限"
-
+#: Cabinets/Model/CabinetFile.php:143
 msgid "Invalid character for file/folder name."
 msgstr "ファイル名(フォルダ名)には次の文字は使えません。. / ? | : \ < > ' * \""
 
-msgid "Unzip success."
-msgstr "解凍しました。"
+#: Cabinets/Model/Behavior/CabinetUnzipBehavior.php:57
+msgid "Unzip failed. Contains does not allow file format."
+msgstr "解凍失敗。許可されないファイルが含まれています。"
+
+#: Cabinets/Model/Behavior/CabinetUnzipBehavior.php:72
+msgid "Failed to expand. The total size exceeds the limit.<br />The total size limit is %s (%s left)."
+msgstr "解凍後の合計サイズが大きすぎます。(解凍後の合計 %s)<br />合計 %sまでしか使用できません。"
+
+#: Cabinets/View/CabinetBlocks/index.ctp:33
+#: Cabinets/View/CabinetFiles/index.ctp:148
+#: Cabinets/View/CabinetFiles/view.ctp:63
+msgid "Size"
+msgstr "サイズ"
+
+#: Cabinets/View/CabinetFiles/download_folder.ctp:13
+msgid "Download failed"
+msgstr "ダウンロード失敗"
+
+#: Cabinets/View/CabinetFiles/download_folder.ctp:24
+#: Cabinets/View/CabinetFiles/folder_detail.ctp:42
+#: Cabinets/View/CabinetFiles/view.ctp:34
+msgid "Go to List"
+msgstr "ファイル一覧へ"
+
+#: Cabinets/View/CabinetFiles/folder_detail.ctp:67
+#: Cabinets/View/CabinetFilesEdit/folder_form.ctp:53
+msgid "Folder name"
+msgstr "フォルダ名"
+
+#: Cabinets/View/CabinetFiles/folder_detail.ctp:70
+#: Cabinets/View/CabinetFiles/view.ctp:60
+#: Cabinets/View/CabinetFilesEdit/folder_form.ctp:61
+#: Cabinets/View/CabinetFilesEdit/form.ctp:114
+msgid "Path"
+msgstr "パス"
+
+#: Cabinets/View/CabinetFiles/folder_detail.ctp:73
+msgid "Total size"
+msgstr "合計サイズ"
+
+#: Cabinets/View/CabinetFiles/folder_detail.ctp:78
+#: Cabinets/View/CabinetFiles/view.ctp:71
+#: Cabinets/View/CabinetFilesEdit/folder_form.ctp:86
+#: Cabinets/View/CabinetFilesEdit/form.ctp:139
+msgid "Description"
+msgstr "説明"
+
+#: Cabinets/View/CabinetFiles/folder_detail.ctp:112;120
+#: Cabinets/View/CabinetFiles/view.ctp:105
+msgid "Download"
+msgstr "ダウンロード"
+
+#: Cabinets/View/CabinetFiles/index.ctp:167
+msgid "Parent folder"
+msgstr "一つ上へ"
+
+#: Cabinets/View/CabinetFiles/index.ctp:182
+#: Cabinets/View/Elements/CabinetFiles/folder_row.ctp:113;119
+msgid "Zip download"
+msgstr "圧縮ダウンロード"
+
+#: Cabinets/View/CabinetFiles/index.ctp:204
+msgid "File/Folder"
+msgstr "ファイル・フォルダ"
+
+#: Cabinets/View/CabinetFiles/view.ctp:54
+#: Cabinets/View/CabinetFilesEdit/form.ctp:52
+msgid "File name"
+msgstr "ファイル名"
+
+#: Cabinets/View/CabinetFiles/view.ctp:68
+msgid "Download count"
+msgstr "ダウンロード回数"
+
+#: Cabinets/View/CabinetFilesEdit/add.ctp:56
+#: Cabinets/View/CabinetFilesEdit/form.ctp:78;175
+msgid "File"
+msgstr "ファイル"
+
+#: Cabinets/View/CabinetFilesEdit/add.ctp:64
+#: Cabinets/View/CabinetFilesEdit/form.ctp:89
+msgid "Set download password."
+msgstr "ダウンロードパスワードを設定する。"
+
+#: Cabinets/View/CabinetFilesEdit/add.ctp:72
+#: Cabinets/View/CabinetFilesEdit/form.ctp:104
+msgid "Password"
+msgstr "パスワード"
+
+#: Cabinets/View/CabinetFilesEdit/folder_form.ctp:130
+msgid "Folder"
+msgstr ""
+
+#: Cabinets/View/CabinetMailSettings/edit.ctp:23
+msgid "MailSetting.mail_fixed_phrase_body.popover"
+msgstr "{X-SITE_NAME} : サイト名<br />{X-PLUGIN_NAME} : プラグイン名<br />{X-ROOM} : ルーム名<br />{X-BLOCK_NAME} : キャビネット名<br />{X-SUBJECT} : ファイル名<br />{X-USER} : 投稿者<br />{X-TO_DATE} : 投稿日時<br />{X-TAGS} : タグ<br />{X-BODY} : 投稿内容<br />{X-URL} : 投稿内容のURL"
+
+#: Cabinets/View/Elements/CabinetBlockRolePermissions/edit_form.ctp:19
+msgid "File creatable roles"
+msgstr "ファイルを投稿できる権限"
+
+#: Cabinets/View/Elements/CabinetBlocks/delete_form.ctp:16;44
+msgid "Cabinet"
+msgstr ""
+
+#: Cabinets/View/Elements/CabinetFiles/file_row.ctp:42
+msgid "Password is required to download."
+msgstr "ダウンロードにはパスワードが必要です。"
+
+#: Cabinets/View/Elements/CabinetFiles/file_row.ctp:87
+#: Cabinets/View/Elements/CabinetFiles/folder_row.ctp:55
+msgid "View"
+msgstr "詳細"
+
+#: Cabinets/View/Elements/CabinetFiles/file_row.ctp:194
+msgid "Unzip"
+msgstr "解凍"
+

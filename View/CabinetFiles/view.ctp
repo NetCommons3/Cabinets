@@ -8,6 +8,18 @@ echo $this->Html->script(
 	)
 );
 ?>
+<?php
+echo $this->Html->script(
+	'/AuthorizationKeys/js/authorization_keys.js',
+	array(
+		'plugin' => false,
+		'once' => true,
+		'inline' => false
+	)
+);
+
+?>
+
 <div ng-controller="Cabinets" ng-init="init(
 	 <?php echo Current::read('Block.id') ?>,
 	 <?php echo Current::read('Frame.id') ?>
@@ -101,11 +113,45 @@ echo $this->Html->script(
 
 	<footer class="text-center">
 		<?php
-		echo $this->NetCommonsHtml->link(
-			__d('cabinets', 'Download'),
-			['action' => 'download', 'key' => $cabinetFile['CabinetFile']['key']],
-			['class' => 'btn btn-primary']
-		)
+		if (isset($cabinetFile['AuthorizationKey'])) {
+			// 認証キー必要
+			echo $this->NetCommonsHtml->link(
+				__d('cabinets', 'Download'),
+				'#',
+				[
+					'authorization-keys-popup-link',
+					'url' => NetCommonsUrl::actionUrl(
+						[
+							'action' => 'download',
+							'key' => $cabinetFile['CabinetFile']['key'],
+							'block_id' => Current::read('Block.id'),
+							'frame_id' => Current::read('Frame.id')
+						]
+					),
+					'popup-title' => __d('authorization_keys', 'Authorization key confirm dialog'),
+					'popup-label' => __d('authorization_keys', 'Authorization key'),
+					'popup-placeholder' =>
+						__d('authorization_keys', 'Please input authorization key'),
+					'class' => 'btn btn-primary'
+				]
+			);
+		} else {
+			// 認証キー不要
+			echo $this->NetCommonsHtml->link(
+				__d('cabinets', 'Download'),
+				[
+					'action' => 'download',
+					'key' => $cabinetFile['CabinetFile']['key']
+				],
+				['class' => 'btn btn-primary']
+			);
+		}
+
+		//echo $this->NetCommonsHtml->link(
+		//	__d('cabinets', 'Download'),
+		//	['action' => 'download', 'key' => $cabinetFile['CabinetFile']['key']],
+		//	['class' => 'btn btn-primary']
+		//)
 		?>
 	</footer>
 </div>

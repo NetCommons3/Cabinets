@@ -26,7 +26,7 @@
 				'Frame.block_id'
 			); ?>
 			<?php echo $this->BlockIndex->tableHeader(
-				'Block.name', __d('cabinets', 'Cabinet name'),
+				'BlocksLanguage.name', __d('cabinets', 'Cabinet name'),
 				array('sort' => true, 'editUrl' => true)
 			); ?>
 			<?php echo $this->BlockIndex->tableHeader(
@@ -55,7 +55,7 @@
 				'Frame.block_id', $cabinet['Block']['id']
 			); ?>
 			<?php echo $this->BlockIndex->tableData(
-				'Block.name', $cabinet['Block']['name'],
+				'BlocksLanguage.name', $cabinet['BlocksLanguage']['name'],
 				array('editUrl' => array('block_id' => $cabinet['Block']['id']))
 			); ?>
 			<?php echo $this->BlockIndex->tableData(
