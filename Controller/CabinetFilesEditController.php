@@ -638,53 +638,57 @@ class CabinetFilesEditController extends CabinetsAppController {
 		]);
 		$cabinetFile = $this->CabinetFile->find('first', ['conditions' => $conditions]);
 
-		if ($cabinetFile && $cabinetFile['UploadFile']['file']['extension'] == 'zip') {
-			if (!$this->CabinetFile->unzip($cabinetFile)) {
-				// Validate error
-				$message = implode("<br />", $this->CabinetFile->validationErrors);
-				$this->NetCommons->setFlashNotification(
-					$message,
-					[
-						'class' => 'danger',
-						//'interval' => NetCommonsComponent::ALERT_VALIDATE_ERROR_INTERVAL,
-						//'ajax' => true,
-					]
-				);
-				return;
-			}
-			// 成功した場合はリダイレクトするので、ajax = falseにしてセッションにメッセージをつんでおく
-			$message = __d('cabinets', 'Unzip success.');
-			$this->NetCommons->setFlashNotification(
-				$message,
-				array(
-					'class' => 'success',
-					'ajax' => false,
-				)
-			);
-			$this->NetCommons->renderJson(['class' => 'success'], $message, 200);
-
-			//$this->NetCommons->setFlashNotification(
-			//	__d('cabinets', 'Unzip success.'),
-			//	array(
-			//		'class' => 'success',
-			//		'ajax' => true,
-			//	)
-			//);
-
-			//$parentCabinetFolder = $this->CabinetFile->getParent($cabinetFile);
-			//$this->redirect(
-			//	NetCommonsUrl::actionUrl(
-			//		[
-			//			'controller' => 'cabinet_files',
-			//			'action' => 'index',
-			//			'key' => $parentCabinetFolder['CabinetFile']['key'],
-			//			'block_id' => Current::read('Block.id'),
-			//			'frame_id' => Current::read('Frame.id'),
-			//		]
-			//	)
-			//);
-		} else {
+		// TODO 解凍しても良いかのガード条件を追加する
+		if (!$this->_isAllowUnzip($cabinetFile)) {
 			return $this->throwBadRequest();
 		}
+
+		if (!$this->CabinetFile->unzip($cabinetFile)) {
+			// Validate error
+			$message = implode("<br />", $this->CabinetFile->validationErrors);
+			$this->NetCommons->setFlashNotification(
+				$message,
+				[
+					'class' => 'danger',
+					//'interval' => NetCommonsComponent::ALERT_VALIDATE_ERROR_INTERVAL,
+					//'ajax' => true,
+				]
+			);
+			return;
+		}
+		// 成功した場合はリダイレクトするので、ajax = falseにしてセッションにメッセージをつんでおく
+		$message = __d('cabinets', 'Unzip success.');
+		$this->NetCommons->setFlashNotification(
+			$message,
+			array(
+				'class' => 'success',
+				'ajax' => false,
+			)
+		);
+		$this->NetCommons->renderJson(['class' => 'success'], $message, 200);
+	}
+
+/**
+ * 解凍してもよいファイルかチェック
+ *
+ * @see https://github.com/NetCommons3/NetCommons3/issues/1024
+ * @param array $cabinetFile CabinetFile data
+ * @return bool
+ */
+	protected function _isAllowUnzip($cabinetFile) {
+		// zip以外NG
+		if (Hash::get($cabinetFile, 'UploadFile.file.extension') != 'zip') {
+			return false;
+		}
+		//未承認ファイルはNG
+		if (Hash::get($cabinetFile, 'UploadFile.status') != WorkflowComponent::STATUS_PUBLISHED) {
+			return false;
+		}
+		// ダウンロードパスワードが設定されてたらNG
+		if (isset($cabinetFile['AuthorizationKey'])) {
+			return false;
+		}
+
+		return true;
 	}
 }
