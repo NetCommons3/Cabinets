@@ -539,4 +539,28 @@ class CabinetFile extends CabinetsAppModel {
 			$this->data['CabinetFile']['filename'] = $cabinetFile['CabinetFile']['filename'];
 		}
 	}
+
+/**
+ * 解凍してもよいファイルかチェック
+ *
+ * @param array $cabinetFile CabinetFile data
+ * @return bool
+ * @see https://github.com/NetCommons3/NetCommons3/issues/1024
+ */
+	public function isAllowUnzip($cabinetFile) {
+		// zip以外NG
+		if (Hash::get($cabinetFile, 'UploadFile.file.extension') != 'zip') {
+			return false;
+		}
+		//未承認ファイルはNG
+		if (Hash::get($cabinetFile, 'CabinetFile.status') != WorkflowComponent::STATUS_PUBLISHED) {
+			return false;
+		}
+		// ダウンロードパスワードが設定されてたらNG
+		if (isset($cabinetFile['AuthorizationKey'])) {
+			return false;
+		}
+
+		return true;
+	}
 }

@@ -149,13 +149,7 @@
 			<?php endif ?>
 
 			<?php if (Current::permission('content_publishable')): ?>
-
-				<?php if ($cabinetFile['UploadFile']['file']['extension'] !== 'zip'):?>
-					<?php
-					$unzipDisabled = 'class="disabled"';
-					$ngClick = '';
-					?>
-				<?php else : ?>
+				<?php if ($this->CabinetFile->isAllowUnzip($cabinetFile)):?>
 					<?php
 					$unzipDisabled = '';
 					$data = [
@@ -197,6 +191,11 @@
 						$cabinetFile['CabinetFile']['key'],
 						h(json_encode($data))
 					);
+					?>
+				<?php else : ?>
+					<?php
+					$unzipDisabled = 'class="disabled"';
+					$ngClick = '';
 					?>
 				<?php endif ?>
 
