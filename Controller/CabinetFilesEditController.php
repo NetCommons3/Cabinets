@@ -638,8 +638,8 @@ class CabinetFilesEditController extends CabinetsAppController {
 		]);
 		$cabinetFile = $this->CabinetFile->find('first', ['conditions' => $conditions]);
 
-		// TODO 解凍しても良いかのガード条件を追加する
-		if (!$this->_isAllowUnzip($cabinetFile)) {
+		// 解凍しても良いかのガード条件チェック
+		if (!$this->CabinetFile->isAllowUnzip($cabinetFile)) {
 			return $this->throwBadRequest();
 		}
 
@@ -671,9 +671,9 @@ class CabinetFilesEditController extends CabinetsAppController {
 /**
  * 解凍してもよいファイルかチェック
  *
- * @see https://github.com/NetCommons3/NetCommons3/issues/1024
  * @param array $cabinetFile CabinetFile data
  * @return bool
+ * @see https://github.com/NetCommons3/NetCommons3/issues/1024
  */
 	protected function _isAllowUnzip($cabinetFile) {
 		// zip以外NG
