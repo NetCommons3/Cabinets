@@ -271,7 +271,8 @@ class CabinetFile extends CabinetsAppModel {
 	public function save($data = null, $validate = true, $fieldList = array()) {
 		// 保存前に modified フィールドをクリアする
 		$this->set($data);
-		if (isset($this->data[$this->alias]['modified'])) {
+		$isNoUnsetModified = Hash::get($this->data, $this->alias . '._is_no_unset_modified');
+		if (isset($this->data[$this->alias]['modified']) && !$isNoUnsetModified) {
 			unset($this->data[$this->alias]['modified']);
 		}
 		return parent::save($this->data, $validate, $fieldList);
