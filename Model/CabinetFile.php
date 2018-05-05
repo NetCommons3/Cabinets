@@ -59,6 +59,9 @@ class CabinetFile extends CabinetsAppModel {
 			'embedTags' => array(
 				'X-SUBJECT' => 'CabinetFile.filename',
 				'X-BODY' => 'CabinetFile.description',
+				'X-URL' => array(
+					'controller' => 'cabinet_files'
+				)
 			),
 		),
 		//多言語
