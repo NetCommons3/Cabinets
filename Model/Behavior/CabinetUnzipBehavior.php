@@ -25,7 +25,7 @@ class CabinetUnzipBehavior extends ModelBehavior {
 
 		try {
 			// テンポラリフォルダにunzip
-			$zipPath = WWW_ROOT . $cabinetFile['UploadFile']['file']['path'] .
+			$zipPath = UPLOADS_ROOT . $cabinetFile['UploadFile']['file']['path'] .
 				$cabinetFile['UploadFile']['file']['id'] . DS .
 				$cabinetFile['UploadFile']['file']['real_file_name'];
 			//debug($zipPath);
