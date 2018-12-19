@@ -26,7 +26,7 @@
 
 	<div class="clearfix">
 		<div class="pull-left cabinets__index__file-path">
-			<?php echo $this->element('file_path', ['currentFile' => $currentFolder]); ?>
+			<?php echo $this->element('Cabinets.file_path', ['currentFile' => $currentFolder]); ?>
 		</div>
 
 		<div class="pull-right">
@@ -92,7 +92,7 @@
 		<div class="col-md-3 hidden-sm hidden-xs cabinets-folder-tree inline"
 			ng-controller="Cabinets.FolderTree as foldertree">
 			<div resize="foldertree.resizeHandler()">
-				<?php echo $this->element('CabinetFiles/folder_tree'); ?>
+				<?php echo $this->element('Cabinets.CabinetFiles/folder_tree'); ?>
 			</div>
 		</div>
 		<?php endif ?>
@@ -181,10 +181,10 @@
 					<tr ng-hide="moved['<?php echo $cabinetFile['CabinetFile']['key'] ?>']"
 						class="cabinet-file">
 						<?php if ($cabinetFile['CabinetFile']['is_folder']) : ?>
-							<?php echo $this->element('CabinetFiles/folder_row',
+							<?php echo $this->element('Cabinets.CabinetFiles/folder_row',
 								['cabinetFile' => $cabinetFile]); ?>
 						<?php else: ?>
-							<?php echo $this->element('CabinetFiles/file_row',
+							<?php echo $this->element('Cabinets.CabinetFiles/file_row',
 								['cabinetFile' => $cabinetFile]); ?>
 						<?php endif ?>
 					</tr>

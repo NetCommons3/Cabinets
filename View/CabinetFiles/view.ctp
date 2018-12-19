@@ -70,7 +70,7 @@ echo $this->Html->script(
 			</dd>
 
 			<dt><?php echo __d('cabinets', 'Path'); ?></dt>
-			<dd class="form-control nc-data-label"><?php echo $this->element('file_path'); ?></dd>
+			<dd class="form-control nc-data-label"><?php echo $this->element('Cabinets.file_path'); ?></dd>
 
 			<dt><?php echo __d('cabinets', 'Size'); ?></dt>
 			<dd class="form-control nc-data-label"><?php echo $this->Number->toReadableSize(

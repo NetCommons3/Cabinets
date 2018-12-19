@@ -269,7 +269,8 @@ class CabinetFilesEditController extends CabinetsAppController {
 		$this->set('cabinetFile', $cabinetFile);
 		$this->set('isDeletable', $this->CabinetFile->canDeleteWorkflowContent($cabinetFile));
 
-		$this->render('form');
+		$this->view = 'form';
+		//$this->render('form');
 	}
 
 /**
@@ -337,7 +338,8 @@ class CabinetFilesEditController extends CabinetsAppController {
 		];
 		$this->set('folderPath', $folderPath);
 
-		$this->render('folder_form');
+		$this->view = 'folder_form';
+		//$this->render('folder_form');
 	}
 
 /**
@@ -417,7 +419,8 @@ class CabinetFilesEditController extends CabinetsAppController {
 		$this->set('cabinetFile', $cabinetFile);
 		$this->set('isDeletable', $this->CabinetFile->canDeleteWorkflowContent($cabinetFile));
 
-		$this->render('folder_form');
+		$this->view = 'folder_form';
+		//$this->render('folder_form');
 	}
 
 /**

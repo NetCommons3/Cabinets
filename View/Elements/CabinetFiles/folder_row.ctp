@@ -5,7 +5,10 @@
 	echo $icon;
 	echo $this->NetCommonsHtml->link(
 		h($cabinetFile['CabinetFile']['filename']),
-		['key' => $cabinetFile['CabinetFile']['key']],
+		[
+				'action' => 'index',
+				'key' => $cabinetFile['CabinetFile']['key']
+		],
 		['escape' => false]
 	);
 	?>
