@@ -68,7 +68,7 @@ echo $this->Html->script(
 		<dd class="form-control nc-data-label"><?php echo $cabinetFile['CabinetFile']['filename']; ?></dd>
 
 		<dt><?php echo __d('cabinets', 'Path'); ?></dt>
-		<dd class="form-control nc-data-label"><?php echo $this->element('file_path'); ?></dd>
+		<dd class="form-control nc-data-label"><?php echo $this->element('Cabinets.file_path'); ?></dd>
 
 		<dt><?php echo __d('cabinets', 'Total size'); ?></dt>
 		<dd class="form-control nc-data-label"><?php echo $this->Number->toReadableSize(

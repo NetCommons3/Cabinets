@@ -1,1 +1,1 @@
-<?php echo $this->element('CabinetFiles/folder_tree'); 
+<?php echo $this->element('Cabinets.CabinetFiles/folder_tree');

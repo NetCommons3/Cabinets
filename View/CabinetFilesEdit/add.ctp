@@ -19,7 +19,7 @@ echo $this->NetCommonsHtml->script(
 	>
 		<article>
 			<div>
-				<?php echo $this->element('file_path'); ?>
+				<?php echo $this->element('Cabinets.file_path'); ?>
 			</div>
 			<div class="panel panel-default">
 

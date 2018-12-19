@@ -61,7 +61,7 @@ echo $this->NetCommonsHtml->script(
 								__d('cabinets', 'Path')
 							); ?>
 							<div>
-								<?php echo $this->element('file_path'); ?>
+								<?php echo $this->element('Cabinets.file_path'); ?>
 
 								<a href="#" class="btn btn-default" ng-click="showFolderTree()">
 									<span class="glyphicon glyphicon-move" aria-hidden="true"></span>
