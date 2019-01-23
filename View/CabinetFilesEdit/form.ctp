@@ -174,9 +174,6 @@ echo $this->NetCommonsHtml->script(
 
 						<?php echo $this->Button->delete('', __d('net_commons', 'Deleting the %s. Are you sure to proceed?', __d('cabinets', 'File')));?>
 
-					</span>
-
-
 						<?php echo $this->NetCommonsForm->end() ?>
 					</div>
 				<?php endif ?>
