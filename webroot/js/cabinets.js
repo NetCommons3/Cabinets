@@ -81,7 +81,7 @@ NetCommonsApp.controller('CabinetFile.index',
                             // フォルダを動かしたらリロード
                             location.reload();
                           } else {
-                            $scope.flashMessage(data.name, data.class, data.interval);
+                            $scope.flashMessage(data.message, data.class, data.interval);
                             // 違うフォルダへ移動なので、今のフォルダ内ファイル一覧から非表示にする
                             $scope.moved[cabinetFileKey] = true;
                           }
@@ -89,14 +89,14 @@ NetCommonsApp.controller('CabinetFile.index',
                         function(response) {
                           var data = response.data;
                           // エラー処理
-                          $scope.flashMessage(data.name, 'danger', 0);
+                          $scope.flashMessage(data.message, 'danger', 0);
                         });
                   },
                   function(response) {
                     //Token error condition
                     // エラー処理
                     var data = response.data;
-                    $scope.flashMessage(data.name, 'danger', 0);
+                    $scope.flashMessage(data.message, 'danger', 0);
                   });
             }
           });
@@ -128,20 +128,20 @@ NetCommonsApp.controller('CabinetFile.index',
                         // エラーがなかったらリロードする
                         location.reload();
                       } else {
-                        $scope.flashMessage(data.name, data.class, 0);
+                        $scope.flashMessage(data.message, data.class, 0);
                       }
                     },
                     function(response) {
                       // エラー処理
                       var data = response.data;
-                      $scope.flashMessage(data.name, data.class, 0);
+                      $scope.flashMessage(data.message, data.class, 0);
                     });
               },
               function(response) {
                 //Token error condition
                 // エラー処理
                 var data = response.data;
-                $scope.flashMessage(data.name, 'danger', 3);
+                $scope.flashMessage(data.message, 'danger', 3);
               });
         };
       }]
@@ -290,7 +290,7 @@ NetCommonsApp.controller('CabinetFile.edit',
                   $scope.folderPath = result;
                 })
                 .error(function(data, status, headers, config) {
-                  $scope.flashMessage(data.name, 'danger', 0);
+                  $scope.flashMessage(data.message, 'danger', 0);
                 });
           });
         };
