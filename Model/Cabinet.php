@@ -91,7 +91,7 @@ class Cabinet extends CabinetsAppModel {
  * @see Model::save()
  */
 	public function beforeValidate($options = array()) {
-		$this->validate = Hash::merge(
+		$this->validate = ValidateMerge::merge(
 			$this->validate,
 			array(
 				//'block_id' => array(

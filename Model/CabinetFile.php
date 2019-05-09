@@ -162,7 +162,7 @@ class CabinetFile extends CabinetsAppModel {
 			];
 		}
 
-		$this->validate = Hash::merge($this->validate, $validate);
+		$this->validate = ValidateMerge::merge($this->validate, $validate);
 
 		return parent::beforeValidate($options);
 	}
