@@ -110,7 +110,6 @@ class CabinetFilesEditController extends CabinetsAppController {
 	public function add() {
 		//レイアウトの設定
 		$this->viewClass = 'View';
-		$this->layout = 'NetCommons.modal';
 
 		$this->set('isEdit', false);
 
@@ -152,6 +151,7 @@ class CabinetFilesEditController extends CabinetsAppController {
 			$this->NetCommons->handleValidationError($this->CabinetFile->validationErrors);
 
 		} else {
+			$this->layout = 'NetCommons.modal';
 			$this->request->data = $cabinetFile;
 			$this->request->data['CabinetFileTree']['parent_id'] = Hash::get(
 				$this->request->named,
