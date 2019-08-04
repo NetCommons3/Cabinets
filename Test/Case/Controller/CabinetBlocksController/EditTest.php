@@ -65,8 +65,8 @@ class CabinetBlocksControllerEditTest extends BlocksControllerEditTest {
 		$frameId = '6';
 		//$frameKey = 'frame_3';
 		if ($isEdit) {
-			$blockId = '4';
-			$blockKey = 'block_2';
+			$blockId = '2';
+			$blockKey = 'block_1';
 			$cabinetId = '3';
 			$cabinetKey = 'cabinet_key_2';
 		} else {

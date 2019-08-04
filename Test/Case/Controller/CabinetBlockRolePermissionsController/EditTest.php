@@ -72,7 +72,7 @@ class CabinetBlockRolePermissionsControllerEditTest extends BlockRolePermissions
 			'CabinetSetting' => array(
 				'id' => 2,
 				'cabinet_key' => 'cabinet_key_2',
-				'use_workflow' => true,
+				'use_workflow' => '1',
 				//'use_comment_approval' => true,
 				//'approval_type' => true,
 			)
