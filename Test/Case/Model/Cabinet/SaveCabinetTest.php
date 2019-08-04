@@ -62,8 +62,8 @@ class CabinetSaveCabinetTest extends NetCommonsSaveTest {
 
 		Current::$current['Block']['id'] = '2';
 		Current::$current['Room']['id'] = '1';
-		Current::$current['Permission']['content_editable']['value'] = true;
-		Current::$current['Permission']['content_publishable']['value'] = true;
+		Current::writePermission('1', 'content_editable', true);
+		Current::writePermission('1', 'content_publishable', true);
 	}
 
 /**
