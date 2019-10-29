@@ -369,7 +369,7 @@ class CabinetFilesEditController extends CabinetsAppController {
 			throw new InternalErrorException();
 		}
 		if ($this->CabinetFile->canEditWorkflowContent($cabinetFile) === false) {
-			throw new ForbiddenException(__d('net_commons', 'Permission denied'));
+			throw new ForbiddenException();
 		}
 
 		$treeId = $cabinetFile['CabinetFileTree']['id'];
@@ -519,7 +519,7 @@ class CabinetFilesEditController extends CabinetsAppController {
 		// フォルダの移動は公開権限が必要
 		if ($cabinetFile['CabinetFile']['is_folder']) {
 			if (!Current::permission('content_publishable')) {
-				throw new ForbiddenException(__d('net_commons', 'Permission denied'));
+				throw new ForbiddenException();
 			}
 		}
 
