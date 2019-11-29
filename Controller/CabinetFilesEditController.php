@@ -108,9 +108,6 @@ class CabinetFilesEditController extends CabinetsAppController {
  * @return void
  */
 	public function add() {
-		//レイアウトの設定
-		$this->viewClass = 'View';
-
 		$this->set('isEdit', false);
 
 		$cabinetFile = $this->CabinetFile->getNew();

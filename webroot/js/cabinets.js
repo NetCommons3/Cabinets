@@ -163,7 +163,9 @@ NetCommonsApp.controller('CabinetFile.addFile',
             url = url + '/parent_id:' + $scope.parent_id;
           }
           url = url + '?frame_id=' + frameId;
-          var modal = NetCommonsModal.show($scope, 'CabinetFile.addFileModal', url);
+
+					$http.defaults.headers.common['Accept'] = 'text/html';
+					var modal = NetCommonsModal.show($scope, 'CabinetFile.addFileModal', url);
         };
       }
     ]
