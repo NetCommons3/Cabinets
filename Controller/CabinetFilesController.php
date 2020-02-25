@@ -11,6 +11,7 @@ App::uses('TemporaryFolder', 'Files.Utility');
  *
  *
  * @author   Ryuji AMANO <ryuji@ryus.co.jp>
+ * @author   Kazunori Sakamoto <exkazuu@willbooster.com>
  * @link     http://www.netcommons.org NetCommons Project
  * @license  http://www.netcommons.org/license.txt NetCommons License
  * @property NetCommonsWorkflow $NetCommonsWorkflow
@@ -100,7 +101,8 @@ class CabinetFilesController extends CabinetsAppController {
 			'view',
 			'folder_detail',
 			'download',
-			'download_folder'
+			'download_folder',
+			'get_download_counts'
 		);
 		parent::beforeFilter();
 		$this->_cabinet = $this->Cabinet->find('first', array(
@@ -330,6 +332,31 @@ class CabinetFilesController extends CabinetsAppController {
 		//return $this->response;
 		return $zipDownloader->download($cabinetFolder['CabinetFile']['filename'] . '.zip');
 	}
+
+
+/**
+ * ファイルのダウンロード数の取得
+ *
+ * @return void
+ */
+public function get_download_counts() {
+	$options = [
+		'fields' => [
+			'UploadFilesContent.content_id',
+			'UploadFile.download_count',
+		],
+		'conditions' => [
+			'UploadFilesContent.plugin_key' => 'cabinets',
+			'UploadFilesContent.content_id' => explode(',', $this->request->query('file_ids')),
+			'UploadFile.field_name' => 'file'
+		]
+	];
+	$UploadFilesContent = ClassRegistry::init('Files.UploadFilesContent');
+	$files = $UploadFilesContent->find('all', $options);
+
+	$this->set('_serialize', ['counts']);
+	$this->set('counts', $files);
+}
 
 /**
  * フォルダのZIPダウンロード前処理
