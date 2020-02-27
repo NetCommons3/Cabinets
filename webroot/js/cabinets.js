@@ -43,16 +43,11 @@ NetCommonsApp.controller('CabinetFile.index',
     ['$scope', 'NetCommonsModal', '$http', 'NC3_URL',
       function($scope, NetCommonsModal, $http, NC3_URL) {
         $scope.moved = {};
-        $scope.init = function(parentId, frameId, fileIds, nonCacheable) {
+        $scope.init = function(parentId, frameId, fileIds) {
           $scope.parent_id = parentId;
-          if (nonCacheable || !fileIds || !fileIds.length) return;
+          if (!fileIds || !fileIds.length) return;
 
           var queryPrefix = '#' + frameId + '-';
-          for (var i = 0; i < fileIds.length; i++) {
-            var $count = $(queryPrefix + fileIds[i] + '-count');
-            $count.text('-');
-          }
-
           var params = '?frame_id=' + frameId + '&file_ids=' + fileIds.join(',');
           $http.get(NC3_URL + '/cabinets/cabinet_files/get_download_counts.json' + params)
           .then(

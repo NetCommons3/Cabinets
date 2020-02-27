@@ -45,7 +45,7 @@
 			) ?>"></span>
 	<?php endif ?>
 	<span class="badge" id="<?php echo Current::read('Frame.id') . '-' . $cabinetFile['CabinetFile']['id']; ?>-count">
-		<?php echo $cabinetFile['UploadFile']['file']['total_download_count']; ?>
+		<?php echo $this->CDNCache->isCacheable() ? '-' : $cabinetFile['UploadFile']['file']['total_download_count']; ?>
 	</span>
 
 	<div class="cabinets__index__description text-muted small"

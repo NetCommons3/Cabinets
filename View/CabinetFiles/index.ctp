@@ -104,20 +104,20 @@
 					'frame_id' => Current::read('Frame.id'),
 				));
 				$fileIds = array();
-				foreach ($cabinetFiles as $file) {
-					if (! $file['CabinetFile']['is_folder']) {
-						$fileIds[] = $file['CabinetFile']['id'];
+				if ($this->CDNCache->isCacheable()) {
+					foreach ($cabinetFiles as $file) {
+						if (! $file['CabinetFile']['is_folder']) {
+							$fileIds[] = $file['CabinetFile']['id'];
+						}
 					}
 				}
-				$nonCacheable = $this->response->header()['Pragma'] === 'no-cache' ||
-						strncmp('origin-', $_SERVER['SERVER_NAME'], 7) !== 0;
 			?>
 
 			<table
 				class="table table-hover cabinets__index__file-list"
 				style="table-layout: fixed"
 				ng-controller="CabinetFile.index"
-				ng-init="init(<?php echo $currentTreeId . ', ' . Current::read('Frame.id') . ', ' . h(json_encode($fileIds) . ', ' . json_encode($nonCacheable)); ?>)">
+				ng-init="init(<?php echo $currentTreeId . ', ' . Current::read('Frame.id') . ', ' . h(json_encode($fileIds)); ?>)">
 				<thead>
 				<tr>
 					<th class="cabinets__index__name">
