@@ -48,14 +48,14 @@ NetCommonsApp.controller('CabinetFile.index',
           if (!fileIds || !fileIds.length) return;
 
           var queryPrefix = '#' + frameId + '-';
-          var params = '?frame_id=' + frameId + '&file_ids=' + fileIds.join(',');
+          var params = '?frame_id=' + frameId + '&upload_file_ids=' + fileIds.join(',');
           $http.get(NC3_URL + '/cabinets/cabinet_files/get_download_counts.json' + params)
           .then(
             function(response) {
               var counts = response.data.counts;
               for (var i = 0; i < counts.length; i++) {
                 var $count = $(queryPrefix + counts[i]['UploadFilesContent']['content_id'] + '-count');
-                $count.text(counts[i]['UploadFile']['download_count']);
+                $count.text(counts[i]['UploadFile']['total_download_count']);
               }
             },
             function() {

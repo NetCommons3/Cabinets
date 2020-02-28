@@ -107,7 +107,7 @@
 				if ($this->CDNCache->isCacheable()) {
 					foreach ($cabinetFiles as $file) {
 						if (! $file['CabinetFile']['is_folder']) {
-							$fileIds[] = $file['CabinetFile']['id'];
+							$fileIds[] = $file['UploadFile']['id'];
 						}
 					}
 				}
@@ -117,7 +117,8 @@
 				class="table table-hover cabinets__index__file-list"
 				style="table-layout: fixed"
 				ng-controller="CabinetFile.index"
-				ng-init="init(<?php echo $currentTreeId . ', ' . Current::read('Frame.id') . ', ' . h(json_encode($fileIds)); ?>)">
+				ng-init="init(<?php echo $currentTreeId . ', '
+					. h(json_encode(Current::read('Frame.id'))) . ', ' . h(json_encode($fileIds)); ?>)">
 				<thead>
 				<tr>
 					<th class="cabinets__index__name">
