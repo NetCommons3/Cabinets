@@ -54,7 +54,7 @@ NetCommonsApp.controller('CabinetFile.index',
             function(response) {
               var counts = response.data.counts;
               for (var i = 0; i < counts.length; i++) {
-                var $count = $(queryPrefix + counts[i]['UploadFilesContent']['content_id'] + '-count');
+                var $count = $(queryPrefix + counts[i]['UploadFile']['id'] + '-count');
                 $count.text(counts[i]['UploadFile']['total_download_count']);
               }
             },

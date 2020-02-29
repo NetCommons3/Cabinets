@@ -44,7 +44,7 @@
 				'Password is required to download.'
 			) ?>"></span>
 	<?php endif ?>
-	<span class="badge" id="<?php echo Current::read('Frame.id') . '-' . $cabinetFile['UploadFile']['id']; ?>-count">
+	<span class="badge" id="<?php echo Current::read('Frame.id') . '-' . $cabinetFile['UploadFile']['file']['id']; ?>-count">
 		<?php echo $this->CDNCache->isCacheable() ? '-' : $cabinetFile['UploadFile']['file']['total_download_count']; ?>
 	</span>
 

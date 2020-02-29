@@ -107,7 +107,7 @@
 				if ($this->CDNCache->isCacheable()) {
 					foreach ($cabinetFiles as $file) {
 						if (! $file['CabinetFile']['is_folder']) {
-							$fileIds[] = $file['UploadFile']['id'];
+							$fileIds[] = $file['UploadFile']['file']['id'];
 						}
 					}
 				}
