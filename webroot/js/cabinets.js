@@ -43,19 +43,26 @@ NetCommonsApp.controller('CabinetFile.index',
     ['$scope', 'NetCommonsModal', '$http', 'NC3_URL',
       function($scope, NetCommonsModal, $http, NC3_URL) {
         $scope.moved = {};
-        $scope.init = function(parentId, frameId, fileIds) {
+        $scope.init = function(parentId, frameId, initialValues) {
           $scope.parent_id = parentId;
+
+          var fileIds = initialValues && Object.keys(initialValues);
           if (!fileIds || !fileIds.length) return;
 
-          var queryPrefix = '#' + frameId + '-';
+          $scope.downloadCounts = initialValues;
+          if (initialValues[fileIds[0]] !== null) return;
+          for (var i = 0; i < fileIds.length; i++) {
+            initialValues[fileIds[i]] = '-';
+          }
+
           var params = '?frame_id=' + frameId + '&upload_file_ids=' + fileIds.join(',');
           $http.get(NC3_URL + '/cabinets/cabinet_files/get_download_counts.json' + params)
           .then(
             function(response) {
               var counts = response.data.counts;
               for (var i = 0; i < counts.length; i++) {
-                var $count = $(queryPrefix + counts[i]['UploadFile']['id'] + '-count');
-                $count.text(counts[i]['UploadFile']['total_download_count']);
+                var file = counts[i].UploadFile;
+                $scope.downloadCounts[file.id] = file.total_download_count;
               }
             },
             function() {

@@ -1,6 +1,7 @@
 <?php echo $this->element('NetCommons.javascript_alert'); ?>
 <div ng-controller="Cabinets"
-		ng-init="init(<?php echo Current::read('Block.id') . ', ' . Current::read('Frame.id'); ?>)"
+		ng-init="init(<?php echo h(json_encode(Current::read('Block.id')))
+			. ', ' . h(json_encode(Current::read('Frame.id'))); ?>)"
 		class="nc-content-list">
 
 	<?php echo $this->NetCommonsHtml->css('/cabinets/css/cabinets.css'); ?>
@@ -103,12 +104,12 @@
 					'key' => $currentFolder['CabinetFile']['key'],
 					'frame_id' => Current::read('Frame.id'),
 				));
-				$fileIds = array();
-				if ($this->CDNCache->isCacheable()) {
-					foreach ($cabinetFiles as $file) {
-						if (! $file['CabinetFile']['is_folder']) {
-							$fileIds[] = $file['UploadFile']['file']['id'];
-						}
+				$initialValues = array();
+				$cacheable = $this->CDNCache->isCacheable();
+				foreach ($cabinetFiles as $file) {
+					if (! $file['CabinetFile']['is_folder']) {
+						$value = $cacheable ? null : $file['UploadFile']['file']['total_download_count'];
+						$initialValues[$file['UploadFile']['file']['id']] = $value;
 					}
 				}
 			?>
@@ -118,7 +119,7 @@
 				style="table-layout: fixed"
 				ng-controller="CabinetFile.index"
 				ng-init="init(<?php echo $currentTreeId . ', '
-					. h(json_encode(Current::read('Frame.id'))) . ', ' . h(json_encode($fileIds)); ?>)">
+					. h(json_encode(Current::read('Frame.id'))) . ', ' . h(json_encode($initialValues)); ?>)">
 				<thead>
 				<tr>
 					<th class="cabinets__index__name">

@@ -44,8 +44,8 @@
 				'Password is required to download.'
 			) ?>"></span>
 	<?php endif ?>
-	<span class="badge" id="<?php echo Current::read('Frame.id') . '-' . $cabinetFile['UploadFile']['file']['id']; ?>-count">
-		<?php echo $this->CDNCache->isCacheable() ? '-' : $cabinetFile['UploadFile']['file']['total_download_count']; ?>
+	<span class="badge" ng-cloak>
+		{{downloadCounts[<?php echo h(json_encode($cabinetFile['UploadFile']['file']['id'])); ?>]}}
 	</span>
 
 	<div class="cabinets__index__description text-muted small"
