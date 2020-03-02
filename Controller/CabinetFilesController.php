@@ -340,17 +340,18 @@ class CabinetFilesController extends CabinetsAppController {
  * @return void
  */
 public function get_download_counts() {
-	$options = [
+	$query = [
 		'fields' => [
 			'UploadFile.id',
 			'UploadFile.total_download_count',
 		],
 		'conditions' => [
 			'UploadFile.id' => explode(',', $this->request->query('upload_file_ids')),
-		]
+		],
+		'recursive' => -1
 	];
 	$UploadFile = ClassRegistry::init('Files.UploadFile');
-	$files = $UploadFile->find('all', $options);
+	$files = $UploadFile->find('all', $query);
 
 	$this->set('_serialize', ['counts']);
 	$this->set('counts', $files);
