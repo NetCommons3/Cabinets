@@ -84,9 +84,9 @@ class CabinetFilesControllerDownloadFolderTest extends NetCommonsControllerTestC
 				'methods' => [
 					'_getZipDownloader'
 				],
-				//'components' => [
-				//	'Download'
-				//]
+				'components' => [
+					'Security',
+				]
 			]
 		);
 		$zipDownloaderMock = $this->getMock('ZipDownloader', ['download']);
@@ -109,6 +109,8 @@ class CabinetFilesControllerDownloadFolderTest extends NetCommonsControllerTestC
 		$urlOptions = $this->__data();
 
 		//テスト実施
-		$this->_testGetAction($urlOptions, array('method' => 'assertEmpty'), null, 'result');
+		$this->_testPostAction('post', ['CabinetFile' => ['key' => $urlOptions['key']]],
+			$urlOptions, null, 'result'
+		);
 	}
 }
