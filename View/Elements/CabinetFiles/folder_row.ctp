@@ -118,13 +118,11 @@
 			<?php else: ?>
 				<li>
 					<?php
-					echo $this->NetCommonsHtml->link(
-						__d('cabinets', 'Zip download'),
-						[
-							'action' => 'download_folder',
-							'key' => $cabinetFile['CabinetFile']['key']
-						]
-					);
+						echo $this->CabinetFile->zipDownload(
+							$cabinetFile,
+							__d('cabinets', 'Zip download'),
+							[]
+						);
 					?>
 				</li>
 			<?php endif ?>

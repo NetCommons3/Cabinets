@@ -152,17 +152,14 @@
 						<td colspan="2" style="text-align: right;">
 							<?php
 							if (count($cabinetFiles) > 0) {
-								echo $this->NetCommonsHtml->link(
+								echo $this->CabinetFile->zipDownload(
+									$currentFolder,
 									__d('cabinets', 'Zip download'),
 									[
-										'action' => 'download_folder',
-										'key' => $currentFolder['CabinetFile']['key']
-									],
-									['class' => 'btn btn-xs btn-default',
+										'class' => 'btn btn-xs btn-default',
 										'style' => 'margin-left:0px;'
 									]
 								);
-
 							}
 							?>
 						</td>
