@@ -115,13 +115,13 @@ echo $this->Html->script(
 			)
 			?>
 		<?php else: ?>
-		<?php
-		echo $this->NetCommonsHtml->link(
-			__d('cabinets', 'Download'),
-			['action' => 'download_folder', 'key' => $cabinetFile['CabinetFile']['key']],
-			['class' => 'btn btn-primary']
-		)
-		?>
+			<?php
+			echo $this->CabinetFile->zipDownload(
+				$cabinetFile,
+				__d('cabinets', 'Download'),
+				['class' => 'btn btn-primary']
+			);
+			?>
 		<?php endif ?>
 	</div>
 </div>

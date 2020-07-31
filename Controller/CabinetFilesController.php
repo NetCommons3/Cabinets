@@ -100,7 +100,8 @@ class CabinetFilesController extends CabinetsAppController {
 			'view',
 			'folder_detail',
 			'download',
-			'download_folder'
+			'download_folder',
+			'check_download_folder'
 		);
 		parent::beforeFilter();
 		$this->_cabinet = $this->Cabinet->find('first', array(
@@ -271,8 +272,6 @@ class CabinetFilesController extends CabinetsAppController {
 		//$this->set('cabinetFile', $cabinetFile);
 		// ここまで元コンテンツを取得する処理
 
-		//$this->AuthorizationKey->guard('popup', 'BlogEntry', $blogEntry);
-
 		$this->AuthorizationKey->guard('popup', 'CabinetFile', $cabinetFile);
 
 		// ダウンロード実行
@@ -297,8 +296,11 @@ class CabinetFilesController extends CabinetsAppController {
  * @return CakeResponse|string|void
  */
 	public function download_folder() {
+		if (! $this->request->is('post')) {
+			return $this->throwBadRequest();
+		}
 		// フォルダを取得
-		$folderKey = Hash::get($this->request->params, 'key', null);
+		$folderKey = Hash::get($this->request->data, 'CabinetFile.key', null);
 		$conditions = [
 			'CabinetFile.key' => $folderKey,
 			'CabinetFile.cabinet_key' => $this->_cabinet['Cabinet']['key']
@@ -309,10 +311,12 @@ class CabinetFilesController extends CabinetsAppController {
 		$tmpFolder = new TemporaryFolder();
 		try {
 			$this->_prepareDownload($tmpFolder->path, $cabinetFolder);
-		} catch (Exception $e) {
-			$this->set('error', $e->getMessage());
-
-			return;
+		} catch (BadRequestException $e) {
+			//先にcheck_download_folderでチェックしているため、この処理は基本通らない
+			//もしタイムラグでダウンロードパスワードが設定されたら、フラッシュメッセージを表示して、
+			//ブラウザをリフレッシュする
+			$this->NetCommons->setFlashNotification($e->getMessage(), [], $e->getCode());
+			return $this->redirect($this->referer());
 		}
 		$zipDownloader = $this->_getZipDownloader();
 
@@ -323,23 +327,37 @@ class CabinetFilesController extends CabinetsAppController {
 		foreach ($files as $file) {
 			$zipDownloader->addFile($file);
 		}
-
-		//$zipDownloader->addFolder($tmpFolder->path);
-
-		//$this->response = $zipDownloader->download($cabinetFolder['CabinetFile']['filename'] . '.zip');
-		//return $this->response;
 		return $zipDownloader->download($cabinetFolder['CabinetFile']['filename'] . '.zip');
 	}
 
 /**
- * フォルダのZIPダウンロード前処理
+ * フォルダのZIPダウンロードができるか否かチェック
  *
- * @param string $path ダウンロード処理用テンポラリフォルダのカレントパス
- * @param array $cabinetFolder CabinetFileデータ 処理するフォルダ
- * @throws Exception
  * @return void
  */
-	protected function _prepareDownload($path, $cabinetFolder) {
+	public function check_download_folder() {
+		if (! $this->request->is('post') || ! $this->request->is('ajax')) {
+			return $this->throwBadRequest();
+		}
+		// フォルダを取得
+		$folderKey = Hash::get($this->request->data, 'CabinetFile.key', null);
+		$conditions = [
+			'CabinetFile.key' => $folderKey,
+			'CabinetFile.cabinet_key' => $this->_cabinet['Cabinet']['key']
+		];
+		$conditions = $this->CabinetFile->getWorkflowConditions($conditions);
+		$cabinetFolder = $this->CabinetFile->find('first', ['conditions' => $conditions]);
+
+		$this->_checkDownloadFolder($cabinetFolder);
+	}
+
+/**
+ * 圧縮ダウンロード用のCabinetFileデータを取得
+ *
+ * @param array $cabinetFolder CabinetFileデータ 処理するフォルダ
+ * @return array
+ */
+	protected function _findCabinetFilesByFolderDownload($cabinetFolder) {
 		// フォルダのファイル取得
 		$files = $this->CabinetFile->find(
 			'all',
@@ -352,13 +370,27 @@ class CabinetFilesController extends CabinetsAppController {
 				)
 			]
 		);
+		return $files;
+	}
+
+/**
+ * フォルダのZIPダウンロード前処理
+ *
+ * @param string $path ダウンロード処理用テンポラリフォルダのカレントパス
+ * @param array $cabinetFolder CabinetFileデータ 処理するフォルダ
+ * @throws BadRequestException
+ * @return void
+ */
+	protected function _prepareDownload($path, $cabinetFolder) {
+		// フォルダのファイル取得
+		$files = $this->_findCabinetFilesByFolderDownload($cabinetFolder);
 		foreach ($files as $file) {
 			if ($file['CabinetFile']['is_folder']) {
 				mkdir($path . DS . $file['CabinetFile']['filename']);
 				$this->_prepareDownload($path . DS . $file['CabinetFile']['filename'], $file);
 			} else {
 				if (isset($file['AuthorizationKey'])) {
-					throw new Exception(
+					throw new BadRequestException(
 						__d(
 							'cabinets',
 							'Folder that contains the files that are password is set can not be downloaded ZIP.'
@@ -375,7 +407,32 @@ class CabinetFilesController extends CabinetsAppController {
 				//	$file['UploadFile']['file']['id'] .
 				//	DS . $file['UploadFile']['file']['real_file_name'];
 				copy($filePath, $path . DS . $file['CabinetFile']['filename']);
+			}
+		}
+	}
 
+/**
+ * フォルダのZIPダウンロードができるか否かチェックする
+ *
+ * @param array $cabinetFolder CabinetFileデータ 処理するフォルダ
+ * @throws BadRequestException
+ * @return void
+ */
+	protected function _checkDownloadFolder($cabinetFolder) {
+		// フォルダのファイル取得
+		$files = $this->_findCabinetFilesByFolderDownload($cabinetFolder);
+		foreach ($files as $file) {
+			if ($file['CabinetFile']['is_folder']) {
+				$this->_checkDownloadFolder($file);
+			} else {
+				if (isset($file['AuthorizationKey'])) {
+					throw new BadRequestException(
+						__d(
+							'cabinets',
+							'Folder that contains the files that are password is set can not be downloaded ZIP.'
+						)
+					);
+				}
 			}
 		}
 	}
