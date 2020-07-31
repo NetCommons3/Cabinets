@@ -332,29 +332,28 @@ class CabinetFilesController extends CabinetsAppController {
 		return $zipDownloader->download($cabinetFolder['CabinetFile']['filename'] . '.zip');
 	}
 
-
 /**
  * ファイルのダウンロード数の取得
  *
  * @return void
  */
-public function get_download_counts() {
-	$query = [
-		'fields' => [
-			'UploadFile.id',
-			'UploadFile.total_download_count',
-		],
-		'conditions' => [
-			'UploadFile.id' => explode(',', $this->request->query('upload_file_ids')),
-		],
-		'recursive' => -1
-	];
-	$UploadFile = ClassRegistry::init('Files.UploadFile');
-	$files = $UploadFile->find('all', $query);
+	public function get_download_counts() {
+		$query = [
+			'fields' => [
+				'UploadFile.id',
+				'UploadFile.total_download_count',
+			],
+			'conditions' => [
+				'UploadFile.id' => explode(',', $this->request->query('upload_file_ids')),
+			],
+			'recursive' => -1
+		];
+		$UploadFile = ClassRegistry::init('Files.UploadFile');
+		$files = $UploadFile->find('all', $query);
 
-	$this->set('_serialize', ['counts']);
-	$this->set('counts', $files);
-}
+		$this->set('_serialize', ['counts']);
+		$this->set('counts', $files);
+	}
 
 /**
  * フォルダのZIPダウンロードができるか否かチェック

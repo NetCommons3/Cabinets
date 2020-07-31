@@ -58,15 +58,15 @@ NetCommonsApp.controller('CabinetFile.index',
           var params = '?frame_id=' + frameId + '&upload_file_ids=' + fileIds.join(',');
           $http.get(NC3_URL + '/cabinets/cabinet_files/get_download_counts.json' + params)
           .then(
-            function(response) {
-              var counts = response.data.counts;
-              for (var i = 0; i < counts.length; i++) {
-                var file = counts[i].UploadFile;
-                $scope.downloadCounts[file.id] = file.total_download_count;
-              }
-            },
-            function() {
-            });
+              function(response) {
+                var counts = response.data.counts;
+                for (var i = 0; i < counts.length; i++) {
+                  var file = counts[i].UploadFile;
+                  $scope.downloadCounts[file.id] = file.total_download_count;
+                }
+              },
+              function() {
+              });
         };
 
         $scope.moveFile = function(cabinetFileKey, isFolder, data) {

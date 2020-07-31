@@ -1,7 +1,7 @@
 <?php echo $this->element('NetCommons.javascript_alert'); ?>
 <div ng-controller="Cabinets"
-		ng-init="init(<?php echo h(json_encode(Current::read('Block.id')))
-			. ', ' . h(json_encode(Current::read('Frame.id'))); ?>)"
+		ng-init="init(<?php echo h(json_encode(Current::read('Block.id'))) .
+				', ' . h(json_encode(Current::read('Frame.id'))); ?>)"
 		class="nc-content-list">
 
 	<?php echo $this->NetCommonsHtml->css('/cabinets/css/cabinets.css'); ?>
@@ -118,8 +118,8 @@
 				class="table table-hover cabinets__index__file-list"
 				style="table-layout: fixed"
 				ng-controller="CabinetFile.index"
-				ng-init="init(<?php echo $currentTreeId . ', '
-					. h(json_encode(Current::read('Frame.id'))) . ', ' . h(json_encode($initialValues)); ?>)">
+				ng-init="init(<?php echo $currentTreeId . ', ' .
+						h(json_encode(Current::read('Frame.id'))) . ', ' . h(json_encode($initialValues)); ?>)">
 				<thead>
 				<tr>
 					<th class="cabinets__index__name">
