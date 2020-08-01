@@ -17,6 +17,7 @@ App::uses('TemporaryFolder', 'Files.Utility');
  * @property NetCommonsWorkflow $NetCommonsWorkflow
  * @property PaginatorComponent $Paginator
  * @property CabinetFile $CabinetFile
+ * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
  */
 class CabinetFilesController extends CabinetsAppController {
 
@@ -103,7 +104,8 @@ class CabinetFilesController extends CabinetsAppController {
 			'download',
 			'download_folder',
 			'get_download_counts',
-			'check_download_folder'
+			'check_download_folder',
+			'load_download_folder'
 		);
 		parent::beforeFilter();
 		$this->_cabinet = $this->Cabinet->find('first', array(
@@ -396,6 +398,19 @@ class CabinetFilesController extends CabinetsAppController {
 			]
 		);
 		return $files;
+	}
+
+/**
+ * ファイルの圧縮ダウンロードのロード処理
+ *
+ * @return void
+ */
+	public function load_download_folder() {
+		$View = $this->_getViewObject();
+		$fileKeys = explode(',', $this->request->query('file_keys'));
+		foreach ($fileKeys as $fileKey) {
+			$View->CabinetFile->setZipDownloadToken($fileKey);
+		}
 	}
 
 /**

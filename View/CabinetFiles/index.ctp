@@ -202,5 +202,6 @@
 
 		</div>
 	</div>
+	<?php echo $this->CabinetFile->loadZipDownload((string)Current::read('Frame.id')); ?>
 
 </div>

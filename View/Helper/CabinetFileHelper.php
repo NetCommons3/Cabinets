@@ -24,6 +24,13 @@ class CabinetFileHelper extends AppHelper {
 	];
 
 /**
+ * 圧縮ダウンロードのキー
+ *
+ * var array
+ */
+	private $__zipDolowdKeys = [];
+
+/**
  * Before render callback. beforeRender is called before the view file is rendered.
  *
  * Overridden in subclasses.
@@ -112,7 +119,48 @@ class CabinetFileHelper extends AppHelper {
 		$attributes = $this->_parseAttributes($options);
 
 		$html .= "<a$attributes>" . h($label) . "</a>";
+
+		$frameId = (string)Current::read('Frame.id');
+		if (! isset($this->__zipDolowdKeys[$frameId])) {
+			$this->__zipDolowdKeys[$frameId] = [];
+		}
+		$this->__zipDolowdKeys[$frameId][] = $cabinetFile['CabinetFile']['key'];
+
 		return $html;
+	}
+
+/**
+ * 圧縮ダウンロードリンクのロードタグ出力
+ *
+ * @param string $frameId フレームID
+ * @return string
+ */
+	public function loadZipDownload($frameId) {
+		$html = '';
+		if (! isset($this->__zipDolowdKeys[$frameId])) {
+			return $html;
+		}
+
+		$html .= '<div style="displya: none;"' .
+				' ng-controller="CabinetFiles.loadZipDownload"' .
+				' ng-init="load(\'' . $frameId . '\', ' .
+					'\'' . implode(',', $this->__zipDolowdKeys[$frameId]) . '\')"></div>';
+		return $html;
+	}
+
+/**
+ * 圧縮ダウンロードのためのTokenセット
+ *
+ * @param string $cabinetFileKey ファイルキー
+ * @return void
+ */
+	public function setZipDownloadToken($cabinetFileKey) {
+		$cabinetFile = [
+			'CabinetFile' => [
+				'key' => $cabinetFileKey
+			],
+		];
+		$this->zipDownload($cabinetFile, '', []);
 	}
 
 }

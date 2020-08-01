@@ -110,3 +110,25 @@ NetCommonsApp.controller('CabinetFiles.zipDownload',
         };
 
       }]);
+
+
+NetCommonsApp.controller('CabinetFiles.loadZipDownload',
+    ['$scope', '$http', 'NC3_URL',
+      function($scope, $http, NC3_URL) {
+
+        /**
+         * イニシャライズ処理
+         *
+         * @return {void}
+         */
+        $scope.load = function(frameId, fileKeys) {
+          var params = '?frame_id=' + frameId + '&file_keys=' + fileKeys;
+          $http.get(NC3_URL + '/cabinets/cabinet_files/load_download_folder.json' + params)
+          .then(
+              function(response) {
+              },
+              function() {
+              });
+        };
+      }]
+);
