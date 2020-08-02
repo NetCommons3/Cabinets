@@ -300,6 +300,7 @@ class CabinetFilesController extends CabinetsAppController {
  * @return CakeResponse|string|void
  */
 	public function download_folder() {
+		$this->response->header('Pragma', 'no-cache');
 		if (! $this->request->is('post')) {
 			return $this->throwBadRequest();
 		}
@@ -363,6 +364,7 @@ class CabinetFilesController extends CabinetsAppController {
  * @return void
  */
 	public function check_download_folder() {
+		$this->response->header('Pragma', 'no-cache');
 		if (! $this->request->is('post') || ! $this->request->is('ajax')) {
 			return $this->throwBadRequest();
 		}
@@ -406,8 +408,10 @@ class CabinetFilesController extends CabinetsAppController {
  * @return void
  */
 	public function load_download_folder() {
+		$this->response->header('Pragma', 'no-cache');
 		$View = $this->_getViewObject();
 		$fileKeys = explode(',', $this->request->query('file_keys'));
+
 		foreach ($fileKeys as $fileKey) {
 			$View->CabinetFile->setZipDownloadToken($fileKey);
 		}

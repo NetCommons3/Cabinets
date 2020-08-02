@@ -89,16 +89,16 @@ class CabinetFileHelper extends AppHelper {
 		$hiddenFields = array_keys($tokenFields);
 		// * チェック用のToken作成
 		$this->_View->request->data = $requestData;
+		$this->_View->request->data['CabinetFile']['_action'] = 'check';
 		$checkToken = $this->Token->getToken(
 			'CabinetFile', $checkUrl, $tokenFields, $hiddenFields
 		);
-		$checkToken['_Token']['key'] = '';
 		// * ダウンロード用のToken作成
 		$this->_View->request->data = $requestData;
+		$this->_View->request->data['CabinetFile']['_action'] = 'download';
 		$downloadToken = $this->Token->getToken(
 			'CabinetFile', $downloadUrl, $tokenFields, $hiddenFields
 		);
-		$downloadToken['_Token']['key'] = '';
 		// * $thisi->request->dataを元に戻す
 		$this->_View->request->data = $currentData;
 
@@ -106,11 +106,11 @@ class CabinetFileHelper extends AppHelper {
 			'action' => $checkUrl,
 			'token' => $checkToken['_Token'],
 		];
-
 		$requestData['Download'] = [
 			'action' => $downloadUrl,
 			'token' => $downloadToken['_Token'],
 		];
+
 		//アンカータグ生成
 		$options['ng-controller'] = 'CabinetFiles.zipDownload';
 		$options['ng-init'] = "initialize(" . json_encode($requestData) . ")";
