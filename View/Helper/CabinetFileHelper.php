@@ -79,23 +79,31 @@ class CabinetFileHelper extends AppHelper {
 		$checkUrl = $this->NetCommonsHtml->url($action);
 
 		//POSTデータ生成
-		$requestData = [
+		$currentData = $this->_View->request->data;
+
+		// * チェック用のToken作成
+		$checkRequest = [
 			'CabinetFile' => [
-				'key' => $cabinetFile['CabinetFile']['key']
+				'key' => $cabinetFile['CabinetFile']['key'],
+				'_action' => 'check'
 			],
 		];
-		$currentData = $this->_View->request->data;
-		$tokenFields = Hash::flatten($requestData);
+		$tokenFields = Hash::flatten($checkRequest);
 		$hiddenFields = array_keys($tokenFields);
-		// * チェック用のToken作成
-		$this->_View->request->data = $requestData;
-		$this->_View->request->data['CabinetFile']['_action'] = 'check';
+		$this->_View->request->data = $checkRequest;
 		$checkToken = $this->Token->getToken(
 			'CabinetFile', $checkUrl, $tokenFields, $hiddenFields
 		);
 		// * ダウンロード用のToken作成
-		$this->_View->request->data = $requestData;
-		$this->_View->request->data['CabinetFile']['_action'] = 'download';
+		$downloadRequest = [
+			'CabinetFile' => [
+				'key' => $cabinetFile['CabinetFile']['key'],
+				'_action' => 'download'
+			],
+		];
+		$tokenFields = Hash::flatten($downloadRequest);
+		$hiddenFields = array_keys($tokenFields);
+		$this->_View->request->data = $downloadRequest;
 		$downloadToken = $this->Token->getToken(
 			'CabinetFile', $downloadUrl, $tokenFields, $hiddenFields
 		);
@@ -104,10 +112,12 @@ class CabinetFileHelper extends AppHelper {
 
 		$requestData['Check'] = [
 			'action' => $checkUrl,
+			'request' => $checkRequest['CabinetFile'],
 			'token' => $checkToken['_Token'],
 		];
 		$requestData['Download'] = [
 			'action' => $downloadUrl,
+			'request' => $downloadRequest['CabinetFile'],
 			'token' => $downloadToken['_Token'],
 		];
 

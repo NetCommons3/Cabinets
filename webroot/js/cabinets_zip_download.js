@@ -40,7 +40,7 @@ NetCommonsApp.controller('CabinetFiles.zipDownload',
           $event.preventDefault();
 
           var postData = {
-            CabinetFile: $scope.postData['CabinetFile'],
+            CabinetFile: $scope.postData['Check']['request'],
             _Token: $scope.postData['Check']['token']
           };
           ajaxSendPost('POST', $scope.postData['Check']['action'], postData)
@@ -97,7 +97,7 @@ NetCommonsApp.controller('CabinetFiles.zipDownload',
             });
             formElement.append(inputElement);
           });
-          angular.forEach($scope.postData['CabinetFile'], function(value, key) {
+          angular.forEach($scope.postData['Download']['request'], function(value, key) {
             var inputElement = $('<input/>', {
               type: 'hidden',
               name: 'data[CabinetFile][' + key + ']',
