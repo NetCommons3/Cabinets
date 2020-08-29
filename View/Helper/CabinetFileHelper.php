@@ -24,6 +24,13 @@ class CabinetFileHelper extends AppHelper {
 	];
 
 /**
+ * 圧縮ダウンロードのキー
+ *
+ * var array
+ */
+	private $__zipDolowdKeys = [];
+
+/**
  * Before render callback. beforeRender is called before the view file is rendered.
  *
  * Overridden in subclasses.
@@ -74,38 +81,48 @@ class CabinetFileHelper extends AppHelper {
 		$checkUrl = substr($this->NetCommonsHtml->url($action), strlen($rootUrl));
 
 		//POSTデータ生成
-		$requestData = [
+		$currentData = $this->_View->request->data;
+
+		// * チェック用のToken作成
+		$checkRequest = [
 			'CabinetFile' => [
-				'key' => $cabinetFile['CabinetFile']['key']
+				'key' => $cabinetFile['CabinetFile']['key'],
+				'_action' => 'check'
 			],
 		];
-		$currentData = $this->_View->request->data;
-		$tokenFields = Hash::flatten($requestData);
+		$tokenFields = Hash::flatten($checkRequest);
 		$hiddenFields = array_keys($tokenFields);
-		// * チェック用のToken作成
-		$this->_View->request->data = $requestData;
+		$this->_View->request->data = $checkRequest;
 		$checkToken = $this->Token->getToken(
 			'CabinetFile', $checkUrl, $tokenFields, $hiddenFields
 		);
-		$checkToken['_Token']['key'] = '';
 		// * ダウンロード用のToken作成
-		$this->_View->request->data = $requestData;
+		$downloadRequest = [
+			'CabinetFile' => [
+				'key' => $cabinetFile['CabinetFile']['key'],
+				'_action' => 'download'
+			],
+		];
+		$tokenFields = Hash::flatten($downloadRequest);
+		$hiddenFields = array_keys($tokenFields);
+		$this->_View->request->data = $downloadRequest;
 		$downloadToken = $this->Token->getToken(
 			'CabinetFile', $downloadUrl, $tokenFields, $hiddenFields
 		);
-		$downloadToken['_Token']['key'] = '';
 		// * $thisi->request->dataを元に戻す
 		$this->_View->request->data = $currentData;
 
 		$requestData['Check'] = [
 			'action' => $checkUrl,
+			'request' => $checkRequest['CabinetFile'],
 			'token' => $checkToken['_Token'],
 		];
-
 		$requestData['Download'] = [
 			'action' => $downloadUrl,
+			'request' => $downloadRequest['CabinetFile'],
 			'token' => $downloadToken['_Token'],
 		];
+
 		//アンカータグ生成
 		$options['ng-controller'] = 'CabinetFiles.zipDownload';
 		$options['ng-init'] = "initialize(" . json_encode($requestData) . ")";
@@ -114,7 +131,48 @@ class CabinetFileHelper extends AppHelper {
 		$attributes = $this->_parseAttributes($options);
 
 		$html .= "<a$attributes>" . h($label) . "</a>";
+
+		$frameId = (string)Current::read('Frame.id');
+		if (! isset($this->__zipDolowdKeys[$frameId])) {
+			$this->__zipDolowdKeys[$frameId] = [];
+		}
+		$this->__zipDolowdKeys[$frameId][] = $cabinetFile['CabinetFile']['key'];
+
 		return $html;
+	}
+
+/**
+ * 圧縮ダウンロードリンクのロードタグ出力
+ *
+ * @param string $frameId フレームID
+ * @return string
+ */
+	public function loadZipDownload($frameId) {
+		$html = '';
+		if (! isset($this->__zipDolowdKeys[$frameId])) {
+			return $html;
+		}
+
+		$html .= '<div style="displya: none;"' .
+				' ng-controller="CabinetFiles.loadZipDownload"' .
+				' ng-init="load(\'' . $frameId . '\', ' .
+					'\'' . implode(',', $this->__zipDolowdKeys[$frameId]) . '\')"></div>';
+		return $html;
+	}
+
+/**
+ * 圧縮ダウンロードのためのTokenセット
+ *
+ * @param string $cabinetFileKey ファイルキー
+ * @return void
+ */
+	public function setZipDownloadToken($cabinetFileKey) {
+		$cabinetFile = [
+			'CabinetFile' => [
+				'key' => $cabinetFileKey
+			],
+		];
+		$this->zipDownload($cabinetFile, '', []);
 	}
 
 }

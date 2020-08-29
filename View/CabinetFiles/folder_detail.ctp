@@ -124,4 +124,6 @@ echo $this->Html->script(
 			?>
 		<?php endif ?>
 	</div>
+
+	<?php echo $this->CabinetFile->loadZipDownload((string)Current::read('Frame.id')); ?>
 </div>
