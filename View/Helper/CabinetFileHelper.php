@@ -58,18 +58,20 @@ class CabinetFileHelper extends AppHelper {
 	public function zipDownload($cabinetFile, $label, $options) {
 		$html = '';
 
+		$rootUrl = substr(Router::url('/'), 0, -1);
+
 		//アクションURL生成
 		$action = [
 			'action' => 'download_folder',
 			'key' => $cabinetFile['CabinetFile']['key']
 		];
-		$downloadUrl = $this->NetCommonsHtml->url($action);
+		$downloadUrl = substr($this->NetCommonsHtml->url($action), strlen($rootUrl));
 
 		$action = [
 			'action' => 'check_download_folder',
 			'key' => $cabinetFile['CabinetFile']['key']
 		];
-		$checkUrl = $this->NetCommonsHtml->url($action);
+		$checkUrl = substr($this->NetCommonsHtml->url($action), strlen($rootUrl));
 
 		//POSTデータ生成
 		$requestData = [

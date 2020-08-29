@@ -85,7 +85,7 @@ NetCommonsApp.controller('CabinetFiles.zipDownload',
           var formElement = $('<form/>', {
             id: formId,
             target: '_blank',
-            action: $scope.postData['Download']['action'],
+            action: NC3_URL + $scope.postData['Download']['action'],
             method: 'post'
           });
 
