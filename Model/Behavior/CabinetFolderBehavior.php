@@ -41,7 +41,14 @@ class CabinetFolderBehavior extends ModelBehavior {
 			'CabinetFileTree.parent_id' => $cabinetFile['CabinetFileTree']['id'],
 		];
 		$conditions = $model->getWorkflowConditions($conditions);
+
+		$model->Behaviors->disable('AuthorizationKey');
+		$model->Behaviors->disable('Attachment');
+
 		$count = $model->find('count', ['conditions' => $conditions]);
+
+		$model->Behaviors->enable('AuthorizationKey');
+		$model->Behaviors->enable('Attachment');
 		return ($count > 0);
 	}
 
@@ -183,7 +190,11 @@ class CabinetFolderBehavior extends ModelBehavior {
 			'CabinetFileTree.rght <' => $folder['CabinetFileTree']['rght'],
 			'CabinetFile.is_folder' => false,
 		];
+		$model->Behaviors->disable('AuthorizationKey');
+
 		$files = $model->find('all', ['conditions' => $conditions]);
+
+		$model->Behaviors->enable('AuthorizationKey');
 		$total = 0;
 		foreach ($files as $file) {
 			$total += Hash::get($file, 'UploadFile.file.size', 0);
