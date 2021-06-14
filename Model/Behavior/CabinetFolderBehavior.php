@@ -60,7 +60,10 @@ class CabinetFolderBehavior extends ModelBehavior {
  * @return array|null
  */
 	public function getRootFolder(Model $model, $cabinet) {
-		return $model->find('first', [
+		$model->Behaviors->disable('AuthorizationKey');
+		$model->Behaviors->disable('Attachment');
+
+		$rootFolder = $model->find('first', [
 			'conditions' => $this->_getRootFolderConditions(
 				$cabinet,
 				array(
@@ -71,6 +74,11 @@ class CabinetFolderBehavior extends ModelBehavior {
 				)
 			)
 		]);
+
+		$model->Behaviors->enable('AuthorizationKey');
+		$model->Behaviors->enable('Attachment');
+
+		return $rootFolder;
 	}
 
 /**
