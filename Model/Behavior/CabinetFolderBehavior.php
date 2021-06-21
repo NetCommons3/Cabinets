@@ -207,6 +207,9 @@ class CabinetFolderBehavior extends ModelBehavior {
 			'fields' => ['CabinetFile.id']
 		]);
 		$contentIds = array_column(array_column($files, 'CabinetFile'), 'id');
+		if (empty($contentIds)) {
+			return 0;
+		}
 
 		/** @var UploadFilesContent $uploadFilesContent */
 		$uploadFilesContent = ClassRegistry::init('Files.UploadFilesContent');
@@ -220,6 +223,9 @@ class CabinetFolderBehavior extends ModelBehavior {
 			'fields' => ['UploadFilesContent.upload_file_id']
 		]);
 		$uploadFileIds = array_column(array_column($links, 'UploadFilesContent'), 'upload_file_id');
+		if (empty($uploadFileIds)) {
+			return 0;
+		}
 
 		/** @var UploadFile $uploadFile */
 		$uploadFile = ClassRegistry::init('Files.UploadFile');
