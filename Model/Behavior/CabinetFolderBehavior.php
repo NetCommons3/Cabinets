@@ -41,7 +41,14 @@ class CabinetFolderBehavior extends ModelBehavior {
 			'CabinetFileTree.parent_id' => $cabinetFile['CabinetFileTree']['id'],
 		];
 		$conditions = $model->getWorkflowConditions($conditions);
+
+		$model->Behaviors->disable('AuthorizationKey');
+		$model->Behaviors->disable('Attachment');
+
 		$count = $model->find('count', ['conditions' => $conditions]);
+
+		$model->Behaviors->enable('AuthorizationKey');
+		$model->Behaviors->enable('Attachment');
 		return ($count > 0);
 	}
 
@@ -53,7 +60,10 @@ class CabinetFolderBehavior extends ModelBehavior {
  * @return array|null
  */
 	public function getRootFolder(Model $model, $cabinet) {
-		return $model->find('first', [
+		$model->Behaviors->disable('AuthorizationKey');
+		$model->Behaviors->disable('Attachment');
+
+		$rootFolder = $model->find('first', [
 			'conditions' => $this->_getRootFolderConditions(
 				$cabinet,
 				array(
@@ -64,6 +74,11 @@ class CabinetFolderBehavior extends ModelBehavior {
 				)
 			)
 		]);
+
+		$model->Behaviors->enable('AuthorizationKey');
+		$model->Behaviors->enable('Attachment');
+
+		return $rootFolder;
 	}
 
 /**
@@ -173,9 +188,7 @@ class CabinetFolderBehavior extends ModelBehavior {
  * @return int 合計サイズ
  */
 	public function getTotalSizeByFolder(Model $model, $folder) {
-		// ベタパターン
-		// 配下全てのファイルを取得する
-		//$this->CabinetFileTree->setup(]);
+		// 配下全てのファイル key を取得する
 		$cabinetKey = $folder['Cabinet']['key'];
 		$conditions = [
 			'CabinetFileTree.cabinet_key' => $cabinetKey,
@@ -183,13 +196,52 @@ class CabinetFolderBehavior extends ModelBehavior {
 			'CabinetFileTree.rght <' => $folder['CabinetFileTree']['rght'],
 			'CabinetFile.is_folder' => false,
 		];
-		$files = $model->find('all', ['conditions' => $conditions]);
-		$total = 0;
-		foreach ($files as $file) {
-			$total += Hash::get($file, 'UploadFile.file.size', 0);
+		$model->Behaviors->disable('AuthorizationKey');
+
+		// HACK: ファイルサイズをCabinetsに持つようにすればFilesプラグインのテーブルを参照する必要はなくなるが、
+		//       テーブル変更すると移行ツールも改修する必要があるので、
+		//       ひとまずトータル取得ロジックのカイゼンだけにとどめた。
+		$files = $model->find('all', [
+			'conditions' => $conditions,
+			//'fields' => ['CabinetFile.key']
+			'fields' => ['CabinetFile.id']
+		]);
+		$contentIds = array_column(array_column($files, 'CabinetFile'), 'id');
+		if (empty($contentIds)) {
+			return 0;
 		}
+
+		/** @var UploadFilesContent $uploadFilesContent */
+		$uploadFilesContent = ClassRegistry::init('Files.UploadFilesContent');
+		$conditions = [
+			'UploadFilesContent.plugin_key' => 'cabinets',
+			'UploadFilesContent.content_id' => $contentIds,
+		];
+		$links = $uploadFilesContent->find('all', [
+			'conditions' => $conditions,
+			'recursive' => -1,
+			'fields' => ['UploadFilesContent.upload_file_id']
+		]);
+		$uploadFileIds = array_column(array_column($links, 'UploadFilesContent'), 'upload_file_id');
+		if (empty($uploadFileIds)) {
+			return 0;
+		}
+
+		/** @var UploadFile $uploadFile */
+		$uploadFile = ClassRegistry::init('Files.UploadFile');
+		$conditions = [
+			'UploadFile.id' => $uploadFileIds
+		];
+		$uploadFile->virtualFields['cabinet_folder_size'] = 'sum(size)';
+		$result = $uploadFile->find('first', [
+			'conditions' => $conditions,
+			'fields' => ['cabinet_folder_size' ],
+			//'recursive' => 0
+		]);
+		unset($uploadFile->virtualFields['cabinet_folder_size']);
+
+		$total = (int)$result['UploadFile']['cabinet_folder_size'];
 		return $total;
-		// sumパターンはUploadFileの構造をしらないと厳しい… がんばってsumするより合計サイズをキャッシュした方がいいかも
 	}
 
 /**
@@ -224,12 +276,8 @@ class CabinetFolderBehavior extends ModelBehavior {
 			'recursive' => -1,
 			'conditions' => array('key' => $cabinetKey),
 		));
+		$totalSize = $this->calcCabinetTotalSize($model, $cabinet);
 
-		// トータルサイズ取得
-		$rootFolder = $model->getRootFolder($cabinet);
-		$totalSize = $model->getTotalSizeByFolder(
-			$rootFolder
-		);
 		// キャビネット更新
 		$update = array(
 			'Cabinet.total_size' => $totalSize
@@ -244,5 +292,21 @@ class CabinetFolderBehavior extends ModelBehavior {
 		//$model->Cabinet->save($cabinet, ['callbacks' => false]);
 		//$model->Cabinet->id = $cabinetId;
 		//$model->Cabinet->saveField('total_size', $totalSize, ['callbacks' => false]);
+	}
+
+	/**
+	 * calcCabinetTotalSize
+	 *
+	 * @param Model $model
+	 * @param $cabinet
+	 * @return mixed
+	 */
+	public function calcCabinetTotalSize(Model $model, $cabinet) {
+		// トータルサイズ取得
+		$rootFolder = $model->getRootFolder($cabinet);
+		$totalSize = $model->getTotalSizeByFolder(
+			$rootFolder
+		);
+		return $totalSize;
 	}
 }

@@ -449,6 +449,10 @@ class CabinetFilesController extends CabinetsAppController {
 			$currentFolder = $this->CabinetFile->getRootFolder($this->_cabinet);
 			return $currentFolder;
 		} else {
+			// Hack: findFolderとかメソッドはやしたほうがいいかな。CabinetFolderってモデルつくるのがいいか？
+			$this->CabinetFile->Behaviors->disable('AuthorizationKey');
+			$this->CabinetFile->Behaviors->disable('Attachment');
+
 			$currentFolder = $this->CabinetFile->find(
 				'first',
 				[
@@ -459,6 +463,8 @@ class CabinetFilesController extends CabinetsAppController {
 					]
 				]
 			);
+			$this->CabinetFile->Behaviors->enable('AuthorizationKey');
+			$this->CabinetFile->Behaviors->enable('Attachment');
 			return $currentFolder;
 		}
 	}
