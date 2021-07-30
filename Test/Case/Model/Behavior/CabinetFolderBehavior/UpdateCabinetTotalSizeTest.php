@@ -2,12 +2,11 @@
 /**
  * UpdateCabinetTotalSizeTest.php
  *
- * @author Japan Science and Technology Agency
- * @author National Institute of Informatics
- * @link http://researchmap.jp researchmap Project
+ * @author Noriko Arai <arai@nii.ac.jp>
+ * @author Ryuji AMANO <ryuji@ryus.co.jp>
  * @link http://www.netcommons.org NetCommons Project
- * @license http://researchmap.jp/public/terms-of-service/ researchmap license
- * @copyright Copyright 2017, researchmap Project
+ * @license http://www.netcommons.org/license.txt NetCommons License
+ * @copyright Copyright 2014, NetCommons Project
  */
 
 
@@ -19,6 +18,8 @@
 final class UpdateCabinetTotalSizeTest extends \NetCommonsModelTestCase {
 
 /**
+ * Fixture
+ *
  * @var string[]
  */
 	public $fixtures = [

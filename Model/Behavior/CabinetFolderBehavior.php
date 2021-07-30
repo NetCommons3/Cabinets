@@ -294,13 +294,13 @@ class CabinetFolderBehavior extends ModelBehavior {
 		//$model->Cabinet->saveField('total_size', $totalSize, ['callbacks' => false]);
 	}
 
-	/**
-	 * calcCabinetTotalSize
-	 *
-	 * @param Model $model
-	 * @param $cabinet
-	 * @return mixed
-	 */
+/**
+ * calcCabinetTotalSize
+ *
+ * @param Model $model モデル
+ * @param array $cabinet Cabinetデータ
+ * @return mixed
+ */
 	public function calcCabinetTotalSize(Model $model, $cabinet) {
 		// トータルサイズ取得
 		$rootFolder = $model->getRootFolder($cabinet);
