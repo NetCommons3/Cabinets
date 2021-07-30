@@ -63,7 +63,7 @@ class CabinetFileTreeSaveTest extends NetCommonsModelTestCase {
 		$data = (new CabinetFileTreeFixture())->records[0];
 		$data['modified'] = '2000-01-01 00:00:00';
 
-		$result = $this->CabinetFileTree->save($data);
+		$this->CabinetFileTree->save($data);
 		$this->assertNotEquals(
 			$this->CabinetFileTree->data['CabinetFileTree']['modified'],
 			$data['modified']
