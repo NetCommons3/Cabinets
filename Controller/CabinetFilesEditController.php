@@ -39,7 +39,7 @@ class CabinetFilesEditController extends CabinetsAppController {
 		'NetCommons.Permission' => array(
 			//アクセスの権限
 			'allow' => array(
-				'add,edit,delete,move' => 'content_creatable',
+				'add,edit,delete,move,get_folder_path,select_folder' => 'content_creatable',
 				// フォルダの作成・編集は公開権限以上
 				'add_folder,edit_folder' => 'content_publishable',
 				'unzip' => 'content_publishable'
