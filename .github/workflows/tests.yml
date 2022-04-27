@@ -51,6 +51,9 @@ jobs:
       - name: Fix up git URLs
         run: echo -e '[url "https://github.com/"]\n  insteadOf = "git://github.com/"' >> ~/.gitconfig
 
+      - name: Fix up git URLs
+        run: echo -e '[url "https://github.com/"]\n  insteadOf = "git://github.com/"' >> ~/.gitconfig
+
       - name: environment
         run: |
           echo "GITHUB_WORKSPACE=${GITHUB_WORKSPACE}"
