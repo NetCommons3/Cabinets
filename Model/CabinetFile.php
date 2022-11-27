@@ -567,4 +567,21 @@ class CabinetFile extends CabinetsAppModel {
 
 		return true;
 	}
+
+/**
+ * isExists
+ *
+ * @param string $cabinetKey Caibnet.key
+ * @param string|int $cabinetFileId CabinetFile.id
+ * @return bool
+ */
+	public function isExists($cabinetKey, $cabinetFileId) {
+		$conditions = [
+			'CabinetFile.cabinet_key' => $cabinetKey,
+			'CabinetFile.id' => $cabinetFileId,
+		];
+		$conditions = $this->getWorkflowConditions($conditions);
+		$count = $this->find('count', ['conditions' => $conditions]);
+		return ($count > 0);
+	}
 }
