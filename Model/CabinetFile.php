@@ -13,6 +13,8 @@ App::uses('Current', 'NetCommons.Utility');
 
 /**
  * Summary for CabinetFile Model
+ *
+ * @SuppressWarnings(PHPMD.TooManyPublicMethods)
  */
 class CabinetFile extends CabinetsAppModel {
 
