@@ -64,7 +64,7 @@
 				); ?>
 			</li>
 			<?php // フォルダ移動・編集は公開権限必要 ?>
-			<?php if (Current::permission('content_publishable')) :?>
+			<?php if (Current::permission('content_creatable') && Current::permission('content_publishable')) :?>
 			<li>
 				<?php
 				$data = [

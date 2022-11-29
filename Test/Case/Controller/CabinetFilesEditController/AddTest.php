@@ -157,7 +157,7 @@ class CabinetFilesEditControllerAddTest extends WorkflowControllerAddTest {
 		$results[0] = array(
 			'urlOptions' => array(
 				'frame_id' => $data['Frame']['id'],
-				'block_id' => $data['Block']['id']
+				'block_id' => $data['Block']['id'],
 			),
 			'assert' => null, 'exception' => 'ForbiddenException',
 		);
@@ -185,6 +185,7 @@ class CabinetFilesEditControllerAddTest extends WorkflowControllerAddTest {
 			'urlOptions' => array(
 				'frame_id' => $data['Frame']['id'],
 				'block_id' => $data['Block']['id'],
+				'parent_id' => $data['CabinetFileTree']['parent_id'],
 			),
 			'assert' => array('method' => 'assertNotEmpty'),
 		);
@@ -313,6 +314,7 @@ class CabinetFilesEditControllerAddTest extends WorkflowControllerAddTest {
 				'action' => 'add',
 				'frame_id' => $data['Frame']['id'],
 				'block_id' => $data['Block']['id'],
+				'parent_id' => $data['CabinetFileTree']['parent_id'],
 			),
 			array('method' => 'assertNotEmpty')
 		);
@@ -344,6 +346,7 @@ class CabinetFilesEditControllerAddTest extends WorkflowControllerAddTest {
 				'action' => 'add',
 				'frame_id' => $data['Frame']['id'],
 				'block_id' => $data['Block']['id'],
+				'parent_id' => $data['CabinetFileTree']['parent_id'],
 			),
 			array('method' => 'assertNotEmpty')
 		);

@@ -78,7 +78,7 @@ class CabinetFilesEditControllerBeforeFilterTest extends NetCommonsControllerTes
 		//テスト実行
 		$blockId = '2';
 
-		$this->_testGetAction(array('action' => 'add', 'block_id' => $blockId), array('method' =>
+		$this->_testGetAction(array('action' => 'add', 'block_id' => $blockId, 'parent_id' => 11), array('method' =>
 		'assertNotEmpty'),
 			null, 'view');
 

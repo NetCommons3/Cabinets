@@ -64,6 +64,11 @@ class CabinetFilesEditController extends CabinetsAppController {
 	);
 
 /**
+ * @var array Cabinet
+ */
+	protected $_cabinet;
+
+/**
  * beforeFilter
  *
  * @return void
@@ -108,6 +113,10 @@ class CabinetFilesEditController extends CabinetsAppController {
  * @return void
  */
 	public function add() {
+		if (!$this->__isExistsParentFolder()) {
+			return $this->throwBadRequest();
+		}
+
 		$this->set('isEdit', false);
 
 		$cabinetFile = $this->CabinetFile->getNew();
@@ -276,6 +285,10 @@ class CabinetFilesEditController extends CabinetsAppController {
  * @return void
  */
 	public function add_folder() {
+		if (!$this->__isExistsParentFolder()) {
+			return $this->throwBadRequest();
+		}
+
 		$this->set('isEdit', false);
 
 		$cabinetFile = $this->CabinetFile->getNew();
@@ -690,5 +703,18 @@ class CabinetFilesEditController extends CabinetsAppController {
 		}
 
 		return true;
+	}
+
+/**
+ * __isExistsParentFolder
+ *
+ * @return bool
+ */
+	private function __isExistsParentFolder() {
+		$parentId = $this->request->data['CabinetFileTree']['parent_id'] ?? Hash::get(
+			$this->request->named,
+			'parent_id'
+		);
+		return $this->CabinetFile->isExists($this->_cabinet['Cabinet']['key'], $parentId);
 	}
 }
