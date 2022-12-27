@@ -297,6 +297,7 @@ class CabinetFilesEditControllerAddFolderTest extends WorkflowControllerAddTest 
 				'action' => 'add_folder',
 				'frame_id' => $data['Frame']['id'],
 				'block_id' => $data['Block']['id'],
+				'parent_id' => $data['CabinetFileTree']['parent_id'],
 			),
 			array('method' => 'assertNotEmpty')
 		);
