@@ -715,6 +715,6 @@ class CabinetFilesEditController extends CabinetsAppController {
 			$this->request->named,
 			'parent_id'
 		);
-		return $this->CabinetFile->isExists($this->_cabinet['Cabinet']['key'], $parentId);
+		return $this->CabinetFile->isExistsByTreeId($this->_cabinet['Cabinet']['key'], $parentId);
 	}
 }
