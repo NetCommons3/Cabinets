@@ -574,13 +574,13 @@ class CabinetFile extends CabinetsAppModel {
  * isExists
  *
  * @param string $cabinetKey Caibnet.key
- * @param string|int $cabinetFileId CabinetFile.id
+ * @param string|int $cabinetFileTreeId CabinetFile.id
  * @return bool
  */
-	public function isExists($cabinetKey, $cabinetFileId) {
+	public function isExistsByTreeId($cabinetKey, $cabinetFileTreeId) {
 		$conditions = [
 			'CabinetFile.cabinet_key' => $cabinetKey,
-			'CabinetFile.id' => $cabinetFileId,
+			'CabinetFile.cabinet_file_tree_id' => $cabinetFileTreeId,
 		];
 		$conditions = $this->getWorkflowConditions($conditions);
 		$count = $this->find('count', ['conditions' => $conditions]);
